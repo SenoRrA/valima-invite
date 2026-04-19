@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Abdullah & Aqsa | Royal Valima</title>
+
+    <!-- Social Media & WhatsApp Preview Tags (Open Graph) -->
+    <meta property="og:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
+    <meta property="og:description" content="With hearts full of gratitude, we invite you to celebrate our Valima Reception. Tap to open the royal invitation!" />
+    <!-- Yahan aap apne custom envelope photo ka link daal sakte hain. Abhi maine ek premium placeholder image lagaya hai -->
+    <meta property="og:image" content="https://images.unsplash.com/photo-1607198179219-cd8b835fdaa7?q=80&w=1200&auto=format&fit=crop" />
+    <meta property="og:url" content="https://your-username.github.io/valima-invite/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Royal Valima Invite" />
+
+    <!-- Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;600&family=Cinzel:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Scripts (GSAP, ScrollTrigger, Particles, Confetti) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #010805;
+            --emerald-deep: #02140d;
+            --emerald-glow: rgba(5, 68, 43, 0.85); /* Slightly brighter core */
+            
+            /* Premium Gold Gradients */
+            --gold-gradient: linear-gradient(135deg, #C59B43 0%, #FDF7C3 25%, #BD9130 50%, #FCF6BA 75%, #B48123 100%);
+            --gold-gradient-vert: linear-gradient(to bottom, transparent, #C59B43, #FCF6BA, #BD9130, transparent);
+            --gold-light: #FDF7C3;
+            --gold-main: #D4AF37;
+            --gold-dark: #8A6D1C;
+            
+            --glass-bg: rgba(2, 12, 8, 0.65);
+            --glass-border: rgba(212, 175, 55, 0.35);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body, html {
+            width: 100%; height: 100%;
+            background-color: var(--bg-dark);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            color: var(--gold-light);
+            overscroll-behavior-y: none;
+        }
+
+        /* --- BACKGROUND & AMBIANCE --- */
+        #particles-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        .ambient-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, var(--emerald-glow) 0%, var(--bg-dark) 80%);
+            z-index: 0; animation: breathe 8s infinite alternate ease-in-out;
+            transform: translateZ(0);
+        }
+        @keyframes breathe { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.15); opacity: 0.95; } }
+
+        .pattern-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: panBg 120s linear infinite;
+        }
+        @keyframes panBg { 0% { background-position: 0 0; } 100% { background-position: 300px 300px; } }
+
+        /* --- GLOBAL ANIMATIONS & SHIMMERS --- */
+        .shimmer-text {
+            background: linear-gradient(to right, #C59B43 20%, #FFF 40%, #C59B43 60%, #FDF7C3 80%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: shine 4s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* --- MICRO-INTERACTIONS (Punchy & Responsive) --- */
+        .interactive-seal {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            cursor: pointer; -webkit-tap-highlight-color: transparent;
+        }
+        .interactive-seal:hover { 
+            transform: translate(-50%, -50%) translateZ(10px) scale(1.08); 
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.6), inset 0 2px 10px rgba(255,255,255,0.8); 
+        }
+        .interactive-seal:active { 
+            transform: translate(-50%, -50%) translateZ(5px) scale(0.9); 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.9), inset 0 -2px 15px rgba(0,0,0,0.8); 
+        }
+
+        /* --- ✉️ SCREEN 1: ENVELOPE --- */
+        #envelope-scene {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; perspective: 2500px; z-index: 200;
+            display: flex; justify-content: center; align-items: center; background: rgba(1, 8, 5, 0.92);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .envelope-wrapper { position: relative; width: 340px; height: 230px; transform-style: preserve-3d; filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8)); }
+        .envelope { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #010f08; border-radius: 8px; transform-style: preserve-3d; border: 1px solid var(--gold-dark); box-shadow: inset 0 0 60px rgba(0,0,0,0.95); }
+        .env-paper { position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; background: var(--glass-bg); border: 1px solid var(--gold-main); border-radius: 6px; z-index: 2; display: flex; flex-direction: column; align-items: center; padding-top: 35px; box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.6); transform: translateZ(1px); }
+        .env-paper-names { font-family: 'Great Vibes', cursive; font-size: 2.2rem; text-shadow: 0 3px 6px rgba(0,0,0,0.9); }
+        .env-paper-valima { font-family: 'Cinzel', serif; color: var(--gold-main); font-size: 0.65rem; letter-spacing: 4px; margin-top: 8px; text-transform: uppercase; }
+        
+        .env-flap { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform: translateZ(2px); }
+        .env-bottom { z-index: 4; background: linear-gradient(to top, #01140d, #022015); clip-path: polygon(0 100%, 100% 100%, 50% 45%); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+        .env-left { z-index: 4; background: linear-gradient(to right, #010f0a, #021a11); clip-path: polygon(0 0, 52% 52%, 0 100%); border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .env-right { z-index: 4; background: linear-gradient(to left, #010f0a, #021a11); clip-path: polygon(100% 0, 100% 100%, 48% 52%); border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+        .env-top { z-index: 5; background: linear-gradient(to bottom, #021f15, #032e1f); clip-path: polygon(0 0, 100% 0, 50% 55%); transform-origin: top center; transform-style: preserve-3d; border-top-left-radius: 8px; border-top-right-radius: 8px; border-top: 2px solid var(--gold-dark); transform: translateZ(3px); filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); }
+        .env-flap::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--gold-gradient); opacity: 0.15; mix-blend-mode: color-dodge; pointer-events: none; }
+
+        .royal-seal { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%) translateZ(5px); width: 105px; height: 105px; background: var(--gold-gradient); border-radius: 50%; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 15px 30px rgba(0,0,0,0.9), inset 0 3px 8px rgba(255,255,255,0.8), inset 0 -6px 20px rgba(138, 109, 28, 0.9); }
+        .royal-seal::before { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 2px dashed rgba(0,0,0,0.5); border-radius: 50%; }
+        .seal-ring { position: absolute; top: -12px; left: -12px; right: -12px; bottom: -12px; border: 2px solid var(--gold-main); border-radius: 50%; animation: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); } 100% { transform: scale(1.35); opacity: 0; box-shadow: 0 0 50px rgba(212, 175, 55, 0); } }
+        .royal-seal span { font-family: 'Cinzel', serif; color: #110c01; font-weight: 700; font-size: 1.15rem; letter-spacing: 3px; text-shadow: 0 1px 2px rgba(255,255,255,0.6); z-index: 2;}
+        .royal-seal small { color: #2b1f04; font-size: 0.55rem; letter-spacing: 2px; margin-top: 4px; font-weight: 700; text-transform: uppercase; z-index: 2;}
+
+        /* --- 🚪 SCREEN 2: PALACE DOORS --- */
+        #door-scene {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; perspective: 2000px; z-index: 100;
+            display: none; justify-content: center; align-items: center; opacity: 0; transform: scale(0.6);
+        }
+        
+        /* Advanced Cinematic Light Burst */
+        .door-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 100vh; background: #fff; box-shadow: 0 0 150px 80px rgba(255, 223, 115, 0.9), 0 0 250px 150px rgba(255, 255, 255, 0.8); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
+        .door-rays { position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vw; background: repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(255, 223, 115, 0.2) 10deg 20deg); transform: translate(-50%, -50%) scale(0); opacity: 0; z-index: 0; pointer-events: none; animation: spin 25s linear infinite; mix-blend-mode: screen; }
+        @keyframes spin { 100% { transform: translate(-50%, -50%) scale(2.5) rotate(360deg); } }
+
+        .door-wrapper { position: relative; width: 100%; max-width: 750px; height: 100vh; display: flex; transform-style: preserve-3d; z-index: 2; }
+        .door { width: 50%; height: 100%; background: linear-gradient(to right, #010a05, #021a11); position: relative; transform-style: preserve-3d; box-shadow: inset 0 0 120px rgba(0,0,0,0.98), 0 0 60px rgba(0,0,0,0.9); border: 2px solid #050505; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5%; backface-visibility: hidden; }
+        .door-left { transform-origin: left center; border-right: 3px solid var(--gold-main); background: linear-gradient(to left, #010a05, #021a11); }
+        .door-right { transform-origin: right center; border-left: 3px solid var(--gold-main); }
+        .door-panel { width: 85%; height: 38%; position: relative; margin: 15px 0; border-radius: 8px; background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(2,20,12,0.6)); box-shadow: inset 0 0 40px rgba(0,0,0,1), 0 8px 20px rgba(0,0,0,0.8); }
+        .door-panel::before { content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 4px; box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.1); }
+        
+        #royalSealDoor { width: 140px; height: 140px; } #royalSealDoor span { font-size: 1.4rem; }
+        #cinematic-flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ffffff 0%, transparent 100%); opacity: 0; z-index: 90; pointer-events: none; mix-blend-mode: screen; }
+
+        /* --- 📜 SCREEN 3: INVITATION CONTENT --- */
+        #main-invite {
+            position: relative; width: 100%; height: 100%; z-index: 50; overflow-y: auto; overflow-x: hidden;
+            display: none; opacity: 0; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+            transform: translateZ(0); 
+        }
+
+        .card-container { max-width: 560px; margin: 50px auto 120px auto; padding: 20px; position: relative; z-index: 2; transform: translateZ(0); }
+        
+        .content-wrapper { 
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 70px 30px 90px 30px; 
+            display: flex; flex-direction: column; align-items: center; text-align: center; 
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 1px 3px rgba(255,255,255,0.2), inset 0 0 60px rgba(2, 20, 13, 0.8); 
+            position: relative; overflow: hidden;
+        }
+        
+        /* Subtle Inner Animated Gradient for Depth */
+        .content-wrapper::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* Dynamic Border Glow */
+        .content-wrapper::before { content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; border-radius: 20px; padding: 1px; background: linear-gradient(45deg, transparent, var(--gold-main), transparent, var(--gold-light), transparent); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; opacity: 0.8; animation: borderGlow 4s linear infinite; z-index: 10; }
+        @keyframes borderGlow { 0% { filter: hue-rotate(0deg) brightness(1); } 50% { filter: hue-rotate(15deg) brightness(1.3); } 100% { filter: hue-rotate(0deg) brightness(1); } }
+
+        .content-inner { position: relative; z-index: 2; width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+        .corner { position: absolute; width: 50px; height: 50px; border: 1.5px solid var(--gold-main); opacity: 0.8; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+        .corner-tl { top: 25px; left: 25px; border-right: none; border-bottom: none; border-top-left-radius: 10px; }
+        .corner-tr { top: 25px; right: 25px; border-left: none; border-bottom: none; border-top-right-radius: 10px; }
+        .corner-bl { bottom: 25px; left: 25px; border-right: none; border-top: none; border-bottom-left-radius: 10px; }
+        .corner-br { bottom: 25px; right: 25px; border-left: none; border-top: none; border-bottom-right-radius: 10px; }
+
+        .monogram { font-family: 'Great Vibes', cursive; font-size: 2.8rem; margin-bottom: 25px; animation: floatIcon 4s ease-in-out infinite; filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.4)); }
+        .monogram span { font-size: 1.6rem; color: #ff3b3b; vertical-align: middle; margin: 0 8px; animation: heartbeat 1.5s infinite; display: inline-block; filter: drop-shadow(0 0 12px rgba(255, 59, 59, 0.7));}
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.25); } 60% { transform: scale(1); } }
+        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        .bismillah { font-family: 'Aref Ruqaa', serif; font-size: clamp(2.8rem, 9vw, 4rem); filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8)); margin-bottom: 25px; }
+        .romantic-quote { font-family: 'Cinzel', serif; font-size: 0.95rem; color: #f0f0f0; font-style: italic; margin-bottom: 30px; line-height: 1.8; opacity: 0.9; text-shadow: 0 2px 5px rgba(0,0,0,0.9); }
+        .intro-text { font-family: 'Cinzel', serif; font-size: 0.95rem; letter-spacing: 5px; color: var(--gold-light); text-transform: uppercase; margin-bottom: 35px; opacity: 0.95; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.8);}
+        
+        .names-main { font-family: 'Great Vibes', cursive; font-size: clamp(5rem, 16vw, 7.5rem); line-height: 1.1; margin: 5px 0; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.9)); padding: 0 15px; }
+        
+        .ampersand { font-family: 'Amiri', serif; font-size: 3.5rem; color: #ff3b3b; margin: -10px 0; text-shadow: 0 0 25px rgba(255, 59, 59, 0.6); animation: heartbeat 2s infinite; }
+        .divider { width: 2px; height: 70px; background: var(--gold-gradient-vert); margin: 40px auto; opacity: 0.9; position: relative; overflow: hidden; }
+        .divider::after { content:''; position:absolute; top:-50%; left:0; width:100%; height:50%; background:#fff; box-shadow:0 0 20px 3px #fff; animation: dropLine 2s infinite ease-in-out; }
+        @keyframes dropLine { 0% { top: -50%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .diamond { width: 12px; height: 12px; background: var(--gold-main); transform: rotate(45deg); margin: 0 auto 40px auto; box-shadow: 0 0 20px var(--gold-light); }
+        
+        .invite-para { color: #e0e0e0; font-size: 1.15rem; line-height: 2; max-width: 90%; font-weight: 300; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        .hindi-latin { color: var(--gold-light); font-size: 1.05rem; font-style: normal; font-weight: 300; margin-top: 15px; opacity: 0.95; }
+
+        /* --- 🎁 SCRATCH CARD (Enhanced Textures & Glow) --- */
+        .scratch-title { font-family: 'Cinzel', serif; letter-spacing: 5px; margin-bottom: 25px; font-size: 1.15rem; text-transform: uppercase; font-weight: 700; text-shadow: 0 3px 6px rgba(0,0,0,0.9); }
+        .scratch-wrapper { padding: 4px; background: var(--gold-gradient); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); animation: floatIcon 5s ease-in-out infinite alternate; }
+        .scratch-container { position: relative; width: 320px; height: 130px; margin: 0 auto; border-radius: 16px; background: radial-gradient(circle, #032819 0%, #010a06 100%); overflow: hidden; touch-action: none; box-shadow: inset 0 0 40px rgba(212,175,55, 0.3); }
+        
+        /* Inner glowing date */
+        .hidden-date { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
+        .hidden-date h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; margin: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,1)); animation: pulseText 2s infinite alternate; }
+        @keyframes pulseText { 0% { text-shadow: 0 0 15px rgba(255,223,115, 0.4); } 100% { text-shadow: 0 0 30px rgba(255,223,115, 0.9); } }
+        .hidden-date p { color: #fff; font-size: 0.95rem; letter-spacing: 5px; text-transform: uppercase; margin-top: 5px; opacity: 0.95; text-shadow: 0 0 10px rgba(255,255,255,0.5);}
+        
+        #scratchCanvas { position: absolute; top: 0; left: 0; width: 320px; height: 130px; z-index: 5; cursor: crosshair; touch-action: none; }
+        .scratch-hint { color: var(--gold-main); font-size: 0.9rem; margin-top: 20px; letter-spacing: 1.5px; font-weight: 400; opacity: 0.9; font-style: italic; }
+
+        /* --- LOCATION BOX --- */
+        .location-box { background: rgba(1, 10, 6, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 35px 20px; margin: 10px auto 25px auto; width: 95%; max-width: 380px; box-shadow: inset 0 2px 25px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.8); position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; cursor: default;}
+        .location-box:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 25px 50px rgba(212, 175, 55, 0.3); }
+        .location-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent); z-index: 1; pointer-events: none; }
+        .location-icon { width: 45px; height: 45px; margin: 0 auto 18px auto; display: block; animation: floatIcon 3.5s ease-in-out infinite; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.9)); }
+        .location-box h3 { font-family: 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 12px; text-transform: uppercase; text-shadow: 0 2px 5px rgba(0,0,0,0.9); }
+        .location-box p { color: #e0e0e0; font-size: 0.95rem; font-weight: 300; line-height: 1.7; }
+
+        /* --- ⏳ COUNTDOWN --- */
+        .countdown-wrapper { display: flex; gap: 18px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+        .time-box { position: relative; width: 80px; height: 90px; background: rgba(1, 10, 6, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 2px 25px rgba(255,255,255,0.08), 0 15px 35px rgba(0,0,0,0.8); overflow: hidden; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .time-box:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 20px 40px rgba(212, 175, 55, 0.4); }
+        .time-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 45%; background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent); z-index: 1; pointer-events: none; }
+        .time-box span { font-family: 'Cinzel', serif; font-size: 2.4rem; font-weight: 700; line-height: 1; z-index: 2; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.9)); }
+        .time-box p { font-size: 0.7rem; color: #e0e0e0; text-transform: uppercase; letter-spacing: 2px; margin-top: 8px; z-index: 2; font-weight: 600;}
+
+        .outro-quote { font-style: italic; color: var(--gold-main); margin-top: 70px; font-family: 'Cinzel', serif; font-size: 1.15rem; line-height: 1.9; opacity: 0.95; text-shadow: 0 3px 6px rgba(0,0,0,0.9); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--gold-main); border-radius: 10px; }
+        
+        .gs-reveal { opacity: 0; visibility: hidden; }
+
+        /* PERFORMANCE: Reduce Blur for Mobile Devices */
+        @media (max-width: 768px) {
+            #doorWrapper { filter: blur(3px) !important; }
+            #envWrapper { filter: blur(3px) !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="magicSound" src="https://actions.google.com/sounds/v1/magic/magic_chime.ogg" preload="auto"></audio>
+    <audio id="doorSound" src="https://actions.google.com/sounds/v1/doors/creaking_wooden_door.ogg" preload="auto"></audio>
+    <audio id="scratchSound" src="https://actions.google.com/sounds/v1/foley/sand_step.ogg" preload="auto"></audio>
+
+    <div class="ambient-glow"></div>
+    <div class="pattern-overlay"></div>
+    <div id="particles-bg"></div>
+    <div id="cinematic-flash"></div>
+
+    <!-- SEQUENCE 1: ENVELOPE -->
+    <div id="envelope-scene">
+        <div class="envelope-wrapper" id="envWrapper">
+            <div class="envelope">
+                <div class="env-paper" id="envPaper">
+                    <div class="env-paper-names shimmer-text">Abdullah & Aqsa</div>
+                    <div class="env-paper-valima">Valima Reception</div>
+                </div>
+                <div class="env-flap env-bottom"></div>
+                <div class="env-flap env-left"></div>
+                <div class="env-flap env-right"></div>
+                <div class="env-flap env-top" id="envTopFlap"></div>
+                
+                <div class="royal-seal interactive-seal" id="royalSealEnv" onmousedown="triggerHaptic('light')" ontouchstart="triggerHaptic('light')" onclick="startEnvelopeToDoorSequence()">
+                    <div class="seal-ring"></div>
+                    <span>OPEN</span><small>Tap Here</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEQUENCE 2: PALACE DOORS -->
+    <div id="door-scene">
+        <div class="door-rays"></div>
+        <div class="door-glow"></div>
+        <div class="door-wrapper" id="doorWrapper">
+            <div class="door door-left" id="doorLeft"><div class="door-panel"></div><div class="door-panel"></div></div>
+            <div class="door door-right" id="doorRight"><div class="door-panel"></div><div class="door-panel"></div></div>
+            <div class="royal-seal interactive-seal" id="royalSealDoor" onmousedown="triggerHaptic('light')" ontouchstart="triggerHaptic('light')" onclick="startDoorToCardSequence()">
+                <div class="seal-ring"></div>
+                <span>ENTER</span><small>Tap to Open</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEQUENCE 3: VALIMA INVITATION CONTENT -->
+    <div id="main-invite">
+        <div class="card-container" id="invite-card">
+            <div class="content-wrapper">
+              <div class="content-inner">
+                
+                <div class="corner corner-tl gs-reveal"></div>
+                <div class="corner corner-tr gs-reveal"></div>
+                <div class="corner corner-bl gs-reveal"></div>
+                <div class="corner corner-br gs-reveal"></div>
+
+                <div class="monogram gs-reveal shimmer-text">A <span>❤️</span> A</div>
+                <div class="bismillah gs-reveal shimmer-text" dir="rtl">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+                
+                <div class="romantic-quote gs-reveal">
+                    "And He has placed between you affection and mercy."<br>
+                    <span style="font-size: 0.8rem; color: var(--gold-dark); letter-spacing: 2px;">— Surah Ar-Rum [30:21]</span>
+                </div>
+
+                <div class="intro-text gs-reveal">Together with their families</div>
+                
+                <div class="names-main gs-reveal shimmer-text">Abdullah</div>
+                <div class="ampersand gs-reveal">&</div>
+                <div class="names-main gs-reveal shimmer-text">Aqsa</div>
+                
+                <div class="divider gs-reveal"></div>
+                <div class="diamond gs-reveal"></div>
+                
+                <p class="invite-para gs-reveal">
+                    With hearts full of gratitude to Allah (SWT), we joyfully request the honor of your presence at their grand <strong>Valima Reception</strong>.
+                </p>
+                <p class="hindi-latin gs-reveal">
+                    Your presence and heartfelt prayers will make this beautiful Sunnah truly complete.
+                </p>
+                
+                <div class="divider gs-reveal"></div>
+                <div class="diamond gs-reveal"></div>
+
+                <div class="scratch-title gs-reveal shimmer-text">Reveal The Big Day</div>
+                
+                <div class="scratch-wrapper gs-reveal">
+                    <div class="scratch-container">
+                        <div class="hidden-date">
+                            <h2 class="shimmer-text">July 19, 2026</h2>
+                            <p>Sunday</p>
+                        </div>
+                        <canvas id="scratchCanvas" width="320" height="130"></canvas>
+                    </div>
+                </div>
+                <p class="scratch-hint gs-reveal" id="scratch-hint">✨ Gently scratch the gold surface to reveal ✨</p>
+                
+                <div class="divider gs-reveal"></div>
+                <div class="diamond gs-reveal"></div>
+
+                <div class="scratch-title gs-reveal shimmer-text">The Grand Venue</div>
+                <div class="location-box gs-reveal">
+                    <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="url(#gold-grad-svg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <defs><linearGradient id="gold-grad-svg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4AF37" /><stop offset="50%" stop-color="#FFDF73" /><stop offset="100%" stop-color="#8A6D1C" /></linearGradient></defs>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <h3 class="shimmer-text">To Be Revealed</h3>
+                    <p>The details of our royal venue are being finalized and will be shared with you soon.</p>
+                </div>
+
+                <div class="divider gs-reveal"></div>
+
+                <div class="scratch-title gs-reveal shimmer-text" style="margin-top: 10px;">Time Until Forever</div>
+                <div class="countdown-wrapper gs-reveal" id="countdown-container">
+                    <div class="time-box"><span id="days" class="shimmer-text">00</span><p>Days</p></div>
+                    <div class="time-box"><span id="hours" class="shimmer-text">00</span><p>Hours</p></div>
+                    <div class="time-box"><span id="mins" class="shimmer-text">00</span><p>Mins</p></div>
+                    <div class="time-box"><span id="secs" class="shimmer-text">00</span><p>Secs</p></div>
+                </div>
+
+                <p class="outro-quote gs-reveal">
+                    "Dua mein yaad rakhein.<br>Together in dunya, together in Jannah, Insha'Allah."
+                </p>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 🚀 PERFORMANCE OPTIMIZATION ---
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.config({ force3D: true }); 
+
+        const magicSound = document.getElementById('magicSound');
+        const doorSound = document.getElementById('doorSound');
+        const scratchSound = document.getElementById('scratchSound');
+
+        function triggerHaptic(type = "light") {
+            if (navigator.vibrate) navigator.vibrate(type === "heavy" ? [40, 20, 40] : 15);
+        }
+
+        // --- 1. S-TIER DEPTH PARTICLES ---
+        tsParticles.load("particles-bg", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 45, density: { enable: true, value_area: 900 } },
+                color: { value: ["#D4AF37", "#FFDF73", "#ff4d4d", "#ffffff"] },
+                shape: { type: ["circle", "char"], character: { value: ["✨", "❤️", "💖", "✧"], font: "Verdana", weight: "400" } },
+                opacity: { value: { min: 0.1, max: 0.9 }, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+                size: { value: { min: 0.5, max: 4.5 }, random: true, anim: { enable: true, speed: 2, size_min: 0.5, sync: false } }, // Adds visual depth
+                move: { enable: true, speed: 0.6, direction: "top", random: true, straight: false, outModes: "out" }
+            },
+            interactivity: { events: { onHover: { enable: true, mode: "bubble" } }, modes: { bubble: { size: 6, distance: 150, duration: 2, opacity: 1 } } }
+        });
+
+        // --- 2. HIGH-END SCRATCH CARD ---
+        function initScratchCard() {
+            const canvas = document.getElementById('scratchCanvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            
+            // Richer metallic foil gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#B48123'); gradient.addColorStop(0.3, '#FDF7C3'); gradient.addColorStop(0.5, '#D4AF37'); gradient.addColorStop(0.7, '#FCF6BA'); gradient.addColorStop(1, '#8A6D1C');
+            ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Refined noise texture
+            ctx.fillStyle = "rgba(0,0,0,0.18)";
+            for(let i=0; i<4000; i++) ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 1.5, 1.5);
+            ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 2; ctx.strokeRect(6, 6, canvas.width-12, canvas.height-12);
+
+            ctx.font = '700 22px Cinzel'; ctx.fillStyle = '#1a1202'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.shadowColor = "rgba(255,255,255,0.8)"; ctx.shadowBlur = 10;
+            ctx.fillText('Scratch To Reveal', canvas.width/2, canvas.height/2); ctx.shadowBlur = 0;
+
+            let isDrawing = false, isRevealed = false, lastCheckTime = 0;
+            ctx.globalCompositeOperation = 'destination-out'; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = 55; ctx.shadowBlur = 15; ctx.shadowColor = "#000";
+
+            function getMousePos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function scratchStart(e) { if(isRevealed) return; isDrawing = true; const p = getMousePos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+            
+            function scratchMove(e) {
+                if(!isDrawing || isRevealed) return; e.preventDefault();
+                const p = getMousePos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+                
+                // Enhanced Foil Dust
+                if(Math.random() > 0.6) {
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    confetti({ particleCount: 3, spread: 35, origin: { x: clientX/window.innerWidth, y: clientY/window.innerHeight }, colors: ['#D4AF37', '#FFDF73', '#FFFFFF'], ticks: 25, zIndex: 100, disableForReducedMotion: true, shapes: ['square', 'circle'], gravity: 1.5, scalar: 0.7 });
+                    try { if(scratchSound.paused) { scratchSound.currentTime = 0; scratchSound.play().catch(()=>{}); } } catch(err){}
+                }
+                
+                const now = Date.now(); if (now - lastCheckTime > 100) { lastCheckTime = now; requestAnimationFrame(checkReveal); }
+            }
+            function scratchEnd() { isDrawing = false; try { scratchSound.pause(); } catch(err){} }
+
+            canvas.addEventListener('mousedown', scratchStart); canvas.addEventListener('mousemove', scratchMove); window.addEventListener('mouseup', scratchEnd);
+            canvas.addEventListener('touchstart', scratchStart, {passive: false}); canvas.addEventListener('touchmove', scratchMove, {passive: false}); window.addEventListener('touchend', scratchEnd);
+
+            function checkReveal() {
+                const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                let transparentPixels = 0; let totalPixelsChecked = 0;
+                
+                for(let i=3; i<pixels.length; i+=32) { if(pixels[i] < 128) transparentPixels++; totalPixelsChecked++; }
+                
+                if((transparentPixels / totalPixelsChecked) * 100 > 45 && !isRevealed) {
+                    isRevealed = true; triggerHaptic("heavy");
+                    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#D4AF37', '#FFDF73', '#ffffff'], zIndex: 1000, startVelocity: 45 });
+                    try { magicSound.currentTime = 0; magicSound.play().catch(()=>{}); } catch(e){}
+                    document.getElementById('scratch-hint').innerHTML = "❤️ Date Revealed ❤️";
+                    gsap.to(canvas, { opacity: 0, duration: 0.5, onComplete: () => canvas.style.display = 'none' });
+                }
+            }
+        }
+
+        // --- 3. CONTINUOUS FLOW SCROLL FIX ---
+        function initScrollAnimations() {
+            ScrollTrigger.defaults({ scroller: "#main-invite" });
+            
+            document.querySelectorAll(".gs-reveal").forEach((el) => {
+                gsap.fromTo(el, 
+                    { y: 40, opacity: 0, scale: 0.96 }, 
+                    { 
+                        y: 0, opacity: 1, scale: 1, duration: 1.2, ease: "expo.out", autoAlpha: 1,
+                        scrollTrigger: { trigger: el, start: "top 95%", once: true } 
+                    }
+                );
+            });
+
+            // Parallax Depth
+            gsap.to("#invite-card", { yPercent: 4, ease: "none", scrollTrigger: { trigger: "#main-invite", scroller: "#main-invite", scrub: true, start: "top top", end: "bottom bottom" } });
+        }
+
+        // --- 4. CINEMATIC OVERLAPPING FLOW ---
+
+        // Envelope -> Doors
+        function startEnvelopeToDoorSequence() {
+            const tl = gsap.timeline();
+
+            tl.to("#royalSealEnv", { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" })
+              .addLabel("flapOpen", "+=0.2") 
+              .call(() => { try { magicSound.volume = 0.8; magicSound.play().catch(e=>{}); } catch(e){} }, null, "flapOpen")
+              
+              // 1. Open the flap smoothly
+              .to("#envTopFlap", { rotateX: 180, duration: 1.0, ease: "power3.inOut" }, "flapOpen")
+              
+              // 2. Slide the invitation card out further so names are clearly visible
+              .to("#envPaper", { y: -85, duration: 1.2, ease: "power2.inOut" }, "flapOpen+=0.3")
+              
+              .set("#door-scene", { display: "flex", scale: 0.4, opacity: 0, zIndex: 300 })
+              
+              // 3. EXACT SYNC: Start transition exactly when card finishes sliding up (0.3s start + 1.2s duration = 1.5s)
+              .addLabel("zoomToDoors", "flapOpen+=1.5") 
+              
+              // 4. Zoom past the envelope and fade into the doors seamlessly
+              .to("#envWrapper", { scale: 4.5, opacity: 0, filter: "blur(8px)", y: 350, duration: 1.4, ease: "power3.inOut" }, "zoomToDoors")
+              .to("#door-scene", { scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" }, "zoomToDoors")
+              .set("#envelope-scene", { display: "none" });
+        }
+
+        // Doors -> Card
+        function startDoorToCardSequence() {
+            document.getElementById('main-invite').style.display = 'block';
+            initScratchCard();
+
+            const tl = gsap.timeline({ onComplete: initScrollAnimations });
+
+            tl.to("#royalSealDoor", { scale: 0, opacity: 0, duration: 0.25, ease: "back.in(2)" })
+              .addLabel("doorOpen", "+=0.4") 
+              
+              .call(() => { try { doorSound.volume = 0.8; doorSound.currentTime = 0; doorSound.play().catch(e=>{}); } catch(e){} }, null, "doorOpen")
+              
+              // Light Bloom & Rays Burst
+              .to(".door-glow", { opacity: 1, scale: 3, duration: 1.5, ease: "power2.out" }, "doorOpen")
+              .to(".door-rays", { opacity: 1, scale: 2, duration: 1.5, ease: "power2.out" }, "doorOpen") 
+              
+              // Door Swing
+              .to("#doorLeft", { rotateY: -115, duration: 1.6, ease: "expo.inOut" }, "doorOpen")
+              .to("#doorRight", { rotateY: 115, duration: 1.6, ease: "expo.inOut" }, "doorOpen")
+              
+              // Camera push-through (Minimal Blur)
+              .to("#doorWrapper", { scale: 2.8, opacity: 0, filter: "blur(4px)", duration: 1.4, ease: "power2.inOut" }, "doorOpen+=0.3")
+              .call(() => { confetti({ particleCount: 150, spread: 120, origin: { y: 0.5 }, colors: ['#D4AF37', '#ffffff'], zIndex: 1000 }); }, null, "doorOpen+=0.5")
+              
+              .to("#cinematic-flash", { opacity: 0.9, duration: 0.5 }, "doorOpen+=0.8")
+              .set("#door-scene", { display: "none" }, "doorOpen+=1.2")
+              
+              // Overlapping Content Reveal
+              .to("#main-invite", { opacity: 1, duration: 0.1 }, "doorOpen+=1.0") 
+              .to("#cinematic-flash", { opacity: 0, duration: 1.2 }, "doorOpen+=1.2")
+              
+              .fromTo(".card-container", { scale: 0.88, y: 30, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 1.8, ease: "expo.out" }, "doorOpen+=0.9")
+              
+              // Instant appearance of primary details
+              .fromTo(".gs-reveal:nth-child(-n+6)", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.0, stagger: 0.1, ease: "power2.out" }, "doorOpen+=1.1")
+              
+              .call(() => { gsap.to(doorSound, { volume: 0, duration: 1, onComplete: () => doorSound.pause() }); }, null, "doorOpen+=1.0");
+        }
+
+        // --- 5. TIMER ---
+        const countDownDate = new Date("2026-07-19T19:00:00").getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime(); const distance = countDownDate - now;
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.getElementById("countdown-container").innerHTML = "<div style='font-family: Cinzel, serif; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.6rem; padding: 25px 0; font-weight: 700; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.9));'>Alhamdulillah, The Day is Here! ❤️</div>";
+                return;
+            }
+            document.getElementById("days").innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("hours").innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("mins").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("secs").innerHTML = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
+        updateTimer(); const timerInterval = setInterval(updateTimer, 1000);
+
+    </script>
+</body>
+</html>
