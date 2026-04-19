@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Abdullah & Aqsa | Royal Valima</title>
 
-    <!-- Social Media & WhatsApp Preview Tags (Open Graph) -->
+    <!-- PERFECTED Social Media Preview Tags (Forces Full-Width Image Above Link) -->
     <meta property="og:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
     <meta property="og:description" content="With hearts full of gratitude, we invite you to celebrate our Valima Reception. Tap to open the royal invitation!" />
+    <!-- Ensure your uploaded image is ideally 1200x630 pixels for the perfect full-width banner -->
     <meta property="og:image" content="https://raw.githubusercontent.com/SenoRrA/valima-invite/main/envelope-preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content="https://your-username.github.io/valima-invite/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Royal Valima Invite" />
 
-    <!-- Twitter / Large Card Preview (Forces large image on WhatsApp/Telegram/Twitter) -->
+    <!-- Twitter / Large Card Preview (Required to force large images on many platforms) -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
     <meta name="twitter:description" content="With hearts full of gratitude, we invite you to celebrate our Valima Reception. Tap to open the royal invitation!" />
@@ -66,6 +69,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, var(--emerald-glow) 0%, var(--bg-dark) 80%);
             z-index: 0; animation: breathe 8s infinite alternate ease-in-out;
+            transform: translateZ(0);
         }
         @keyframes breathe { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.15); opacity: 0.95; } }
 
@@ -82,12 +86,10 @@
             background-size: 200% auto;
             color: transparent;
             -webkit-background-clip: text;
-            background-clip: text;
             animation: shine 4s linear infinite;
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* --- MICRO-INTERACTIONS --- */
         .interactive-seal {
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
             cursor: pointer; -webkit-tap-highlight-color: transparent;
@@ -107,21 +109,9 @@
             display: flex; justify-content: center; align-items: center; background: rgba(1, 8, 5, 0.92);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
-        .envelope-wrapper { 
-            position: relative; width: 340px; height: 230px; transform-style: preserve-3d; 
-            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8)); 
-        }
-        .envelope { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #010f08; 
-            border-radius: 8px; transform-style: preserve-3d; border: 1px solid var(--gold-dark); 
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.95); 
-        }
-        .env-paper { 
-            position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; background: var(--glass-bg); 
-            border: 1px solid var(--gold-main); border-radius: 6px; z-index: 2; display: flex; flex-direction: column; 
-            align-items: center; padding-top: 35px; box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.6); 
-            transform: translateZ(1px);
-        }
+        .envelope-wrapper { position: relative; width: 340px; height: 230px; transform-style: preserve-3d; filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8)); }
+        .envelope { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #010f08; border-radius: 8px; transform-style: preserve-3d; border: 1px solid var(--gold-dark); box-shadow: inset 0 0 60px rgba(0,0,0,0.95); }
+        .env-paper { position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; background: var(--glass-bg); border: 1px solid var(--gold-main); border-radius: 6px; z-index: 2; display: flex; flex-direction: column; align-items: center; padding-top: 35px; box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 10px 25px rgba(0,0,0,0.6); transform: translateZ(1px); }
         .env-paper-names { font-family: 'Great Vibes', cursive; font-size: 2.2rem; text-shadow: 0 3px 6px rgba(0,0,0,0.9); }
         .env-paper-valima { font-family: 'Cinzel', serif; color: var(--gold-main); font-size: 0.65rem; letter-spacing: 4px; margin-top: 8px; text-transform: uppercase; }
         
@@ -129,19 +119,10 @@
         .env-bottom { z-index: 4; background: linear-gradient(to top, #01140d, #022015); clip-path: polygon(0 100%, 100% 100%, 50% 45%); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
         .env-left { z-index: 4; background: linear-gradient(to right, #010f0a, #021a11); clip-path: polygon(0 0, 52% 52%, 0 100%); border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
         .env-right { z-index: 4; background: linear-gradient(to left, #010f0a, #021a11); clip-path: polygon(100% 0, 100% 100%, 48% 52%); border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
-        .env-top { 
-            z-index: 5; background: linear-gradient(to bottom, #021f15, #032e1f); clip-path: polygon(0 0, 100% 0, 50% 55%); 
-            transform-origin: top center; transform-style: preserve-3d; border-top-left-radius: 8px; border-top-right-radius: 8px; 
-            border-top: 2px solid var(--gold-dark); transform: translateZ(3px); filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); 
-        }
+        .env-top { z-index: 5; background: linear-gradient(to bottom, #021f15, #032e1f); clip-path: polygon(0 0, 100% 0, 50% 55%); transform-origin: top center; transform-style: preserve-3d; border-top-left-radius: 8px; border-top-right-radius: 8px; border-top: 2px solid var(--gold-dark); transform: translateZ(3px); filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); }
         .env-flap::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--gold-gradient); opacity: 0.15; mix-blend-mode: color-dodge; pointer-events: none; }
 
-        .royal-seal { 
-            position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%) translateZ(5px); 
-            width: 105px; height: 105px; background: var(--gold-gradient); border-radius: 50%; z-index: 10; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.9), inset 0 3px 8px rgba(255,255,255,0.8), inset 0 -6px 20px rgba(138, 109, 28, 0.9); 
-        }
+        .royal-seal { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%) translateZ(5px); width: 105px; height: 105px; background: var(--gold-gradient); border-radius: 50%; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 15px 30px rgba(0,0,0,0.9), inset 0 3px 8px rgba(255,255,255,0.8), inset 0 -6px 20px rgba(138, 109, 28, 0.9); }
         .royal-seal::before { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 2px dashed rgba(0,0,0,0.5); border-radius: 50%; }
         .seal-ring { position: absolute; top: -12px; left: -12px; right: -12px; bottom: -12px; border: 2px solid var(--gold-main); border-radius: 50%; animation: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
         @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); } 100% { transform: scale(1.35); opacity: 0; box-shadow: 0 0 50px rgba(212, 175, 55, 0); } }
@@ -154,6 +135,7 @@
             display: none; justify-content: center; align-items: center; opacity: 0; transform: scale(0.6);
         }
         
+        /* Advanced Cinematic Light Burst */
         .door-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 100vh; background: #fff; box-shadow: 0 0 150px 80px rgba(255, 223, 115, 0.9), 0 0 250px 150px rgba(255, 255, 255, 0.8); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
         .door-rays { position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vw; background: repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(255, 223, 115, 0.2) 10deg 20deg); transform: translate(-50%, -50%) scale(0); opacity: 0; z-index: 0; pointer-events: none; animation: spin 25s linear infinite; mix-blend-mode: screen; }
         @keyframes spin { 100% { transform: translate(-50%, -50%) scale(2.5) rotate(360deg); } }
@@ -168,41 +150,80 @@
         #royalSealDoor { width: 140px; height: 140px; } #royalSealDoor span { font-size: 1.4rem; }
         #cinematic-flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ffffff 0%, transparent 100%); opacity: 0; z-index: 90; pointer-events: none; mix-blend-mode: screen; }
 
-        /* --- 📜 SCREEN 3: INVITATION CONTENT --- */
+        /* --- 📜 SCREEN 3: INVITATION CONTENT (UPGRADED) --- */
         #main-invite {
             position: relative; width: 100%; height: 100%; z-index: 50; overflow-y: auto; overflow-x: hidden;
             display: none; opacity: 0; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
             transform: translateZ(0); 
         }
 
-        .card-container { max-width: 560px; margin: 50px auto 120px auto; padding: 20px; position: relative; z-index: 2; transform: translateZ(0); }
+        .card-container { max-width: 600px; margin: 40px auto 120px auto; padding: 20px; position: relative; z-index: 2; transform: translateZ(0); }
         
         .content-wrapper { 
             background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid var(--glass-border); border-radius: 20px; padding: 70px 30px 90px 30px; 
+            border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 20px; padding: 80px 30px 100px 30px; 
             display: flex; flex-direction: column; align-items: center; text-align: center; 
             box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 1px 3px rgba(255,255,255,0.2), inset 0 0 60px rgba(2, 20, 13, 0.8); 
             position: relative; overflow: hidden;
         }
+
+        /* Beautiful Floral Watermark Embedded in Paper */
+        .floral-watermark {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60,10 Q75,45 110,60 Q75,75 60,110 Q45,75 10,60 Q45,45 60,10 Z' fill='%23d4af37' fill-opacity='0.04'/%3E%3Cpath d='M60,25 Q70,45 95,60 Q70,75 60,95 Q50,75 25,60 Q50,45 60,25 Z' fill='%23d4af37' fill-opacity='0.06'/%3E%3C/svg%3E");
+            background-size: 140px 140px; background-position: center; z-index: 0; pointer-events: none;
+        }
         
-        /* Subtle Inner Animated Gradient for Depth */
-        .content-wrapper::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
-            pointer-events: none; z-index: 0;
+        /* Inner Golden Double Border Frame */
+        .content-wrapper::before { 
+            content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; 
+            border: 2px solid rgba(212, 175, 55, 0.35); border-radius: 12px; pointer-events: none; z-index: 1; 
+        }
+        .content-wrapper::after { 
+            content: ''; position: absolute; top: 18px; left: 18px; right: 18px; bottom: 18px; 
+            border: 1px dashed rgba(212, 175, 55, 0.25); border-radius: 8px; pointer-events: none; z-index: 1; 
         }
 
-        /* Dynamic Border Glow */
-        .content-wrapper::before { content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; border-radius: 20px; padding: 1px; background: linear-gradient(45deg, transparent, var(--gold-main), transparent, var(--gold-light), transparent); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; opacity: 0.8; animation: borderGlow 4s linear infinite; z-index: 10; }
-        @keyframes borderGlow { 0% { filter: hue-rotate(0deg) brightness(1); } 50% { filter: hue-rotate(15deg) brightness(1.3); } 100% { filter: hue-rotate(0deg) brightness(1); } }
+        /* --- STUNNING FLORAL CORNERS --- */
+        .floral-corner { position: absolute; width: 130px; height: 130px; z-index: 2; pointer-events: none; }
+        .floral-corner-tl { top: 8px; left: 8px; }
+        .floral-corner-tr { top: 8px; right: 8px; transform: scaleX(-1); }
+        .floral-corner-bl { bottom: 8px; left: 8px; transform: scaleY(-1); }
+        .floral-corner-br { bottom: 8px; right: 8px; transform: scale(-1, -1); }
+        
+        /* --- BEAUTIFUL PRECIOUS GEMS --- */
+        .gem { position: absolute; z-index: 10; animation: sparkleGem 3s infinite alternate ease-in-out; }
+        
+        .ruby { 
+            width: 16px; height: 16px; background: radial-gradient(circle at 30% 30%, #ff8a8a 0%, #d30000 40%, #4a0000 100%); 
+            transform: rotate(45deg); border-radius: 2px; 
+            box-shadow: inset 2px 2px 3px rgba(255,255,255,0.6), inset -2px -2px 5px rgba(0,0,0,0.8), 0 5px 10px rgba(0,0,0,0.7); 
+        }
+        .pearl { 
+            width: 14px; height: 14px; border-radius: 50%; 
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fdf5e6 30%, #c4b28c 80%, #8a7b58 100%); 
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5), inset 2px 2px 4px rgba(255,255,255,0.9), 0 4px 8px rgba(0,0,0,0.6); 
+        }
+        .diamond { 
+            width: 15px; height: 15px; transform: rotate(45deg);
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #c2e9fb 40%, #5bbce4 100%);
+            border: 1px solid rgba(255,255,255,0.7); border-radius: 1px;
+            box-shadow: inset 2px 2px 4px rgba(255,255,255,0.9), inset -2px -2px 4px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.6);
+        }
 
-        .content-inner { position: relative; z-index: 2; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        @keyframes sparkleGem {
+            0% { filter: brightness(1) drop-shadow(0 0 2px rgba(255,255,255,0.2)); transform: scale(1) rotate(45deg); }
+            50% { filter: brightness(1.3) drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)); transform: scale(1.05) rotate(45deg); }
+            100% { filter: brightness(1) drop-shadow(0 0 2px rgba(255,255,255,0.2)); transform: scale(1) rotate(45deg); }
+        }
+        .pearl { animation: sparklePearl 4s infinite alternate ease-in-out; }
+        @keyframes sparklePearl {
+            0% { filter: brightness(1); transform: scale(1); }
+            50% { filter: brightness(1.15); transform: scale(1.03); }
+            100% { filter: brightness(1); transform: scale(1); }
+        }
 
-        .corner { position: absolute; width: 50px; height: 50px; border: 1.5px solid var(--gold-main); opacity: 0.8; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
-        .corner-tl { top: 25px; left: 25px; border-right: none; border-bottom: none; border-top-left-radius: 10px; }
-        .corner-tr { top: 25px; right: 25px; border-left: none; border-bottom: none; border-top-right-radius: 10px; }
-        .corner-bl { bottom: 25px; left: 25px; border-right: none; border-top: none; border-bottom-left-radius: 10px; }
-        .corner-br { bottom: 25px; right: 25px; border-left: none; border-top: none; border-bottom-right-radius: 10px; }
+        .content-inner { position: relative; z-index: 5; width: 100%; display: flex; flex-direction: column; align-items: center; }
 
         .monogram { font-family: 'Great Vibes', cursive; font-size: 2.8rem; margin-bottom: 25px; animation: floatIcon 4s ease-in-out infinite; filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.4)); }
         .monogram span { font-size: 1.6rem; color: #ff3b3b; vertical-align: middle; margin: 0 8px; animation: heartbeat 1.5s infinite; display: inline-block; filter: drop-shadow(0 0 12px rgba(255, 59, 59, 0.7));}
@@ -219,7 +240,6 @@
         .divider { width: 2px; height: 70px; background: var(--gold-gradient-vert); margin: 40px auto; opacity: 0.9; position: relative; overflow: hidden; }
         .divider::after { content:''; position:absolute; top:-50%; left:0; width:100%; height:50%; background:#fff; box-shadow:0 0 20px 3px #fff; animation: dropLine 2s infinite ease-in-out; }
         @keyframes dropLine { 0% { top: -50%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
-        .diamond { width: 12px; height: 12px; background: var(--gold-main); transform: rotate(45deg); margin: 0 auto 40px auto; box-shadow: 0 0 20px var(--gold-light); }
         
         .invite-para { color: #e0e0e0; font-size: 1.15rem; line-height: 2; max-width: 90%; font-weight: 300; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         .hindi-latin { color: var(--gold-light); font-size: 1.05rem; font-style: normal; font-weight: 300; margin-top: 15px; opacity: 0.95; }
@@ -229,7 +249,6 @@
         .scratch-wrapper { padding: 4px; background: var(--gold-gradient); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); animation: floatIcon 5s ease-in-out infinite alternate; }
         .scratch-container { position: relative; width: 320px; height: 130px; margin: 0 auto; border-radius: 16px; background: radial-gradient(circle, #032819 0%, #010a06 100%); overflow: hidden; touch-action: none; box-shadow: inset 0 0 40px rgba(212,175,55, 0.3); }
         
-        /* Inner glowing date */
         .hidden-date { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
         .hidden-date h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; margin: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,1)); animation: pulseText 2s infinite alternate; }
         @keyframes pulseText { 0% { text-shadow: 0 0 15px rgba(255,223,115, 0.4); } 100% { text-shadow: 0 0 30px rgba(255,223,115, 0.9); } }
@@ -239,7 +258,7 @@
         .scratch-hint { color: var(--gold-main); font-size: 0.9rem; margin-top: 20px; letter-spacing: 1.5px; font-weight: 400; opacity: 0.9; font-style: italic; }
 
         /* --- LOCATION BOX --- */
-        .location-box { background: rgba(1, 10, 6, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 35px 20px; margin: 10px auto 25px auto; width: 95%; max-width: 380px; box-shadow: inset 0 2px 25px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.8); position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; cursor: default; }
+        .location-box { background: rgba(1, 10, 6, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 35px 20px; margin: 10px auto 25px auto; width: 95%; max-width: 380px; box-shadow: inset 0 2px 25px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.8); position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; cursor: default;}
         .location-box:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 25px 50px rgba(212, 175, 55, 0.3); }
         .location-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent); z-index: 1; pointer-events: none; }
         .location-icon { width: 45px; height: 45px; margin: 0 auto 18px auto; display: block; animation: floatIcon 3.5s ease-in-out infinite; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.9)); }
@@ -262,18 +281,6 @@
         
         .gs-reveal { opacity: 0; visibility: hidden; }
 
-        /* PERFORMANCE OPTIMIZATIONS FOR MOBILE */
-        @media (max-width: 768px) {
-            /* Reduce heavy background blurs safely without blurring the entire element */
-            #envelope-scene { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-            .content-wrapper { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-            .location-box { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-            .time-box { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-            
-            /* Smaller seal text adjustments for tiny screens */
-            .royal-seal { width: 95px; height: 95px; }
-            .royal-seal span { font-size: 1.0rem; }
-        }
     </style>
 </head>
 <body>
@@ -326,12 +333,79 @@
     <div id="main-invite">
         <div class="card-container" id="invite-card">
             <div class="content-wrapper">
+              <div class="floral-watermark"></div>
+              
+              <!-- STUNNING FLORAL CORNERS & EMBEDDED GEMS -->
+              <!-- Top Left Corner -->
+              <div class="floral-corner floral-corner-tl">
+                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                      <defs><linearGradient id="gold-grad-svg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4AF37" /><stop offset="50%" stop-color="#FFFDF2" /><stop offset="100%" stop-color="#8A6D1C" /></linearGradient></defs>
+                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
+                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                  </svg>
+                  <div class="gem ruby" style="top: 15px; left: 15px;"></div>
+                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 0.5s;"></div>
+                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 1.2s;"></div>
+                  <div class="gem diamond" style="top: 125px; left: 75px; animation-delay: 2s;"></div>
+              </div>
+
+              <!-- Top Right Corner -->
+              <div class="floral-corner floral-corner-tr">
+                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
+                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                  </svg>
+                  <!-- Gems inside scaled corner need reverse rotation fix so they look normal -->
+                  <div class="gem diamond" style="top: 15px; left: 15px; transform: rotate(-45deg);"></div>
+                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 0.8s;"></div>
+                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 1.5s;"></div>
+                  <div class="gem ruby" style="top: 125px; left: 75px; transform: rotate(-45deg); animation-delay: 0.3s;"></div>
+              </div>
+
+              <!-- Bottom Left Corner -->
+              <div class="floral-corner floral-corner-bl">
+                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
+                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                  </svg>
+                  <div class="gem diamond" style="top: 15px; left: 15px; transform: rotate(-45deg);"></div>
+                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 1.1s;"></div>
+                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 0.2s;"></div>
+                  <div class="gem ruby" style="top: 125px; left: 75px; transform: rotate(-45deg); animation-delay: 1.8s;"></div>
+              </div>
+
+              <!-- Bottom Right Corner -->
+              <div class="floral-corner floral-corner-br">
+                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
+                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
+                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                  </svg>
+                  <div class="gem ruby" style="top: 15px; left: 15px;"></div>
+                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 0.6s;"></div>
+                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 1.3s;"></div>
+                  <div class="gem diamond" style="top: 125px; left: 75px; animation-delay: 0.9s;"></div>
+              </div>
+              <!-- END FLORAL CORNERS -->
+
               <div class="content-inner">
                 
-                <div class="corner corner-tl gs-reveal"></div>
-                <div class="corner corner-tr gs-reveal"></div>
-                <div class="corner corner-bl gs-reveal"></div>
-                <div class="corner corner-br gs-reveal"></div>
+                <!-- Extra Scattered Floating Gems -->
+                <div class="gem pearl" style="top: 25%; left: 3%; animation-delay: 0.4s;"></div>
+                <div class="gem diamond" style="top: 45%; right: 5%; animation-delay: 1.5s;"></div>
+                <div class="gem ruby" style="top: 60%; left: 6%; animation-delay: 2.1s;"></div>
+                <div class="gem pearl" style="top: 80%; right: 4%; animation-delay: 0.9s;"></div>
 
                 <div class="monogram gs-reveal shimmer-text">A <span>❤️</span> A</div>
                 <div class="bismillah gs-reveal shimmer-text" dir="rtl">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
@@ -348,7 +422,7 @@
                 <div class="names-main gs-reveal shimmer-text">Aqsa</div>
                 
                 <div class="divider gs-reveal"></div>
-                <div class="diamond gs-reveal"></div>
+                <div class="gem diamond gs-reveal" style="position: relative; margin: 0 auto 40px auto; filter: none; box-shadow: 0 0 15px var(--gold-light);"></div>
                 
                 <p class="invite-para gs-reveal">
                     With hearts full of gratitude to Allah (SWT), we joyfully request the honor of your presence at their grand <strong>Valima Reception</strong>.
@@ -358,7 +432,7 @@
                 </p>
                 
                 <div class="divider gs-reveal"></div>
-                <div class="diamond gs-reveal"></div>
+                <div class="gem ruby gs-reveal" style="position: relative; margin: 0 auto 40px auto; filter: none; box-shadow: 0 0 15px #ff4d4d;"></div>
 
                 <div class="scratch-title gs-reveal shimmer-text">Reveal The Big Day</div>
                 
@@ -374,12 +448,10 @@
                 <p class="scratch-hint gs-reveal" id="scratch-hint">✨ Gently scratch the gold surface to reveal ✨</p>
                 
                 <div class="divider gs-reveal"></div>
-                <div class="diamond gs-reveal"></div>
 
                 <div class="scratch-title gs-reveal shimmer-text">The Grand Venue</div>
                 <div class="location-box gs-reveal">
                     <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="url(#gold-grad-svg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <defs><linearGradient id="gold-grad-svg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4AF37" /><stop offset="50%" stop-color="#FFDF73" /><stop offset="100%" stop-color="#8A6D1C" /></linearGradient></defs>
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                     </svg>
@@ -461,10 +533,17 @@
                 return { x: clientX - rect.left, y: clientY - rect.top };
             }
 
-            function scratchStart(e) { if(isRevealed) return; isDrawing = true; e.preventDefault(); const p = getMousePos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+            function scratchStart(e) { 
+                if(isRevealed) return; 
+                isDrawing = true; 
+                const p = getMousePos(e); 
+                ctx.beginPath(); 
+                ctx.moveTo(p.x, p.y); 
+            }
             
             function scratchMove(e) {
-                if(!isDrawing || isRevealed) return; e.preventDefault();
+                if(!isDrawing || isRevealed) return; 
+                e.preventDefault(); // Prevents screen scroll while scratching
                 const p = getMousePos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
                 
                 // Enhanced Foil Dust
@@ -518,33 +597,37 @@
 
         // --- 4. CINEMATIC OVERLAPPING FLOW ---
 
-        // Envelope -> Doors
+        let isAnimatingEnv = false;
         function startEnvelopeToDoorSequence() {
+            if(isAnimatingEnv) return;
+            isAnimatingEnv = true;
+            
+            document.getElementById("royalSealEnv").style.pointerEvents = "none";
+
             const tl = gsap.timeline();
 
             tl.to("#royalSealEnv", { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" })
               .addLabel("flapOpen", "+=0.2") 
               .call(() => { try { magicSound.volume = 0.8; magicSound.play().catch(e=>{}); } catch(e){} }, null, "flapOpen")
               
-              // 1. Open the flap smoothly
               .to("#envTopFlap", { rotateX: 180, duration: 1.0, ease: "power3.inOut" }, "flapOpen")
-              
-              // 2. Slide the invitation card out further so names are clearly visible
               .to("#envPaper", { y: -85, duration: 1.2, ease: "power2.inOut" }, "flapOpen+=0.3")
               
               .set("#door-scene", { display: "flex", scale: 0.4, opacity: 0, zIndex: 300 })
               
-              // 3. EXACT SYNC: Start transition exactly when card finishes sliding up (0.3s start + 1.2s duration = 1.5s)
               .addLabel("zoomToDoors", "flapOpen+=1.5") 
               
-              // 4. Zoom past the envelope and fade into the doors seamlessly
               .to("#envWrapper", { scale: 4.5, opacity: 0, filter: "blur(8px)", y: 350, duration: 1.4, ease: "power3.inOut" }, "zoomToDoors")
               .to("#door-scene", { scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" }, "zoomToDoors")
               .set("#envelope-scene", { display: "none" });
         }
 
-        // Doors -> Card
+        let isAnimatingDoor = false;
         function startDoorToCardSequence() {
+            if(isAnimatingDoor) return;
+            isAnimatingDoor = true;
+            
+            document.getElementById("royalSealDoor").style.pointerEvents = "none";
             document.getElementById('main-invite').style.display = 'block';
             initScratchCard();
 
@@ -555,28 +638,23 @@
               
               .call(() => { try { doorSound.volume = 0.8; doorSound.currentTime = 0; doorSound.play().catch(e=>{}); } catch(e){} }, null, "doorOpen")
               
-              // Light Bloom & Rays Burst
               .to(".door-glow", { opacity: 1, scale: 3, duration: 1.5, ease: "power2.out" }, "doorOpen")
               .to(".door-rays", { opacity: 1, scale: 2, duration: 1.5, ease: "power2.out" }, "doorOpen") 
               
-              // Door Swing
               .to("#doorLeft", { rotateY: -115, duration: 1.6, ease: "expo.inOut" }, "doorOpen")
               .to("#doorRight", { rotateY: 115, duration: 1.6, ease: "expo.inOut" }, "doorOpen")
               
-              // Camera push-through (Minimal Blur)
               .to("#doorWrapper", { scale: 2.8, opacity: 0, filter: "blur(4px)", duration: 1.4, ease: "power2.inOut" }, "doorOpen+=0.3")
               .call(() => { confetti({ particleCount: 150, spread: 120, origin: { y: 0.5 }, colors: ['#D4AF37', '#ffffff'], zIndex: 1000 }); }, null, "doorOpen+=0.5")
               
               .to("#cinematic-flash", { opacity: 0.9, duration: 0.5 }, "doorOpen+=0.8")
               .set("#door-scene", { display: "none" }, "doorOpen+=1.2")
               
-              // Overlapping Content Reveal
               .to("#main-invite", { opacity: 1, duration: 0.1 }, "doorOpen+=1.0") 
               .to("#cinematic-flash", { opacity: 0, duration: 1.2 }, "doorOpen+=1.2")
               
               .fromTo(".card-container", { scale: 0.88, y: 30, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 1.8, ease: "expo.out" }, "doorOpen+=0.9")
               
-              // Instant appearance of primary details
               .fromTo(".gs-reveal:nth-child(-n+6)", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.0, stagger: 0.1, ease: "power2.out" }, "doorOpen+=1.1")
               
               .call(() => { gsap.to(doorSound, { volume: 0, duration: 1, onComplete: () => doorSound.pause() }); }, null, "doorOpen+=1.0");
