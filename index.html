@@ -557,13 +557,47 @@
 
         document.getElementById('addToCalendarBtn').addEventListener('click', function(e) {
             e.preventDefault();
-            const title = encodeURIComponent("Abdullah & Aqsa | Royal Valima");
-            const details = encodeURIComponent("Join us to celebrate the Valima Reception of Abdullah and Aqsa.");
-            const location = encodeURIComponent("Grand Venue, Details TBA");
+            
+            const title = "Abdullah & Aqsa | Royal Valima";
+            const details = "Join us to celebrate the Valima Reception of Abdullah and Aqsa.";
+            const location = "Grand Venue, Details TBA";
             const startDate = "20260719T190000"; 
             const endDate = "20260719T230000";   
-            const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
-            window.open(googleUrl, '_blank');
+            
+            // Create the .ics file content (The universal standard for native calendar apps)
+            const icsContent = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "PRODID:-//Abdullah and Aqsa//Valima Invite//EN",
+                "BEGIN:VEVENT",
+                `DTSTART:${startDate}`,
+                `DTEND:${endDate}`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${details}`,
+                `LOCATION:${location}`,
+                "BEGIN:VALARM",
+                "TRIGGER:-PT1H",
+                "ACTION:DISPLAY",
+                "DESCRIPTION:Reminder",
+                "END:VALARM",
+                "END:VEVENT",
+                "END:VCALENDAR"
+            ].join("\r\n");
+
+            // Create a Blob from the content
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            
+            // Force the browser to download/open the file, triggering the native calendar app
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Valima_Invitation.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Clean up memory
+            setTimeout(() => window.URL.revokeObjectURL(url), 100);
         });
 
         // --- SETUP ---
