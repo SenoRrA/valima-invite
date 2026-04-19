@@ -250,8 +250,8 @@
         .content-inner { position: relative; z-index: 5; width: 100%; display: flex; flex-direction: column; align-items: center; }
 
         .monogram { font-family: 'Great Vibes', cursive; font-size: 3.2rem; margin-bottom: 25px; filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.5)); }
-        .monogram span { font-size: 1.8rem; color: var(--gold-light); vertical-align: middle; margin: 0 10px; animation: pulse 2s infinite alternate; display: inline-block; filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.8));}
-        @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.8;} 100% { transform: scale(1.15); opacity: 1;} }
+        .monogram span { font-size: 1.8rem; -webkit-text-fill-color: initial; background: none; color: #ff3b3b; vertical-align: middle; margin: 0 10px; animation: heartbeat 1.5s infinite; display: inline-block; filter: drop-shadow(0 0 12px rgba(255, 59, 59, 0.8));}
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.25); } 60% { transform: scale(1); } }
 
         .bismillah { font-family: 'Aref Ruqaa', serif; font-size: clamp(2.8rem, 9vw, 4rem); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.9)); margin-bottom: 25px; }
         .romantic-quote { font-family: 'Cinzel', serif; font-size: 0.95rem; color: #fdfdfd; font-style: italic; margin-bottom: 30px; line-height: 1.9; opacity: 0.95; text-shadow: 0 3px 6px rgba(0,0,0,0.95); }
@@ -453,7 +453,7 @@
 
               <div class="content-inner">
                 
-                <div class="monogram hero-reveal shimmer-text">A <span>&</span> A</div>
+                <div class="monogram hero-reveal shimmer-text">A <span>❤️</span> A</div>
                 <div class="bismillah hero-reveal shimmer-text" dir="rtl">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
                 
                 <div class="romantic-quote hero-reveal">
@@ -515,6 +515,7 @@
                     <div class="time-box"><span id="secs" class="shimmer-text">00</span><p>Secs</p></div>
                 </div>
 
+                <!-- ADD TO CALENDAR BUTTON UPDATED TO DIRECT GOOGLE CALENDAR LINK -->
                 <a href="#" id="addToCalendarBtn" class="calendar-btn scroll-reveal">🗓️ Save to Calendar</a>
 
                 <p class="outro-quote scroll-reveal">
@@ -573,43 +574,19 @@
             startDoorToCardSequence();
         });
 
+        // FIXED: REVERTED BACK TO DIRECT WEB LINK FOR 1-CLICK CALENDAR
         document.getElementById('addToCalendarBtn').addEventListener('click', function(e) {
             e.preventDefault();
             
-            const title = "Abdullah & Aqsa | Royal Valima";
-            const details = "Join us to celebrate the Valima Reception of Abdullah and Aqsa.";
-            const location = "Grand Venue, Details TBA";
+            const title = encodeURIComponent("Abdullah & Aqsa | Royal Valima");
+            const details = encodeURIComponent("Join us to celebrate the Valima Reception of Abdullah and Aqsa.");
+            const location = encodeURIComponent("Grand Venue, Details TBA");
             const startDate = "20260719T190000"; 
             const endDate = "20260719T230000";   
             
-            const icsContent = [
-                "BEGIN:VCALENDAR",
-                "VERSION:2.0",
-                "PRODID:-//Abdullah and Aqsa//Valima Invite//EN",
-                "BEGIN:VEVENT",
-                `DTSTART:${startDate}`,
-                `DTEND:${endDate}`,
-                `SUMMARY:${title}`,
-                `DESCRIPTION:${details}`,
-                `LOCATION:${location}`,
-                "BEGIN:VALARM",
-                "TRIGGER:-PT1H",
-                "ACTION:DISPLAY",
-                "DESCRIPTION:Reminder",
-                "END:VALARM",
-                "END:VEVENT",
-                "END:VCALENDAR"
-            ].join("\r\n");
-
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'Valima_Invitation.ics');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setTimeout(() => window.URL.revokeObjectURL(url), 100);
+            // This direct link skips the download process and opens Google Calendar instantly
+            const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
+            window.open(googleUrl, '_blank');
         });
 
         // --- SETUP ---
