@@ -22,7 +22,7 @@
     <!-- Fonts Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&family=Cinzel:wght@400;500;600;700&family=Amiri:wght@400;700;italic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Great+Vibes&family=Pinyon+Script&family=Poppins:wght@300;400;500;600&family=Cinzel:wght@400;500;600;700&family=Amiri:wght@400;700;italic&display=swap" rel="stylesheet">
     
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -33,9 +33,9 @@
     <style>
         :root {
             /* PERFECTED OLIVE GREEN & GOLD PALETTE */
-            --bg-dark: #090c07; 
-            --emerald-deep: #121a0f; 
-            --emerald-glow: rgba(75, 95, 55, 0.45); 
+            --bg-dark: #070905; 
+            --emerald-deep: #0e150b; 
+            --emerald-glow: rgba(56, 82, 38, 0.55); 
             
             /* Rich Royal Gold */
             --gold-gradient: linear-gradient(135deg, #B58B43 0%, #FDF3C8 25%, #D4AF37 50%, #FDF3C8 75%, #9E742A 100%);
@@ -44,7 +44,7 @@
             --gold-main: #D4AF37;
             --gold-dark: #8A6D1C;
             
-            --glass-bg: rgba(14, 20, 12, 0.85); 
+            --glass-bg: rgba(12, 18, 10, 0.75); 
             --glass-border: rgba(212, 175, 55, 0.35);
         }
 
@@ -61,20 +61,27 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* --- ENHANCEMENT 1: MATTE CARDSTOCK OVERLAY --- */
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none;
+            background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.06"/%3E%3C/svg%3E');
+            mix-blend-mode: overlay;
+        }
+
         /* --- AMBIANCE --- */
         #particles-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         
         .ambient-glow {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, var(--emerald-glow) 0%, var(--bg-dark) 85%);
-            z-index: 0; animation: breathe 10s infinite alternate ease-in-out;
+            z-index: 0; animation: breathe 12s infinite alternate ease-in-out;
             transform: translateZ(0);
         }
-        @keyframes breathe { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 0.95; transform: scale(1.03); } }
+        @keyframes breathe { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 0.85; transform: scale(1.05); } }
 
         .pattern-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0c22.091 0 40 17.909 40 40S62.091 80 40 80 0 62.091 0 40 17.909 0 40 0zm0 4c-19.882 0-36 16.118-36 36s16.118 36 36 36 36-16.118 36-36S59.882 4 40 4zm0 16c11.046 0 20 8.954 20 20s-8.954 20-20 20-20-8.954-20-20 8.954-20 20-20zm0 4c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16-7.163-16-16-16zm0 8c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8z' fill='%23d4af37' fill-rule='evenodd'/%3E%3C/svg%3E");
             pointer-events: none;
         }
 
@@ -88,89 +95,144 @@
         }
         @keyframes shine { to { background-position: 200% center; } }
 
+        /* ENHANCEMENT 6: BREATHING FOCUS ANIMATION */
+        .breathe-focus {
+            animation: breatheFocus 3s infinite alternate ease-in-out;
+        }
+        @keyframes breatheFocus {
+            0% { filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); transform: scale(1); }
+            100% { filter: drop-shadow(0 0 25px rgba(212,175,55,0.7)); transform: scale(1.02); }
+        }
+
         .interactive-seal {
             cursor: pointer; -webkit-tap-highlight-color: transparent;
-            transition: box-shadow 0.3s ease, filter 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, filter 0.3s ease;
         }
         .interactive-seal:hover { 
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.6), inset 0 2px 10px rgba(255,255,255,0.6); 
-            filter: brightness(1.2);
+            transform: translate(-50%, -50%) scale(1.05) translateZ(20px);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.8), inset 0 2px 10px rgba(255,255,255,0.7); 
+            filter: brightness(1.15);
         }
-        .interactive-seal:active { filter: brightness(0.9); }
+        .interactive-seal:active { 
+            transform: translate(-50%, -50%) scale(0.95) translateZ(20px);
+            filter: brightness(0.9); 
+        }
+
+        /* --- ENHANCEMENT 7: SKIP BUTTON --- */
+        .skip-btn {
+            position: fixed; bottom: 35px; right: 30px; z-index: 1000;
+            background: rgba(10, 15, 8, 0.6); border: 1px solid rgba(212, 175, 55, 0.5); 
+            color: var(--gold-light); padding: 10px 20px; border-radius: 25px; 
+            font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 2px; 
+            text-transform: uppercase; cursor: pointer; backdrop-filter: blur(10px); 
+            transition: all 0.3s ease; opacity: 0; pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .skip-btn.show { opacity: 1; pointer-events: auto; }
+        .skip-btn:hover { background: var(--gold-gradient); color: #000; box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5); }
 
         /* --- ✉️ SCREEN 1: ENVELOPE --- */
         #envelope-scene {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; perspective: 2500px; z-index: 200;
-            display: flex; justify-content: center; align-items: center; background: rgba(9, 12, 7, 0.95);
+            display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, rgba(9, 14, 7, 0.95), #030402);
             will-change: opacity;
         }
         .envelope-wrapper { 
-            position: relative; width: clamp(320px, 90vw, 440px); height: clamp(210px, 60vw, 290px); 
+            position: relative; width: clamp(320px, 90vw, 480px); height: clamp(220px, 60vw, 310px); 
             transform-style: preserve-3d;
             will-change: transform, opacity;
         }
         
         .envelope { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0c1109; 
-            border-radius: 6px; transform-style: preserve-3d; border: 1px solid rgba(212, 175, 55, 0.5); 
-            box-shadow: 0 30px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,1); 
+            border-radius: 8px; transform-style: preserve-3d; border: 1px solid rgba(212, 175, 55, 0.4); 
+            box-shadow: 0 40px 70px rgba(0,0,0,0.9), inset 0 0 80px rgba(0,0,0,1); 
         }
         
         .env-paper { 
-            position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; background: #131c0e; 
-            border: 1px solid rgba(212, 175, 55, 0.7); border-radius: 4px; z-index: 2; display: flex; 
-            flex-direction: column; align-items: center; padding-top: 15%; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.8); 
+            position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; 
+            background: linear-gradient(135deg, #162214, #0b110a); 
+            border: 2px solid rgba(212, 175, 55, 0.8); border-radius: 6px; z-index: 2; display: flex; 
+            flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,0,0,0.8); 
             transform: translateZ(1px); 
             will-change: transform;
+            overflow: hidden;
         }
-        .env-paper::before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border: 1px dashed rgba(212, 175, 55, 0.3); pointer-events: none; }
+        .env-paper::before, .env-paper::after {
+            content: ''; position: absolute; width: 40px; height: 40px; border: 1px solid var(--gold-main); opacity: 0.5;
+        }
+        .env-paper::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .env-paper::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
         
-        .env-paper-names { font-family: 'Great Vibes', cursive; font-size: clamp(2.2rem, 8vw, 3rem); text-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-        .env-paper-valima { font-family: 'Cinzel', serif; color: var(--gold-main); font-size: clamp(0.6rem, 2.5vw, 0.8rem); letter-spacing: 5px; margin-top: 15px; text-transform: uppercase; font-weight: 600; }
+        .env-paper-names { font-family: 'Pinyon Script', 'Great Vibes', cursive; font-size: clamp(2.8rem, 8vw, 3.5rem); text-shadow: 0 4px 10px rgba(0,0,0,0.9); margin-top: 15px;}
+        .env-paper-valima { font-family: 'Cinzel', serif; color: var(--gold-main); font-size: clamp(0.7rem, 2.5vw, 0.85rem); letter-spacing: 7px; margin-top: 15px; text-transform: uppercase; font-weight: 700; }
         
-        .env-flap { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform: translateZ(2px); }
-        .env-bottom { z-index: 4; background: linear-gradient(to top, #090c07, #162010); clip-path: polygon(0 100%, 100% 100%, 50% 45%); border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
-        .env-left { z-index: 4; background: linear-gradient(to right, #090c07, #111a0d); clip-path: polygon(0 0, 52% 52%, 0 100%); border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
-        .env-right { z-index: 4; background: linear-gradient(to left, #090c07, #111a0d); clip-path: polygon(100% 0, 100% 100%, 48% 52%); border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
+        .env-flap { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform: translateZ(2px); pointer-events: none; }
+        .env-bottom { z-index: 4; background: linear-gradient(to top, #060904, #121a0d); clip-path: polygon(0 100%, 100% 100%, 50% 45%); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .env-left { z-index: 4; background: linear-gradient(to right, #060904, #0e140a); clip-path: polygon(0 0, 52% 52%, 0 100%); border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .env-right { z-index: 4; background: linear-gradient(to left, #060904, #0e140a); clip-path: polygon(100% 0, 100% 100%, 48% 52%); border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
         
         .env-top { 
-            z-index: 5; background: linear-gradient(to bottom, #0d130a, #1a2614); clip-path: polygon(0 0, 100% 0, 50% 55%); 
-            transform-origin: top center; transform-style: preserve-3d; border-top-left-radius: 6px; border-top-right-radius: 6px; 
-            border-top: 2px solid rgba(212, 175, 55, 0.8); transform: translateZ(3px); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.6); 
+            z-index: 5; background: linear-gradient(to bottom, #0d140a, #1a2614); clip-path: polygon(0 0, 100% 0, 50% 55%); 
+            transform-origin: top center; transform-style: preserve-3d; border-top-left-radius: 8px; border-top-right-radius: 8px; 
+            border-top: 2px solid rgba(212, 175, 55, 0.9); transform: translateZ(3px); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8); 
             will-change: transform;
         }
 
         .royal-seal { 
-            position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%) translateZ(10px); 
-            width: clamp(90px, 25vw, 110px); height: clamp(90px, 25vw, 110px); background: var(--gold-gradient); 
+            position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%) translateZ(15px); 
+            width: clamp(100px, 28vw, 120px); height: clamp(100px, 28vw, 120px); 
+            background: radial-gradient(circle at 30% 30%, #FDF3C8 0%, #D4AF37 30%, #9E742A 70%, #5c4314 100%); 
             border-radius: 50%; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 3px 8px rgba(255,255,255,0.7), inset 0 -4px 15px rgba(138, 109, 28, 0.9); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 4px 10px rgba(255,255,255,0.8), inset 0 -6px 20px rgba(92, 67, 20, 0.9); 
+            pointer-events: auto;
         }
-        .seal-ring { position: absolute; top: -8px; left: -8px; right: -8px; bottom: -8px; border: 2px solid rgba(212, 175, 55, 0.7); border-radius: 50%; animation: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
-        @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
-        .royal-seal span { font-family: 'Cinzel', serif; color: #110c01; font-weight: 700; font-size: clamp(1rem, 3vw, 1.2rem); letter-spacing: 4px; z-index: 2;}
+        .royal-seal::after {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 2px double rgba(100, 70, 10, 0.5); border-radius: 50%;
+        }
+
+        .seal-ring { position: absolute; top: -12px; left: -12px; right: -12px; bottom: -12px; border: 2px solid rgba(212, 175, 55, 0.5); border-radius: 50%; animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 10px var(--gold-main); } 100% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 30px var(--gold-main); } }
+        .royal-seal span { font-family: 'Cinzel', serif; color: #2e210a; font-weight: 800; font-size: clamp(1.1rem, 3.5vw, 1.3rem); letter-spacing: 5px; z-index: 2; text-shadow: 0 1px 2px rgba(255,255,255,0.4);}
 
         /* --- 🚪 SCREEN 2: PALACE DOORS --- */
         #door-scene {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; perspective: 2000px; z-index: 100;
             display: none; justify-content: center; align-items: center; opacity: 0; transform: scale(0.85);
             will-change: transform, opacity;
+            background: #020301;
         }
         
-        .door-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 100vh; background: #fff; box-shadow: 0 0 150px 80px rgba(212, 175, 55, 0.8), 0 0 250px 150px rgba(255, 255, 255, 0.6); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
+        .door-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4px; height: 100vh; background: #fff; box-shadow: 0 0 150px 100px rgba(212, 175, 55, 0.9), 0 0 300px 200px rgba(255, 255, 255, 0.6); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
 
-        .door-wrapper { position: relative; width: 100%; max-width: 800px; height: 100vh; display: flex; transform-style: preserve-3d; z-index: 2; will-change: transform; }
-        .door { width: 50%; height: 100%; background: linear-gradient(135deg, #090c07 0%, #172212 100%); position: relative; transform-style: preserve-3d; box-shadow: inset 0 0 80px rgba(0,0,0,1); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5%; backface-visibility: hidden; border: 1px solid #000; will-change: transform; }
+        .door-wrapper { position: relative; width: 100%; max-width: 900px; height: 100vh; display: flex; transform-style: preserve-3d; z-index: 2; will-change: transform; border: 15px solid #040603; border-image: var(--gold-gradient) 1; box-shadow: 0 0 80px #000; }
         
-        .door-left { transform-origin: left center; border-right: 2px solid var(--gold-main); }
-        .door-right { transform-origin: right center; border-left: 2px solid var(--gold-main); }
+        .door { 
+            width: 50%; height: 100%; position: relative; transform-style: preserve-3d; 
+            background: linear-gradient(135deg, #0a0f07 0%, #152210 100%); 
+            box-shadow: inset 0 0 100px rgba(0,0,0,1); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5%; backface-visibility: hidden; border: 2px solid #000; will-change: transform; 
+        }
+        .door::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0c27.614 0 50 22.386 50 50s-22.386 50-50 50S0 77.614 0 50 22.386 0 50 0zm0 5c-24.853 0-45 20.147-45 45s20.147 45 45 45 45-20.147 45-45S74.853 5 50 5zm0 20c13.807 0 25 11.193 25 25s-11.193 25-25 25-25-11.193-25-25 11.193-25 25-25zm0 5c-11.046 0-20 8.954-20 20s8.954 20 20 20 20-8.954 20-20-8.954-20-20-20zm0 10c5.523 0 10 4.477 10 10s-4.477 10-10 10-10-4.477-10-10 4.477-10 10-10z' fill='%23d4af37' fill-opacity='0.1'/%3E%3C/svg%3E");
+            background-size: 120px; z-index: 0; pointer-events: none;
+        }
         
-        .door-panel { width: 75%; height: 35%; position: relative; margin: 20px 0; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 4px; background: rgba(14, 20, 11, 0.6); box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5); }
-        .door-panel::after { content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .door-left { transform-origin: left center; border-right: 4px solid var(--gold-main); box-shadow: inset -25px 0 50px rgba(0,0,0,0.9); }
+        .door-right { transform-origin: right center; border-left: 4px solid var(--gold-main); box-shadow: inset 25px 0 50px rgba(0,0,0,0.9); }
         
-        #royalSealDoor { width: 120px; height: 120px; } #royalSealDoor span { font-size: 1.2rem; }
+        .door-panel { 
+            width: 75%; height: 35%; position: relative; margin: 20px 0; border: 3px solid rgba(212, 175, 55, 0.8); border-radius: 6px; 
+            background: linear-gradient(to bottom right, rgba(20, 30, 15, 0.8), rgba(6, 10, 4, 0.9)); 
+            box-shadow: inset 0 20px 40px rgba(0,0,0,1), inset 2px 2px 10px rgba(255,255,255,0.1), 0 10px 20px rgba(0,0,0,0.8); z-index: 1; 
+        }
+        .door-panel::after { content: ''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border: 2px solid rgba(212, 175, 55, 0.4); border-radius: 4px; box-shadow: inset 0 0 25px rgba(0,0,0,0.9); }
+        
+        #royalSealDoor { width: clamp(120px, 30vw, 140px); height: clamp(120px, 30vw, 140px); box-shadow: 0 20px 50px rgba(0,0,0,0.95); } 
+        #royalSealDoor span { font-size: clamp(1.2rem, 3.5vw, 1.4rem); }
         
         #cinematic-flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ffffff 0%, transparent 100%); opacity: 0; z-index: 90; pointer-events: none; mix-blend-mode: screen; will-change: opacity; }
 
@@ -181,141 +243,166 @@
             transform: translateZ(0); 
         }
 
-        .card-container { max-width: 600px; margin: 40px auto 120px auto; padding: 15px; position: relative; z-index: 2; transform: translateZ(0); }
+        .card-container { max-width: 650px; margin: 50px auto 120px auto; padding: 20px; position: relative; z-index: 2; transform: translateZ(0); }
         
         .content-wrapper { 
-            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-            border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 20px; padding: 80px 25px 100px 25px; 
+            background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
+            border: 1px solid var(--glass-border); border-radius: 24px; padding: 90px 30px 110px 30px; 
             display: flex; flex-direction: column; align-items: center; text-align: center; 
-            box-shadow: 0 40px 100px rgba(0,0,0,0.98), inset 0 1px 4px rgba(255,255,255,0.15), inset 0 0 100px rgba(4, 7, 3, 0.95); 
+            box-shadow: 0 50px 120px rgba(0,0,0,0.98), inset 0 2px 10px rgba(255,255,255,0.1), inset 0 0 120px rgba(4, 7, 3, 0.95); 
             position: relative; overflow: hidden;
         }
 
         .content-wrapper::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent 45%, rgba(212, 175, 55, 0.08) 50%, transparent 55%);
-            animation: cardShine 7s infinite linear; pointer-events: none; z-index: 1;
+            background: linear-gradient(45deg, transparent 45%, rgba(212, 175, 55, 0.1) 50%, transparent 55%);
+            animation: cardShine 8s infinite linear; pointer-events: none; z-index: 1;
         }
         @keyframes cardShine { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
 
         .floral-watermark {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60,10 Q75,45 110,60 Q75,75 60,110 Q45,75 10,60 Q45,45 60,10 Z' fill='%23d4af37' fill-opacity='0.05'/%3E%3Cpath d='M60,25 Q70,45 95,60 Q70,75 60,95 Q50,75 25,60 Q50,45 60,25 Z' fill='%23d4af37' fill-opacity='0.08'/%3E%3C/svg%3E");
-            background-size: 160px 160px; background-position: center; z-index: 0; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M80,10 C100,50 140,80 150,80 C140,80 100,110 80,150 C60,110 20,80 10,80 C20,80 60,50 80,10 Z' fill='%23d4af37' fill-opacity='0.04'/%3E%3Cpath d='M80,30 C95,55 125,75 130,80 C125,85 95,105 80,130 C65,105 35,85 30,80 C35,75 65,55 80,30 Z' fill='%23d4af37' fill-opacity='0.06'/%3E%3C/svg%3E");
+            background-size: 180px 180px; background-position: center; z-index: 0; pointer-events: none; opacity: 0.8;
         }
 
-        .content-wrapper > .border-outer { position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 2px solid rgba(212, 175, 55, 0.5); border-radius: 12px; pointer-events: none; z-index: 1; }
-        .content-wrapper > .border-inner { position: absolute; top: 18px; left: 18px; right: 18px; bottom: 18px; border: 1px dashed rgba(212, 175, 55, 0.3); border-radius: 8px; pointer-events: none; z-index: 1; }
+        .content-wrapper > .border-outer { position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px; border: 2px solid rgba(212, 175, 55, 0.6); border-radius: 12px; pointer-events: none; z-index: 1; }
+        .content-wrapper > .border-inner { position: absolute; top: 24px; left: 24px; right: 24px; bottom: 24px; border: 1px dashed rgba(212, 175, 55, 0.4); border-radius: 8px; pointer-events: none; z-index: 1; }
 
-        /* --- STUNNING FLORAL CORNERS --- */
-        .floral-corner { position: absolute; width: 130px; height: 130px; z-index: 2; pointer-events: none; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8)); }
-        .floral-corner-tl { top: 8px; left: 8px; }
-        .floral-corner-tr { top: 8px; right: 8px; transform: scaleX(-1); }
-        .floral-corner-bl { bottom: 8px; left: 8px; transform: scaleY(-1); }
-        .floral-corner-br { bottom: 8px; right: 8px; transform: scale(-1, -1); }
+        /* --- STUNNING FLORAL CORNERS & EMBEDDED GEMS --- */
+        .floral-corner { position: absolute; width: 160px; height: 160px; z-index: 2; pointer-events: none; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.9)); }
+        .floral-corner-tl { top: 12px; left: 12px; transform-origin: top left; }
+        .floral-corner-tr { top: 12px; right: 12px; transform-origin: top right; }
+        .floral-corner-bl { bottom: 12px; left: 12px; transform-origin: bottom left; }
+        .floral-corner-br { bottom: 12px; right: 12px; transform-origin: bottom right; }
         
-        /* --- BEAUTIFUL 3D GEMS --- */
-        .gem { position: absolute; z-index: 10; animation: sparkleGem 3s infinite alternate ease-in-out; }
+        .floral-corner-inner { width: 100%; height: 100%; }
+        .floral-corner-tr .floral-corner-inner { transform: scaleX(-1); }
+        .floral-corner-bl .floral-corner-inner { transform: scaleY(-1); }
+        .floral-corner-br .floral-corner-inner { transform: scale(-1, -1); }
         
+        /* --- ENHANCEMENT 3: BEAUTIFUL 3D GEMS WITH LIGHT SWEEP --- */
+        .gem { position: absolute; z-index: 10; animation: sparkleGem 3s infinite alternate ease-in-out; overflow: hidden; }
+        .gem::after {
+            content: ''; position: absolute; top: -150%; left: -150%; width: 400%; height: 400%;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.9) 50%, transparent 60%);
+            animation: sweepLight 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes sweepLight {
+            0%, 50% { transform: translate(-100%, -100%); }
+            100% { transform: translate(50%, 50%); }
+        }
+
         .emerald { 
-            width: 14px; height: 14px; background: radial-gradient(circle at 30% 30%, #66ff66 0%, #20801a 40%, #062404 100%); 
+            width: 16px; height: 16px; background: radial-gradient(circle at 30% 30%, #80ff80 0%, #29a322 40%, #083305 100%); 
             transform: rotate(45deg); border-radius: 2px; 
-            box-shadow: inset 2px 2px 4px rgba(255,255,255,0.8), inset -2px -2px 6px rgba(0,0,0,0.9), 0 4px 8px rgba(0,0,0,0.9); 
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.9), inset -2px -2px 6px rgba(0,0,0,0.9), 0 5px 10px rgba(0,0,0,0.9); 
         }
         .pearl { 
-            width: 12px; height: 12px; border-radius: 50%; 
+            width: 14px; height: 14px; border-radius: 50%; 
             background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fffbf0 30%, #d4c5a9 80%, #9c8e6d 100%); 
-            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,1), 0 4px 8px rgba(0,0,0,0.8); 
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.7), inset 2px 2px 6px rgba(255,255,255,1), 0 5px 10px rgba(0,0,0,0.8); 
         }
         .diamond { 
-            width: 13px; height: 13px; transform: rotate(45deg);
+            width: 15px; height: 15px; transform: rotate(45deg);
             background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d4f0ff 40%, #78cff2 100%);
             border: 1px solid rgba(255,255,255,0.9); border-radius: 1px;
-            box-shadow: inset 2px 2px 5px rgba(255,255,255,1), inset -2px -2px 5px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.8);
+            box-shadow: inset 2px 2px 6px rgba(255,255,255,1), inset -2px -2px 6px rgba(0,0,0,0.6), 0 5px 10px rgba(0,0,0,0.8);
         }
 
         @keyframes sparkleGem {
-            0% { filter: brightness(1); transform: scale(1) rotate(45deg); }
-            50% { filter: brightness(1.2); transform: scale(1.05) rotate(45deg); }
-            100% { filter: brightness(1); transform: scale(1) rotate(45deg); }
+            0% { filter: brightness(1) drop-shadow(0 0 2px rgba(255,255,255,0.2)); transform: scale(1) rotate(45deg); }
+            50% { filter: brightness(1.25) drop-shadow(0 0 10px rgba(255,255,255,0.6)); transform: scale(1.1) rotate(45deg); }
+            100% { filter: brightness(1) drop-shadow(0 0 2px rgba(255,255,255,0.2)); transform: scale(1) rotate(45deg); }
         }
 
         .content-inner { position: relative; z-index: 5; width: 100%; display: flex; flex-direction: column; align-items: center; }
 
-        .monogram { font-family: 'Great Vibes', cursive; font-size: 3.2rem; margin-bottom: 25px; filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.5)); }
-        .monogram span { font-size: 1.8rem; -webkit-text-fill-color: initial; background: none; color: #ff3b3b; vertical-align: middle; margin: 0 10px; animation: heartbeat 1.5s infinite; display: inline-block; filter: drop-shadow(0 0 12px rgba(255, 59, 59, 0.8));}
+        .monogram { font-family: 'Great Vibes', cursive; font-size: 3.8rem; margin-bottom: 25px; filter: drop-shadow(0 6px 15px rgba(212, 175, 55, 0.4)); display: flex; align-items: center; justify-content: center; }
+        .monogram span { font-size: 2rem; -webkit-text-fill-color: initial; background: none; color: #ff3b3b; vertical-align: middle; margin: 0 15px; animation: heartbeat 1.5s infinite; display: inline-block; filter: drop-shadow(0 0 20px rgba(255, 59, 59, 0.8));}
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.25); } 60% { transform: scale(1); } }
 
-        .bismillah { font-family: 'Aref Ruqaa', serif; font-size: clamp(2.8rem, 9vw, 4rem); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.9)); margin-bottom: 25px; }
-        .romantic-quote { font-family: 'Cinzel', serif; font-size: 0.95rem; color: #fdfdfd; font-style: italic; margin-bottom: 30px; line-height: 1.9; opacity: 0.95; text-shadow: 0 3px 6px rgba(0,0,0,0.95); }
+        .bismillah { font-family: 'Aref Ruqaa', serif; font-size: clamp(3rem, 10vw, 4.5rem); filter: drop-shadow(0 5px 10px rgba(0,0,0,0.9)); margin-bottom: 30px; }
+        .romantic-quote { font-family: 'Cinzel', serif; font-size: 1.05rem; color: #fdfdfd; font-style: italic; margin-bottom: 40px; line-height: 2; opacity: 0.95; text-shadow: 0 4px 8px rgba(0,0,0,0.95); }
         
-        .intro-text { font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 6px; color: var(--gold-light); text-transform: uppercase; margin-bottom: 35px; font-weight: 600; text-shadow: 0 3px 6px rgba(0,0,0,0.9);}
+        .intro-text { font-family: 'Cinzel', serif; font-size: 1.1rem; letter-spacing: 8px; color: var(--gold-light); text-transform: uppercase; margin-bottom: 40px; font-weight: 600; text-shadow: 0 4px 8px rgba(0,0,0,0.95);}
         
-        .names-main { font-family: 'Great Vibes', cursive; font-size: clamp(5.5rem, 16vw, 8rem); line-height: 1.1; margin: 5px 0; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.95)); padding: 0 15px; }
+        .names-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin: 10px 0 20px 0; }
+        .names-main { font-family: 'Pinyon Script', 'Great Vibes', cursive; font-size: clamp(5.5rem, 16vw, 8.5rem); line-height: 1; margin: 0; filter: drop-shadow(0 10px 25px rgba(0,0,0,0.95)); padding: 0; text-align: center; }
         
-        .ampersand { font-family: 'Amiri', serif; font-size: 3.8rem; color: var(--gold-main); margin: -10px 0; text-shadow: 0 0 30px rgba(212, 175, 55, 0.7); font-style: italic; opacity: 0.9;}
+        .ampersand { font-family: 'Pinyon Script', 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 5rem); color: var(--gold-main); margin: -5px 0; text-shadow: 0 0 35px rgba(212, 175, 55, 0.8); font-weight: normal; opacity: 0.9;}
         
-        .elegant-divider { display: flex; align-items: center; justify-content: center; width: 100%; margin: 45px 0; opacity: 0.9; }
-        .elegant-divider::before, .elegant-divider::after { content: ''; height: 2px; width: 35%; background: linear-gradient(to right, transparent, var(--gold-main)); }
+        .elegant-divider { display: flex; align-items: center; justify-content: center; width: 100%; margin: 55px 0; opacity: 0.9; }
+        .elegant-divider::before, .elegant-divider::after { content: ''; height: 2px; width: 38%; background: linear-gradient(to right, transparent, var(--gold-main)); }
         .elegant-divider::after { background: linear-gradient(to left, transparent, var(--gold-main)); }
-        .divider-gem { width: 12px; height: 12px; background: var(--gold-main); transform: rotate(45deg); margin: 0 15px; box-shadow: 0 0 20px var(--gold-light); }
+        .divider-gem { width: 14px; height: 14px; background: var(--gold-main); transform: rotate(45deg); margin: 0 20px; box-shadow: 0 0 25px var(--gold-light); }
         
-        .invite-para { color: #f0f0f0; font-size: 1.15rem; line-height: 2.2; max-width: 90%; font-weight: 300; text-shadow: 0 3px 8px rgba(0,0,0,0.95); letter-spacing: 0.5px;}
-        .hindi-latin { color: var(--gold-light); font-size: 1.1rem; font-style: normal; font-weight: 300; margin-top: 15px; opacity: 0.95; letter-spacing: 0.5px;}
+        .invite-para { color: #fdfdfd; font-size: 1.25rem; line-height: 2.2; max-width: 90%; font-weight: 300; text-shadow: 0 4px 10px rgba(0,0,0,0.95); letter-spacing: 0.5px;}
+        .hindi-latin { color: var(--gold-light); font-size: 1.2rem; font-style: normal; font-weight: 300; margin-top: 20px; opacity: 0.95; letter-spacing: 0.5px;}
 
         /* --- 🎁 SCRATCH CARD --- */
-        .scratch-title { font-family: 'Cinzel', serif; letter-spacing: 6px; margin-bottom: 25px; font-size: 1.2rem; text-transform: uppercase; font-weight: 700; text-shadow: 0 4px 8px rgba(0,0,0,0.95); }
-        .scratch-wrapper { padding: 4px; background: var(--gold-gradient); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.98); }
-        .scratch-container { position: relative; width: 300px; height: 120px; margin: 0 auto; border-radius: 12px; background: radial-gradient(circle, #1f2b18 0%, #090c07 100%); overflow: hidden; touch-action: none; box-shadow: inset 0 0 50px rgba(212,175,55, 0.4); }
+        .scratch-title { font-family: 'Cinzel', serif; letter-spacing: 8px; margin-bottom: 30px; font-size: 1.3rem; text-transform: uppercase; font-weight: 700; text-shadow: 0 5px 10px rgba(0,0,0,0.95); }
+        .scratch-wrapper { padding: 6px; background: var(--gold-gradient); border-radius: 18px; box-shadow: 0 30px 70px rgba(0,0,0,0.98); }
+        .scratch-container { position: relative; width: clamp(280px, 80vw, 340px); height: 130px; margin: 0 auto; border-radius: 12px; background: radial-gradient(circle, #1f2b18 0%, #090c07 100%); overflow: hidden; touch-action: none; box-shadow: inset 0 0 60px rgba(212,175,55, 0.5); }
         
         .hidden-date { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
-        .hidden-date h2 { font-family: 'Cinzel', serif; font-size: 2.2rem; margin: 0; filter: drop-shadow(0 3px 8px rgba(0,0,0,1)); animation: pulseText 2s infinite alternate; }
-        @keyframes pulseText { 0% { text-shadow: 0 0 15px rgba(255,223,115, 0.5); } 100% { text-shadow: 0 0 35px rgba(255,223,115, 1); } }
-        .hidden-date p { color: #fff; font-size: 0.95rem; letter-spacing: 6px; text-transform: uppercase; margin-top: 5px; opacity: 0.95; text-shadow: 0 0 12px rgba(255,255,255,0.6);}
+        .hidden-date h2 { font-family: 'Cinzel', serif; font-size: 2.4rem; margin: 0; filter: drop-shadow(0 4px 10px rgba(0,0,0,1)); animation: pulseText 2s infinite alternate; }
+        @keyframes pulseText { 0% { text-shadow: 0 0 20px rgba(255,223,115, 0.4); } 100% { text-shadow: 0 0 40px rgba(255,223,115, 0.9); } }
+        .hidden-date p { color: #fff; font-size: 1.1rem; letter-spacing: 8px; text-transform: uppercase; margin-top: 6px; opacity: 0.95; text-shadow: 0 0 15px rgba(255,255,255,0.7);}
         
         #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; cursor: crosshair; touch-action: none; }
-        .scratch-hint { color: var(--gold-main); font-size: 0.95rem; margin-top: 20px; letter-spacing: 2px; font-weight: 500; opacity: 0.95; font-style: italic; }
+        .scratch-hint { color: var(--gold-main); font-size: 1rem; margin-top: 25px; letter-spacing: 3px; font-weight: 500; opacity: 0.95; font-style: italic; }
 
         /* --- LOCATION BOX --- */
-        .location-box { background: rgba(14, 20, 11, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 40px 20px; margin: 10px auto 25px auto; width: 95%; max-width: 380px; box-shadow: inset 0 2px 30px rgba(255,255,255,0.05), 0 25px 50px rgba(0,0,0,0.95); position: relative; overflow: hidden; }
-        .location-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent); z-index: 1; pointer-events: none; }
-        .location-icon { width: 50px; height: 50px; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.95)); }
-        .location-box h3 { font-family: 'Cinzel', serif; font-size: 1.3rem; letter-spacing: 5px; margin-bottom: 12px; text-transform: uppercase; text-shadow: 0 3px 8px rgba(0,0,0,0.95); }
-        .location-box p { color: #f0f0f0; font-size: 1rem; font-weight: 300; line-height: 1.9; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        .location-box { background: rgba(10, 15, 8, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 20px; padding: 45px 25px; margin: 15px auto 30px auto; width: 95%; max-width: 420px; box-shadow: inset 0 2px 40px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.98); position: relative; overflow: hidden; }
+        .location-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to bottom, rgba(212,175,55,0.08), transparent); z-index: 1; pointer-events: none; }
+        .location-icon { width: 60px; height: 60px; margin: 0 auto 20px auto; display: block; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.95)); }
+        .location-box h3 { font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 6px; margin-bottom: 15px; text-transform: uppercase; text-shadow: 0 4px 10px rgba(0,0,0,0.95); }
+        .location-box p { color: #fdfdfd; font-size: 1.1rem; font-weight: 300; line-height: 2; text-shadow: 0 3px 6px rgba(0,0,0,0.9); }
 
-        /* --- ⏳ COUNTDOWN --- */
-        .countdown-wrapper { display: flex; gap: 18px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
-        .time-box { position: relative; width: 85px; height: 95px; background: rgba(14, 20, 11, 0.85); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 2px 25px rgba(255,255,255,0.1), 0 20px 45px rgba(0,0,0,0.95); }
-        .time-box span { font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700; line-height: 1; z-index: 2; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.95)); }
-        .time-box p { font-size: 0.75rem; color: #f0f0f0; text-transform: uppercase; letter-spacing: 3px; margin-top: 8px; z-index: 2; font-weight: 600;}
+        /* --- ENHANCEMENT 5: REFINED COUNTDOWN TIMER --- */
+        .countdown-wrapper { display: flex; gap: 15px; margin-top: 25px; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .time-box { position: relative; width: 95px; height: 105px; background: rgba(10, 15, 8, 0.9); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 2px 30px rgba(212,175,55,0.15), 0 25px 55px rgba(0,0,0,0.95); }
+        
+        /* Inner Gold Border */
+        .time-box::before { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 12px; pointer-events: none; }
+        
+        .time-box span { font-family: 'Cinzel', serif; font-size: 2.8rem; font-weight: 700; line-height: 1; z-index: 2; filter: drop-shadow(0 5px 12px rgba(0,0,0,0.95)); color: #fff; }
+        .time-box p { font-size: 0.8rem; color: var(--gold-main); text-transform: uppercase; letter-spacing: 4px; margin-top: 10px; z-index: 2; font-weight: 600;}
+        
+        .time-divider { font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold-dark); opacity: 0.6; font-weight: 700; text-shadow: 0 2px 5px #000; }
+        
+        /* Ticking Pulse for Seconds */
+        @keyframes subtleTick { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+        .tick-animation { animation: subtleTick 1s infinite cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
 
         /* --- ADD TO CALENDAR BUTTON --- */
         .calendar-btn {
             display: inline-block;
-            margin-top: 50px;
-            padding: 16px 45px;
+            margin-top: 60px;
+            padding: 18px 50px;
             background: var(--gold-gradient);
-            color: #050803;
+            color: #040602;
             font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 1rem;
-            letter-spacing: 4px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 5px;
             text-transform: uppercase;
-            border-radius: 35px;
+            border-radius: 40px;
             text-decoration: none;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.9), inset 0 2px 15px rgba(255,255,255,0.9);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9), inset 0 2px 20px rgba(255,255,255,0.8);
             transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
             cursor: pointer;
         }
         .calendar-btn:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 25px 50px rgba(212, 175, 55, 0.7), inset 0 2px 15px rgba(255,255,255,1);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(212, 175, 55, 0.8), inset 0 2px 20px rgba(255,255,255,1);
             filter: brightness(1.15);
         }
 
-        .outro-quote { font-style: italic; color: var(--gold-main); margin-top: 75px; font-family: 'Cinzel', serif; font-size: 1.2rem; line-height: 2; opacity: 0.95; text-shadow: 0 4px 8px rgba(0,0,0,0.95); }
+        .outro-quote { font-style: italic; color: var(--gold-light); margin-top: 85px; font-family: 'Cinzel', serif; font-size: 1.3rem; line-height: 2.2; opacity: 0.95; text-shadow: 0 5px 10px rgba(0,0,0,0.95); }
 
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: var(--gold-main); border-radius: 10px; }
         
@@ -323,15 +410,23 @@
 
         /* --- PERFORMANCE FIX FOR MOBILE DEVICES --- */
         @media (max-width: 768px) {
-            .content-wrapper { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-            .location-box { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+            .content-wrapper { backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 80px 20px 90px 20px;}
+            .location-box { backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+            .time-divider { display: none; } /* Hide dividers on very small screens to fit boxes */
+            .countdown-wrapper { gap: 10px; }
         }
 
     </style>
 </head>
 <body>
 
-    <!-- RELIABLE MP3 SOUNDS -->
+    <!-- MATTE CARDSTOCK OVERLAY -->
+    <div class="noise-overlay"></div>
+
+    <!-- SKIP BUTTON -->
+    <button id="skipBtn" class="skip-btn">Skip Intro &raquo;</button>
+
+    <!-- RELIABLE MP3 SOUNDS (UNTOUCHED FROM USER CODE) -->
     <audio id="magicSound" preload="auto">
         <source src="https://www.myinstants.com/media/sounds/magic-chime-01.mp3" type="audio/mpeg">
         <source src="https://codeskulptor-demos.commondatastorage.googleapis.com/descent/gotitem.mp3" type="audio/mpeg">
@@ -393,60 +488,64 @@
               
               <!-- STUNNING FLORAL CORNERS & EMBEDDED GEMS -->
               <div class="floral-corner floral-corner-tl">
-                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                <div class="floral-corner-inner">
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                       <defs><linearGradient id="gold-grad-svg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4AF37" /><stop offset="50%" stop-color="#FFFDF2" /><stop offset="100%" stop-color="#8A6D1C" /></linearGradient></defs>
-                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
-                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
-                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                      <path d="M0,40 Q80,40 120,80 T200,200 Q140,100 60,140 T0,40" fill="url(#gold-grad-svg)" opacity="0.9"/>
+                      <path d="M0,40 Q60,20 90,50 T160,120 Q80,70 40,90 T0,40" fill="url(#gold-grad-svg)"/>
+                      <path d="M120,120 C170,140 210,120 250,170" fill="none" stroke="url(#gold-grad-svg)" stroke-width="4" stroke-linecap="round"/>
+                      <circle cx="20" cy="20" r="25" fill="url(#gold-grad-svg)"/>
                   </svg>
                   <div class="gem emerald" style="top: 15px; left: 15px;"></div>
-                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 0.5s;"></div>
-                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 1.2s;"></div>
-                  <div class="gem diamond" style="top: 125px; left: 75px; animation-delay: 2s;"></div>
+                  <div class="gem pearl" style="top: 110px; left: 45px; animation-delay: 0.5s;"></div>
+                  <div class="gem pearl" style="top: 45px; left: 110px; animation-delay: 1.2s;"></div>
+                  <div class="gem diamond" style="top: 165px; left: 95px; animation-delay: 2s;"></div>
+                </div>
               </div>
 
               <div class="floral-corner floral-corner-tr">
-                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
-                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
-                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                <div class="floral-corner-inner">
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,40 Q80,40 120,80 T200,200 Q140,100 60,140 T0,40" fill="url(#gold-grad-svg)" opacity="0.9"/>
+                      <path d="M0,40 Q60,20 90,50 T160,120 Q80,70 40,90 T0,40" fill="url(#gold-grad-svg)"/>
+                      <path d="M120,120 C170,140 210,120 250,170" fill="none" stroke="url(#gold-grad-svg)" stroke-width="4" stroke-linecap="round"/>
+                      <circle cx="20" cy="20" r="25" fill="url(#gold-grad-svg)"/>
                   </svg>
                   <div class="gem diamond" style="top: 15px; left: 15px; transform: rotate(-45deg);"></div>
-                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 0.8s;"></div>
-                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 1.5s;"></div>
-                  <div class="gem emerald" style="top: 125px; left: 75px; transform: rotate(-45deg); animation-delay: 0.3s;"></div>
+                  <div class="gem pearl" style="top: 110px; left: 45px; animation-delay: 0.8s;"></div>
+                  <div class="gem pearl" style="top: 45px; left: 110px; animation-delay: 1.5s;"></div>
+                  <div class="gem emerald" style="top: 165px; left: 95px; transform: rotate(-45deg); animation-delay: 0.3s;"></div>
+                </div>
               </div>
 
               <div class="floral-corner floral-corner-bl">
-                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
-                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
-                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                <div class="floral-corner-inner">
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,40 Q80,40 120,80 T200,200 Q140,100 60,140 T0,40" fill="url(#gold-grad-svg)" opacity="0.9"/>
+                      <path d="M0,40 Q60,20 90,50 T160,120 Q80,70 40,90 T0,40" fill="url(#gold-grad-svg)"/>
+                      <path d="M120,120 C170,140 210,120 250,170" fill="none" stroke="url(#gold-grad-svg)" stroke-width="4" stroke-linecap="round"/>
+                      <circle cx="20" cy="20" r="25" fill="url(#gold-grad-svg)"/>
                   </svg>
                   <div class="gem diamond" style="top: 15px; left: 15px; transform: rotate(-45deg);"></div>
-                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 1.1s;"></div>
-                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 0.2s;"></div>
-                  <div class="gem emerald" style="top: 125px; left: 75px; transform: rotate(-45deg); animation-delay: 1.8s;"></div>
+                  <div class="gem pearl" style="top: 110px; left: 45px; animation-delay: 1.1s;"></div>
+                  <div class="gem pearl" style="top: 45px; left: 110px; animation-delay: 0.2s;"></div>
+                  <div class="gem emerald" style="top: 165px; left: 95px; transform: rotate(-45deg); animation-delay: 1.8s;"></div>
+                </div>
               </div>
 
               <div class="floral-corner floral-corner-br">
-                  <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0,25 Q60,25 90,55 T150,150 Q100,70 40,100 T0,25" fill="url(#gold-grad-svg)" opacity="0.8"/>
-                      <path d="M0,25 Q50,10 70,30 T120,90 Q60,50 30,70 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M0,25 Q10,50 30,70 T90,120 Q50,60 70,30 T0,25" fill="url(#gold-grad-svg)"/>
-                      <path d="M90,90 C130,110 160,90 190,130" fill="none" stroke="url(#gold-grad-svg)" stroke-width="3" stroke-linecap="round"/>
-                      <circle cx="10" cy="10" r="20" fill="url(#gold-grad-svg)"/>
+                <div class="floral-corner-inner">
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,40 Q80,40 120,80 T200,200 Q140,100 60,140 T0,40" fill="url(#gold-grad-svg)" opacity="0.9"/>
+                      <path d="M0,40 Q60,20 90,50 T160,120 Q80,70 40,90 T0,40" fill="url(#gold-grad-svg)"/>
+                      <path d="M120,120 C170,140 210,120 250,170" fill="none" stroke="url(#gold-grad-svg)" stroke-width="4" stroke-linecap="round"/>
+                      <circle cx="20" cy="20" r="25" fill="url(#gold-grad-svg)"/>
                   </svg>
                   <div class="gem emerald" style="top: 15px; left: 15px;"></div>
-                  <div class="gem pearl" style="top: 85px; left: 35px; animation-delay: 0.6s;"></div>
-                  <div class="gem pearl" style="top: 35px; left: 85px; animation-delay: 1.3s;"></div>
-                  <div class="gem diamond" style="top: 125px; left: 75px; animation-delay: 0.9s;"></div>
+                  <div class="gem pearl" style="top: 110px; left: 45px; animation-delay: 0.6s;"></div>
+                  <div class="gem pearl" style="top: 45px; left: 110px; animation-delay: 1.3s;"></div>
+                  <div class="gem diamond" style="top: 165px; left: 95px; animation-delay: 0.9s;"></div>
+                </div>
               </div>
               <!-- END FLORAL CORNERS -->
 
@@ -457,31 +556,33 @@
                 
                 <div class="romantic-quote hero-reveal">
                     "And He has placed between you affection and mercy."<br>
-                    <span style="font-size: 0.8rem; color: var(--gold-dark); letter-spacing: 3px;">— Surah Ar-Rum [30:21]</span>
+                    <span style="font-size: 0.8rem; color: var(--gold-dark); letter-spacing: 3px; display:inline-block; margin-top:10px;">— Surah Ar-Rum [30:21] —</span>
                 </div>
 
                 <div class="intro-text hero-reveal">Together with their families</div>
                 
-                <div class="names-main hero-reveal shimmer-text">Abdullah</div>
-                <div class="ampersand hero-reveal">and</div>
-                <div class="names-main hero-reveal shimmer-text">Aqsa</div>
+                <div class="names-wrapper">
+                    <div class="names-main hero-reveal shimmer-text">Abdullah</div>
+                    <div class="ampersand hero-reveal breathe-focus">&</div>
+                    <div class="names-main hero-reveal shimmer-text">Aqsa</div>
+                </div>
                 
                 <div class="elegant-divider hero-reveal"><div class="divider-gem"></div></div>
                 
                 <p class="invite-para scroll-reveal">
-                    With hearts full of gratitude to Allah (SWT), we joyfully request the honor of your presence at their grand <strong>Valima Reception</strong>.
+                    With hearts full of gratitude to Allah (SWT), we joyfully request the honor of your presence at their grand <strong style="color: var(--gold-main); font-weight:600;">Valima Reception</strong>.
                 </p>
                 <p class="hindi-latin scroll-reveal">
                     Your presence and heartfelt prayers will make this beautiful Sunnah truly complete.
                 </p>
                 
                 <div class="elegant-divider scroll-reveal">
-                    <div class="gem emerald" style="position:relative; filter:none; box-shadow: 0 0 15px #4caf50; animation:none;"></div>
+                    <div class="divider-gem" style="border-radius:50%; box-shadow: 0 0 25px #D4AF37;"></div>
                 </div>
 
                 <div class="scratch-title scroll-reveal shimmer-text">Reveal The Big Day</div>
                 
-                <div class="scratch-wrapper scroll-reveal">
+                <div class="scratch-wrapper scroll-reveal breathe-focus">
                     <div class="scratch-container">
                         <div class="hidden-date">
                             <h2 class="shimmer-text">July 19, 2026</h2>
@@ -507,11 +608,16 @@
                 <div class="elegant-divider scroll-reveal"><div class="divider-gem"></div></div>
 
                 <div class="scratch-title scroll-reveal shimmer-text" style="margin-top: 10px;">Time Until Forever</div>
+                
+                <!-- REFINED COUNTDOWN TIMER WITH DIVIDERS & TICKING -->
                 <div class="countdown-wrapper scroll-reveal" id="countdown-container">
                     <div class="time-box"><span id="days" class="shimmer-text">00</span><p>Days</p></div>
+                    <div class="time-divider">:</div>
                     <div class="time-box"><span id="hours" class="shimmer-text">00</span><p>Hours</p></div>
+                    <div class="time-divider">:</div>
                     <div class="time-box"><span id="mins" class="shimmer-text">00</span><p>Mins</p></div>
-                    <div class="time-box"><span id="secs" class="shimmer-text">00</span><p>Secs</p></div>
+                    <div class="time-divider">:</div>
+                    <div class="time-box"><span class="tick-animation"><span id="secs" class="shimmer-text">00</span></span><p>Secs</p></div>
                 </div>
 
                 <!-- ADD TO CALENDAR BUTTON UPDATED TO DIRECT GOOGLE CALENDAR LINK -->
@@ -526,7 +632,7 @@
     </div>
 
     <script>
-        // --- iOS AUDIO UNLOCKER TRICK ---
+        // --- iOS AUDIO UNLOCKER TRICK --- (UNTOUCHED FROM USER CODE)
         let audioUnlocked = false;
         function unlockAudioForiOS() {
             if (!audioUnlocked) {
@@ -548,7 +654,40 @@
         document.body.addEventListener('touchstart', unlockAudioForiOS, { once: true });
         document.body.addEventListener('click', unlockAudioForiOS, { once: true });
 
-        // --- EVENT BINDING & SOUND PLAYBACK ---
+        // --- SKIP BUTTON LOGIC ---
+        const skipBtn = document.getElementById('skipBtn');
+        setTimeout(() => { skipBtn.classList.add('show'); }, 1500); // Show skip button shortly after load
+
+        skipBtn.addEventListener('click', () => {
+            // Stop and silence sounds
+            try { 
+                document.getElementById('magicSound').pause(); 
+                document.getElementById('doorSound').pause(); 
+            } catch(e) {}
+            
+            // Kill GSAP timelines to prevent animation conflicts
+            gsap.globalTimeline.clear();
+            
+            // Hide intro scenes immediately
+            document.getElementById('envelope-scene').style.display = 'none';
+            document.getElementById('door-scene').style.display = 'none';
+            document.getElementById('cinematic-flash').style.opacity = 0;
+            skipBtn.classList.remove('show');
+            
+            // Show Card directly
+            const invite = document.getElementById('main-invite');
+            invite.style.display = 'block';
+            invite.style.opacity = 1;
+            
+            gsap.set(".card-container", { scale: 1, y: 0, opacity: 1 });
+            gsap.set(".hero-reveal", { autoAlpha: 1, y: 0 });
+            gsap.set(".floral-corner", { scale: 1, opacity: 1 });
+            
+            initScratchCard();
+            initScrollAnimations();
+        });
+
+        // --- EVENT BINDING & SOUND PLAYBACK --- (UNTOUCHED FROM USER CODE)
         document.getElementById("royalSealEnv").addEventListener("click", () => {
             triggerHaptic('light');
             // Synchronous play to bypass iOS blocking
@@ -602,9 +741,13 @@
             { scale: 1, y: 0, opacity: 1, duration: 1.5, ease: "power3.out", delay: 0.2 }
         );
 
-        // Romantic gold & olive spark particles
+        // ENHANCEMENT 4: PARALLAX FLOATING GOLD DUST
         tsParticles.load("particles-bg", {
             fpsLimit: 60,
+            interactivity: {
+                events: { onHover: { enable: true, mode: "parallax" } },
+                modes: { parallax: { enable: true, force: 40, smooth: 10 } }
+            },
             particles: {
                 number: { value: 40, density: { enable: true, value_area: 900 } },
                 color: { value: ["#D4AF37", "#FCE8B2", "#A6B88B", "#ffffff"] },
@@ -615,7 +758,7 @@
             }
         });
 
-        // --- HIGH-END SCRATCH CARD ---
+        // --- HIGH-END SCRATCH CARD --- (UNTOUCHED AUDIO LOGIC)
         function initScratchCard() {
             const canvas = document.getElementById('scratchCanvas');
             
@@ -715,8 +858,6 @@
         }
 
         // --- LAG-FREE CINEMATIC FLOW ---
-        // FIXED: Instead of aggressively scaling 3D elements by 4.5x causing extreme mobile lag,
-        // The envelope gracefully slides down and fades out (y: '100vh') for butter-smooth 60fps performance.
         let isAnimatingEnv = false;
         function startEnvelopeToDoorSequence() {
             if(isAnimatingEnv) return;
@@ -724,6 +865,7 @@
             
             const sealEnv = document.getElementById("royalSealEnv");
             sealEnv.style.pointerEvents = "none";
+            skipBtn.classList.remove('show'); // Hide skip button during transition
             
             const ring = sealEnv.querySelector('.seal-ring');
             if(ring) ring.style.display = "none";
@@ -742,10 +884,10 @@
               
               .addLabel("zoomToDoors", "flapOpen+=1.8") 
               
-              // PERFORMANCE FIX: Instead of scale: 4.5, drop it safely out of the screen. No lag!
               .to("#envWrapper", { scale: 1.2, opacity: 0, y: window.innerHeight, duration: 1.4, ease: "power2.in" }, "zoomToDoors")
               .to("#door-scene", { opacity: 1, duration: 1.4, ease: "power2.inOut" }, "zoomToDoors")
-              .set("#envelope-scene", { display: "none" });
+              .set("#envelope-scene", { display: "none" })
+              .call(() => { skipBtn.classList.add('show'); }); // Bring back skip button if needed
         }
 
         let isAnimatingDoor = false;
@@ -755,6 +897,7 @@
             
             const sealDoor = document.getElementById("royalSealDoor");
             sealDoor.style.pointerEvents = "none";
+            skipBtn.classList.remove('show'); // Hide completely once inside
             
             const ring = sealDoor.querySelector('.seal-ring');
             if(ring) ring.style.display = "none";
@@ -775,7 +918,6 @@
               .to("#doorLeft", { rotateY: -105, duration: 2.2, ease: "power3.inOut" }, "doorOpen")
               .to("#doorRight", { rotateY: 105, duration: 2.2, ease: "power3.inOut" }, "doorOpen")
               
-              // PERFORMANCE FIX: Scale only slightly (1.5 instead of 2.2) and fade out fast
               .to("#doorWrapper", { scale: 1.5, opacity: 0, duration: 1.4, ease: "power2.in" }, "doorOpen+=0.6")
               
               .to("#cinematic-flash", { opacity: 1, duration: 0.6 }, "doorOpen+=1.2")
@@ -786,7 +928,10 @@
               
               .fromTo(".card-container", { scale: 0.95, y: 30, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 2.0, ease: "power3.out" }, "doorOpen+=1.2")
               
-              .fromTo(".hero-reveal", { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power2.out" }, "doorOpen+=1.6")
+              // ENHANCEMENT 2: DRAW-IN ANIMATION FOR FLORAL CORNERS
+              .fromTo(".floral-corner", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.5, stagger: 0.2, ease: "back.out(1.5)" }, "doorOpen+=1.4")
+              
+              .fromTo(".hero-reveal", { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power2.out" }, "doorOpen+=1.8")
               
               .call(() => { try { document.getElementById('doorSound').pause(); } catch(e){} }, null, "doorOpen+=1.5");
         }
