@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&family=Cinzel:wght@400;500;600;700&family=Amiri:wght@400;700;italic&display=swap" rel="stylesheet">
     
-    <!-- Scripts (GSAP, ScrollTrigger, Particles, Confetti) -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
@@ -72,13 +72,11 @@
         }
         @keyframes breathe { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 0.95; transform: scale(1.03); } }
 
-        /* Subtle damask overlay */
         .pattern-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.04;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            animation: panBg 150s linear infinite; pointer-events: none;
+            pointer-events: none;
         }
-        @keyframes panBg { 0% { background-position: 0 0; } 100% { background-position: 400px 400px; } }
 
         /* --- GLOBAL ANIMATIONS & SHIMMERS --- */
         .shimmer-text {
@@ -100,30 +98,31 @@
         }
         .interactive-seal:active { filter: brightness(0.9); }
 
-        /* --- ✉️ SCREEN 1: ENVELOPE (Floating Animation REMOVED to fix blur) --- */
+        /* --- ✉️ SCREEN 1: ENVELOPE --- */
         #envelope-scene {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; perspective: 2500px; z-index: 200;
             display: flex; justify-content: center; align-items: center; background: rgba(9, 12, 7, 0.95);
-            /* opacity removed so the container stays visible while child fades in */
+            will-change: opacity;
         }
         .envelope-wrapper { 
             position: relative; width: clamp(320px, 90vw, 440px); height: clamp(210px, 60vw, 290px); 
             transform-style: preserve-3d;
-            /* Removed animation: floatEnv to prevent iOS from making the element blurry */
+            will-change: transform, opacity;
         }
         
         .envelope { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0c1109; 
             border-radius: 6px; transform-style: preserve-3d; border: 1px solid rgba(212, 175, 55, 0.5); 
-            box-shadow: 0 40px 60px rgba(0,0,0,0.9), inset 0 0 80px rgba(0,0,0,1); 
+            box-shadow: 0 30px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,1); 
         }
         
         .env-paper { 
             position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; background: #131c0e; 
             border: 1px solid rgba(212, 175, 55, 0.7); border-radius: 4px; z-index: 2; display: flex; 
             flex-direction: column; align-items: center; padding-top: 15%; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.8); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.8); 
             transform: translateZ(1px); 
+            will-change: transform;
         }
         .env-paper::before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border: 1px dashed rgba(212, 175, 55, 0.3); pointer-events: none; }
         
@@ -139,39 +138,41 @@
             z-index: 5; background: linear-gradient(to bottom, #0d130a, #1a2614); clip-path: polygon(0 0, 100% 0, 50% 55%); 
             transform-origin: top center; transform-style: preserve-3d; border-top-left-radius: 6px; border-top-right-radius: 6px; 
             border-top: 2px solid rgba(212, 175, 55, 0.8); transform: translateZ(3px); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6); 
+            will-change: transform;
         }
 
         .royal-seal { 
             position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%) translateZ(10px); 
             width: clamp(90px, 25vw, 110px); height: clamp(90px, 25vw, 110px); background: var(--gold-gradient); 
             border-radius: 50%; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.9), inset 0 3px 8px rgba(255,255,255,0.7), inset 0 -4px 15px rgba(138, 109, 28, 0.9); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 3px 8px rgba(255,255,255,0.7), inset 0 -4px 15px rgba(138, 109, 28, 0.9); 
         }
         .seal-ring { position: absolute; top: -8px; left: -8px; right: -8px; bottom: -8px; border: 2px solid rgba(212, 175, 55, 0.7); border-radius: 50%; animation: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
-        @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; box-shadow: 0 0 50px rgba(212, 175, 55, 0); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
         .royal-seal span { font-family: 'Cinzel', serif; color: #110c01; font-weight: 700; font-size: clamp(1rem, 3vw, 1.2rem); letter-spacing: 4px; z-index: 2;}
 
-        /* --- 🚪 SCREEN 2: PALACE DOORS (Olive Base) --- */
+        /* --- 🚪 SCREEN 2: PALACE DOORS --- */
         #door-scene {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; perspective: 2000px; z-index: 100;
-            display: none; justify-content: center; align-items: center; opacity: 0; transform: scale(0.6);
+            display: none; justify-content: center; align-items: center; opacity: 0; transform: scale(0.85);
+            will-change: transform, opacity;
         }
         
         .door-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 100vh; background: #fff; box-shadow: 0 0 150px 80px rgba(212, 175, 55, 0.8), 0 0 250px 150px rgba(255, 255, 255, 0.6); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
 
-        .door-wrapper { position: relative; width: 100%; max-width: 800px; height: 100vh; display: flex; transform-style: preserve-3d; z-index: 2; }
-        .door { width: 50%; height: 100%; background: linear-gradient(135deg, #090c07 0%, #172212 100%); position: relative; transform-style: preserve-3d; box-shadow: inset 0 0 100px rgba(0,0,0,1); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5%; backface-visibility: hidden; border: 1px solid #000; }
+        .door-wrapper { position: relative; width: 100%; max-width: 800px; height: 100vh; display: flex; transform-style: preserve-3d; z-index: 2; will-change: transform; }
+        .door { width: 50%; height: 100%; background: linear-gradient(135deg, #090c07 0%, #172212 100%); position: relative; transform-style: preserve-3d; box-shadow: inset 0 0 80px rgba(0,0,0,1); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5%; backface-visibility: hidden; border: 1px solid #000; will-change: transform; }
         
-        .door-left { transform-origin: left center; border-right: 2px solid var(--gold-main); box-shadow: inset -10px 0 30px rgba(0,0,0,0.9); }
-        .door-right { transform-origin: right center; border-left: 2px solid var(--gold-main); box-shadow: inset 10px 0 30px rgba(0,0,0,0.9); }
+        .door-left { transform-origin: left center; border-right: 2px solid var(--gold-main); }
+        .door-right { transform-origin: right center; border-left: 2px solid var(--gold-main); }
         
-        .door-panel { width: 75%; height: 35%; position: relative; margin: 20px 0; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 4px; background: rgba(14, 20, 11, 0.6); box-shadow: inset 0 0 40px rgba(0,0,0,0.9), 0 5px 15px rgba(0,0,0,0.6); }
+        .door-panel { width: 75%; height: 35%; position: relative; margin: 20px 0; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 4px; background: rgba(14, 20, 11, 0.6); box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5); }
         .door-panel::after { content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
         
         #royalSealDoor { width: 120px; height: 120px; } #royalSealDoor span { font-size: 1.2rem; }
         
-        #cinematic-flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ffffff 0%, transparent 100%); opacity: 0; z-index: 90; pointer-events: none; mix-blend-mode: screen; }
+        #cinematic-flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ffffff 0%, transparent 100%); opacity: 0; z-index: 90; pointer-events: none; mix-blend-mode: screen; will-change: opacity; }
 
         /* --- 📜 SCREEN 3: INVITATION CONTENT --- */
         #main-invite {
@@ -190,7 +191,6 @@
             position: relative; overflow: hidden;
         }
 
-        /* Animated Light Shine across the card */
         .content-wrapper::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: linear-gradient(45deg, transparent 45%, rgba(212, 175, 55, 0.08) 50%, transparent 55%);
@@ -204,7 +204,6 @@
             background-size: 160px 160px; background-position: center; z-index: 0; pointer-events: none;
         }
 
-        /* Double border styling */
         .content-wrapper > .border-outer { position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 2px solid rgba(212, 175, 55, 0.5); border-radius: 12px; pointer-events: none; z-index: 1; }
         .content-wrapper > .border-inner { position: absolute; top: 18px; left: 18px; right: 18px; bottom: 18px; border: 1px dashed rgba(212, 175, 55, 0.3); border-radius: 8px; pointer-events: none; z-index: 1; }
 
@@ -215,36 +214,30 @@
         .floral-corner-bl { bottom: 8px; left: 8px; transform: scaleY(-1); }
         .floral-corner-br { bottom: 8px; right: 8px; transform: scale(-1, -1); }
         
-        /* --- BEAUTIFUL 3D GEMS (Emeralds & Pearls) --- */
+        /* --- BEAUTIFUL 3D GEMS --- */
         .gem { position: absolute; z-index: 10; animation: sparkleGem 3s infinite alternate ease-in-out; }
         
         .emerald { 
-            width: 15px; height: 15px; background: radial-gradient(circle at 30% 30%, #66ff66 0%, #20801a 40%, #062404 100%); 
+            width: 14px; height: 14px; background: radial-gradient(circle at 30% 30%, #66ff66 0%, #20801a 40%, #062404 100%); 
             transform: rotate(45deg); border-radius: 2px; 
-            box-shadow: inset 2px 2px 4px rgba(255,255,255,0.8), inset -2px -2px 6px rgba(0,0,0,0.9), 0 6px 12px rgba(0,0,0,0.9); 
+            box-shadow: inset 2px 2px 4px rgba(255,255,255,0.8), inset -2px -2px 6px rgba(0,0,0,0.9), 0 4px 8px rgba(0,0,0,0.9); 
         }
         .pearl { 
-            width: 13px; height: 13px; border-radius: 50%; 
+            width: 12px; height: 12px; border-radius: 50%; 
             background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fffbf0 30%, #d4c5a9 80%, #9c8e6d 100%); 
-            box-shadow: inset -3px -3px 6px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,1), 0 5px 10px rgba(0,0,0,0.8); 
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,1), 0 4px 8px rgba(0,0,0,0.8); 
         }
         .diamond { 
-            width: 14px; height: 14px; transform: rotate(45deg);
+            width: 13px; height: 13px; transform: rotate(45deg);
             background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d4f0ff 40%, #78cff2 100%);
             border: 1px solid rgba(255,255,255,0.9); border-radius: 1px;
-            box-shadow: inset 2px 2px 5px rgba(255,255,255,1), inset -2px -2px 5px rgba(0,0,0,0.5), 0 5px 10px rgba(0,0,0,0.8);
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,1), inset -2px -2px 5px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.8);
         }
 
         @keyframes sparkleGem {
-            0% { filter: brightness(1) drop-shadow(0 0 2px rgba(255,255,255,0.2)); transform: scale(1) rotate(45deg); }
-            50% { filter: brightness(1.3) drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)); transform: scale(1.1) rotate(45deg); }
-            100% { filter: brightness(1) drop-shadow(0 0 2px rgba(255,255,255,0.2)); transform: scale(1) rotate(45deg); }
-        }
-        .pearl { animation: sparklePearl 4s infinite alternate ease-in-out; }
-        @keyframes sparklePearl {
-            0% { filter: brightness(1); transform: scale(1); }
-            50% { filter: brightness(1.2); transform: scale(1.05); }
-            100% { filter: brightness(1); transform: scale(1); }
+            0% { filter: brightness(1); transform: scale(1) rotate(45deg); }
+            50% { filter: brightness(1.2); transform: scale(1.05) rotate(45deg); }
+            100% { filter: brightness(1); transform: scale(1) rotate(45deg); }
         }
 
         .content-inner { position: relative; z-index: 5; width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -284,15 +277,15 @@
         .scratch-hint { color: var(--gold-main); font-size: 0.95rem; margin-top: 20px; letter-spacing: 2px; font-weight: 500; opacity: 0.95; font-style: italic; }
 
         /* --- LOCATION BOX --- */
-        .location-box { background: rgba(14, 20, 11, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 16px; padding: 40px 20px; margin: 10px auto 25px auto; width: 95%; max-width: 380px; box-shadow: inset 0 2px 30px rgba(255,255,255,0.08), 0 25px 50px rgba(0,0,0,0.95); position: relative; overflow: hidden; }
-        .location-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent); z-index: 1; pointer-events: none; }
-        .location-icon { width: 50px; height: 50px; margin: 0 auto 18px auto; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.95)); }
+        .location-box { background: rgba(14, 20, 11, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 40px 20px; margin: 10px auto 25px auto; width: 95%; max-width: 380px; box-shadow: inset 0 2px 30px rgba(255,255,255,0.05), 0 25px 50px rgba(0,0,0,0.95); position: relative; overflow: hidden; }
+        .location-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent); z-index: 1; pointer-events: none; }
+        .location-icon { width: 50px; height: 50px; margin: 0 auto 15px auto; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.95)); }
         .location-box h3 { font-family: 'Cinzel', serif; font-size: 1.3rem; letter-spacing: 5px; margin-bottom: 12px; text-transform: uppercase; text-shadow: 0 3px 8px rgba(0,0,0,0.95); }
         .location-box p { color: #f0f0f0; font-size: 1rem; font-weight: 300; line-height: 1.9; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
 
         /* --- ⏳ COUNTDOWN --- */
         .countdown-wrapper { display: flex; gap: 18px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
-        .time-box { position: relative; width: 85px; height: 95px; background: rgba(14, 20, 11, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.6); border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 2px 25px rgba(255,255,255,0.1), 0 20px 45px rgba(0,0,0,0.95); }
+        .time-box { position: relative; width: 85px; height: 95px; background: rgba(14, 20, 11, 0.85); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 2px 25px rgba(255,255,255,0.1), 0 20px 45px rgba(0,0,0,0.95); }
         .time-box span { font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700; line-height: 1; z-index: 2; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.95)); }
         .time-box p { font-size: 0.75rem; color: #f0f0f0; text-transform: uppercase; letter-spacing: 3px; margin-top: 8px; z-index: 2; font-weight: 600;}
 
@@ -328,11 +321,17 @@
         
         .hero-reveal, .scroll-reveal { visibility: hidden; opacity: 0; }
 
+        /* --- PERFORMANCE FIX FOR MOBILE DEVICES --- */
+        @media (max-width: 768px) {
+            .content-wrapper { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+            .location-box { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- AUDIO FIX: Using ultra-reliable MP3 files hosted on a Google Cloud gaming CDN that never blocks access -->
+    <!-- RELIABLE MP3 SOUNDS -->
     <audio id="magicSound" preload="auto">
         <source src="https://www.myinstants.com/media/sounds/magic-chime-01.mp3" type="audio/mpeg">
         <source src="https://codeskulptor-demos.commondatastorage.googleapis.com/descent/gotitem.mp3" type="audio/mpeg">
@@ -564,7 +563,7 @@
 
         document.getElementById("royalSealDoor").addEventListener("click", () => {
             triggerHaptic('light');
-            // Synchronous play for door sound (MP3s hosted on ultra-reliable CDN)
+            // Synchronous play for door sound
             try { 
                 const door = document.getElementById('doorSound');
                 door.volume = 1.0; 
@@ -574,7 +573,6 @@
             startDoorToCardSequence();
         });
 
-        // FIXED: REVERTED BACK TO DIRECT WEB LINK FOR 1-CLICK CALENDAR
         document.getElementById('addToCalendarBtn').addEventListener('click', function(e) {
             e.preventDefault();
             
@@ -584,7 +582,7 @@
             const startDate = "20260719T190000"; 
             const endDate = "20260719T230000";   
             
-            // This direct link skips the download process and opens Google Calendar instantly
+            // Direct Google Calendar Link
             const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
             window.open(googleUrl, '_blank');
         });
@@ -600,8 +598,8 @@
         // --- INITIAL ENVELOPE ENTRANCE ANIMATION ---
         gsap.fromTo("#envelope-scene", { opacity: 0 }, { opacity: 1, duration: 0.8 });
         gsap.fromTo("#envWrapper", 
-            { scale: 0.7, y: 80 }, 
-            { scale: 1, y: 0, duration: 2.0, ease: "power3.out" }
+            { scale: 0.85, y: 50, opacity: 0 }, 
+            { scale: 1, y: 0, opacity: 1, duration: 1.5, ease: "power3.out", delay: 0.2 }
         );
 
         // Romantic gold & olive spark particles
@@ -716,7 +714,9 @@
             ScrollTrigger.refresh();
         }
 
-        // --- PERFECTED CINEMATIC FLOW ---
+        // --- LAG-FREE CINEMATIC FLOW ---
+        // FIXED: Instead of aggressively scaling 3D elements by 4.5x causing extreme mobile lag,
+        // The envelope gracefully slides down and fades out (y: '100vh') for butter-smooth 60fps performance.
         let isAnimatingEnv = false;
         function startEnvelopeToDoorSequence() {
             if(isAnimatingEnv) return;
@@ -738,12 +738,13 @@
               .to("#envTopFlap", { rotateX: 180, z: -10, duration: 1.2, ease: "power3.inOut" }, "flapOpen")
               .to("#envPaper", { y: -75, z: 15, duration: 1.4, ease: "power3.inOut" }, "flapOpen+=0.2")
               
-              .set("#door-scene", { display: "flex", scale: 0.6, opacity: 0, zIndex: 300 })
+              .set("#door-scene", { display: "flex", opacity: 0, zIndex: 300 })
               
               .addLabel("zoomToDoors", "flapOpen+=1.8") 
               
-              .to("#envWrapper", { scale: 4.5, opacity: 0, y: 300, duration: 1.6, ease: "power3.inOut" }, "zoomToDoors")
-              .to("#door-scene", { scale: 1, opacity: 1, duration: 1.6, ease: "power3.inOut" }, "zoomToDoors")
+              // PERFORMANCE FIX: Instead of scale: 4.5, drop it safely out of the screen. No lag!
+              .to("#envWrapper", { scale: 1.2, opacity: 0, y: window.innerHeight, duration: 1.4, ease: "power2.in" }, "zoomToDoors")
+              .to("#door-scene", { opacity: 1, duration: 1.4, ease: "power2.inOut" }, "zoomToDoors")
               .set("#envelope-scene", { display: "none" });
         }
 
@@ -774,7 +775,8 @@
               .to("#doorLeft", { rotateY: -105, duration: 2.2, ease: "power3.inOut" }, "doorOpen")
               .to("#doorRight", { rotateY: 105, duration: 2.2, ease: "power3.inOut" }, "doorOpen")
               
-              .to("#doorWrapper", { scale: 2.2, opacity: 0, duration: 1.8, ease: "power3.inOut" }, "doorOpen+=0.4")
+              // PERFORMANCE FIX: Scale only slightly (1.5 instead of 2.2) and fade out fast
+              .to("#doorWrapper", { scale: 1.5, opacity: 0, duration: 1.4, ease: "power2.in" }, "doorOpen+=0.6")
               
               .to("#cinematic-flash", { opacity: 1, duration: 0.6 }, "doorOpen+=1.2")
               .set("#door-scene", { display: "none" }, "doorOpen+=1.8")
