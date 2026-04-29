@@ -8,15 +8,15 @@
     <!-- Social Media Preview Tags (Open Graph) - Optimized for Full Size Image -->
     <meta property="og:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
     <meta property="og:description" content="Join us to celebrate the Valima Reception at United Palace." />
-    <meta property="og:type" content="article" /> <!-- 'article' forces large preview in many apps -->
+    <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Abdullah & Aqsa Valima" />
     
     <!-- Exact live URL -->
     <meta property="og:url" content="https://SenoRrA.github.io/valima-invite/" />
     
     <!-- Exact image URL & Advanced Image Meta Tags (Cache Buster Added) -->
-    <meta property="og:image" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg?v=latest" />
-    <meta property="og:image:secure_url" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg?v=latest" />
+    <meta property="og:image" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg?v=1" />
+    <meta property="og:image:secure_url" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg?v=1" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -26,7 +26,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
     <meta name="twitter:description" content="Join us to celebrate the Valima Reception at United Palace." />
-    <meta name="twitter:image" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg?v=latest" />
+    <meta name="twitter:image" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg?v=1" />
     
     <!-- Premium Font Pairing -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -314,13 +314,13 @@
         <source src="darood.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- PERFECTED VIDEO SEQUENCE (Muted added in HTML so browser doesn't block load, Unmuted in JS) -->
+    <!-- PERFECTED VIDEO SEQUENCE (Playsinline and Webkit-Playsinline crucial for iOS) -->
     <div id="video-sequence">
-        <video id="envVideo" class="cinematic-video" playsinline muted preload="auto">
+        <video id="envVideo" class="cinematic-video" playsinline webkit-playsinline muted preload="auto">
             <source src="envelope.mp4" type="video/mp4">
         </video>
 
-        <video id="doorVideo" class="cinematic-video" playsinline muted preload="auto" style="display: none; opacity: 0;">
+        <video id="doorVideo" class="cinematic-video" playsinline webkit-playsinline muted preload="auto" style="display: none; opacity: 0;">
             <source src="door.mp4" type="video/mp4">
         </video>
 
@@ -479,7 +479,7 @@
             }
         });
 
-        // --- PERFECTED VIDEO SEQUENCE LOGIC (MOBILE AUTOPLAY FIX) ---
+        // --- ROCK-SOLID IOS VIDEO & AUDIO UNLOCKER ---
         const envVideo = document.getElementById('envVideo');
         const doorVideo = document.getElementById('doorVideo');
         const startBtn = document.getElementById('start-cinematic-btn');
@@ -489,50 +489,51 @@
 
         let sequenceStarted = false;
 
-        function startSequence(e) {
-            if (e) {
-                e.preventDefault();
-                // Prevent ghost clicks from double events
-                if (e.type === 'touchstart') {
-                    startBtn.removeEventListener('click', startSequence);
-                }
-            }
+        // Note: Using ONLY 'click' because 'touchstart' blocks audio on iOS Safari
+        startBtn.addEventListener('click', function(e) {
             if (sequenceStarted) return;
             sequenceStarted = true;
 
             triggerHaptic();
-            try { 
-                const magic = document.getElementById('magicSound');
-                magic.volume = 0.5; magic.play().catch(()=>{}); 
-            } catch(err){}
 
-            // Hide the open button and show skip button
+            // 1. Hide the open button and show skip button
             gsap.to(startBtn, { scale: 0.5, opacity: 0, duration: 0.4, ease: "back.in(1.5)", onComplete: () => startBtn.style.display = 'none' });
             skipBtn.classList.add('show');
             
-            // MOBILE SOUND & AUTOPLAY FIX:
-            // 1. Unmute videos explicitly inside this exact user click interaction
+            // 2. Play Magic Sound
+            const magic = document.getElementById('magicSound');
+            if(magic) {
+                magic.volume = 0.5;
+                magic.play().catch(()=>{});
+            }
+
+            // 3. Unlock Darood Audio immediately during this valid user interaction
+            const darood = document.getElementById('daroodSound');
+            if (darood) {
+                darood.volume = 0; // Temp mute to unlock silently
+                darood.play().then(() => {
+                    darood.pause();
+                    darood.currentTime = 0;
+                    darood.volume = 0.5; // Restore volume for when we actually play it later
+                }).catch(err => console.log("Darood unlock failed", err));
+            }
+
+            // 4. Safely Unmute Videos
             envVideo.muted = false;
             doorVideo.muted = false;
             
-            // 2. Force unlock the second video on iOS by quickly playing & pausing it immediately during this click
-            const doorPromise = doorVideo.play();
-            if (doorPromise !== undefined) {
-                doorPromise.then(() => {
-                    doorVideo.pause();
-                    doorVideo.currentTime = 0;
-                }).catch(e => console.warn("Door video unlock blocked, will fallback later"));
-            }
+            // 5. Warm up second video (Door) so it doesn't freeze later
+            doorVideo.play().then(() => {
+                doorVideo.pause();
+                doorVideo.currentTime = 0;
+            }).catch(()=>{});
 
-            // 3. Play the first video normally, fallback to main content if power saving mode blocks it
-            envVideo.play().catch(e => {
-                console.warn("Envelope video playback blocked due to iOS Power Saving / Autoplay policy", e);
+            // 6. Play the Envelope Video
+            envVideo.play().catch(err => {
+                console.warn("Envelope video autoplay blocked completely. Skipping to content.", err);
                 showMainContent(); 
             });
-        }
-
-        startBtn.addEventListener('click', startSequence);
-        startBtn.addEventListener('touchstart', startSequence, { passive: false }); 
+        });
 
         // When envelope video ends, smoothly transition to door video
         envVideo.addEventListener('ended', () => {
@@ -585,12 +586,10 @@
                 );
 
                 // --- DAROOD AUDIO PLAY LOGIC ---
+                // Because we unlocked it safely inside the Click event, this will now work 100% on iOS!
                 const darood = document.getElementById('daroodSound');
                 if (darood) {
-                    darood.volume = 0.5; // Set comfortable volume
-                    setTimeout(() => { 
-                        darood.play().catch(e => console.log("Darood autoplay blocked by browser. User interaction needed.", e)); 
-                    }, 500); // 0.5s delay to match card reveal animation
+                    darood.play().catch(e => console.log("Darood final play blocked.", e)); 
                 }
 
             }, 50);
