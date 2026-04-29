@@ -134,35 +134,72 @@
         
         .cinematic-video {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            object-fit: cover; 
+            /* object-fit cover with center positioning ensures perfect alignment on all phones */
+            object-fit: cover; object-position: center; 
             transition: opacity 0.5s ease;
         }
 
+        /* --- ELEGANT SPECIAL EFFECT OPEN BUTTON --- */
         #start-cinematic-btn {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 140px; height: 140px; background: rgba(0, 0, 0, 0.3); 
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); 
-            border: 3px solid var(--gold-main); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; z-index: 250; 
-            cursor: none; 
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4), inset 0 0 20px rgba(212, 175, 55, 0.3);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: absolute; 
+            top: 38%; /* Positioned just above the wax seal */
+            left: 50%; 
+            transform: translateX(-50%);
+            width: auto; height: auto;
+            padding: 16px 45px;
+            background: rgba(10, 15, 8, 0.7); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid rgba(212, 175, 55, 0.6); 
+            border-radius: 50px; /* Elegant pill shape */
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 250; cursor: pointer; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 
+                        0 0 25px rgba(212, 175, 55, 0.2), 
+                        inset 0 0 15px rgba(212, 175, 55, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            animation: floatBtn 3.5s ease-in-out infinite;
         }
-        #start-cinematic-btn:hover {
-            transform: translate(-50%, -50%) scale(1.05);
-            box-shadow: 0 0 60px rgba(212, 175, 55, 0.6), inset 0 0 30px rgba(212, 175, 55, 0.4);
+
+        /* Floating Animation */
+        @keyframes floatBtn {
+            0% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+            100% { transform: translateX(-50%) translateY(0px); }
         }
+
+        /* Light Shimmer Effect */
         #start-cinematic-btn::before {
-            content: ''; position: absolute; width: 110px; height: 110px;
-            border: 1px dashed var(--gold-light); border-radius: 50%;
-            animation: spin 15s linear infinite;
+            content: ''; position: absolute; 
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: skewX(-25deg);
+            animation: lightSweep 4s infinite;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes lightSweep {
+            0% { left: -150%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        #start-cinematic-btn:hover {
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), 
+                        0 0 35px rgba(212, 175, 55, 0.5), 
+                        inset 0 0 20px rgba(212, 175, 55, 0.3);
+            border-color: var(--gold-main);
+        }
         
         #start-cinematic-btn span { 
             font-family: 'Cinzel', serif; color: var(--gold-light); 
-            font-weight: 600; font-size: 1.1rem; letter-spacing: 4px; 
-            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.8); 
+            font-weight: 700; font-size: clamp(0.9rem, 2.5vw, 1.1rem); letter-spacing: 4px; 
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9); 
+            display: flex; align-items: center; gap: 12px;
+            white-space: nowrap;
+        }
+        #start-cinematic-btn i {
+            color: var(--gold-main); font-size: 1.1rem;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
         }
 
         .skip-btn {
@@ -287,8 +324,7 @@
             .countdown-wrapper { gap: 8px; }
             .time-box { width: 75px; height: 85px; }
             .time-box span { font-size: 2rem; }
-            #start-cinematic-btn { width: 110px; height: 110px; }
-            #start-cinematic-btn::before { width: 85px; height: 85px; }
+            #start-cinematic-btn { top: 38%; padding: 12px 30px; }
             .action-btn { padding: 12px 25px; font-size: 0.8rem; }
         }
     </style>
@@ -325,7 +361,7 @@
         </video>
 
         <div id="start-cinematic-btn" class="hover-target">
-            <span>OPEN</span>
+            <span><i class="fas fa-envelope-open-text"></i> OPEN INVITATION</span>
         </div>
         
         <button id="skipBtn" class="skip-btn hover-target">Skip Intro »</button>
