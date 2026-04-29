@@ -314,13 +314,13 @@
         <source src="darood.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- PERFECTED VIDEO SEQUENCE -->
+    <!-- PERFECTED VIDEO SEQUENCE (Muted added in HTML so browser doesn't block load, Unmuted in JS) -->
     <div id="video-sequence">
-        <video id="envVideo" class="cinematic-video" playsinline preload="auto">
+        <video id="envVideo" class="cinematic-video" playsinline muted preload="auto">
             <source src="envelope.mp4" type="video/mp4">
         </video>
 
-        <video id="doorVideo" class="cinematic-video" playsinline preload="auto" style="display: none; opacity: 0;">
+        <video id="doorVideo" class="cinematic-video" playsinline muted preload="auto" style="display: none; opacity: 0;">
             <source src="door.mp4" type="video/mp4">
         </video>
 
@@ -429,30 +429,6 @@
     </style>
 
     <script>
-        // --- AUDIO UNLOCKER FOR SAFARI/iOS ---
-        // Browsers block autoplay. This unlocks the audio context on first click.
-        let audioUnlocked = false;
-        function unlockAudio() {
-            if (!audioUnlocked) {
-                const sounds = [
-                    document.getElementById('magicSound'),
-                    document.getElementById('daroodSound')
-                ];
-                sounds.forEach(sound => {
-                    if(sound) {
-                        sound.volume = 0; 
-                        sound.play().then(() => { 
-                            sound.pause(); 
-                            sound.currentTime = 0; 
-                        }).catch(() => {});
-                    }
-                });
-                audioUnlocked = true;
-            }
-        }
-        document.body.addEventListener('touchstart', unlockAudio, { once: true });
-        document.body.addEventListener('click', unlockAudio, { once: true });
-
         // --- CUSTOM CURSOR LOGIC ---
         const cursor = document.querySelector('.cursor');
         const cursorFollower = document.querySelector('.cursor-follower');
@@ -503,7 +479,7 @@
             }
         });
 
-        // --- PERFECTED VIDEO SEQUENCE LOGIC ---
+        // --- PERFECTED VIDEO SEQUENCE LOGIC (MOBILE AUTOPLAY FIX) ---
         const envVideo = document.getElementById('envVideo');
         const doorVideo = document.getElementById('doorVideo');
         const startBtn = document.getElementById('start-cinematic-btn');
@@ -511,8 +487,19 @@
         const mainInvite = document.getElementById('main-invite');
         const skipBtn = document.getElementById('skipBtn');
 
+        let sequenceStarted = false;
+
         function startSequence(e) {
-            if (e) e.preventDefault(); 
+            if (e) {
+                e.preventDefault();
+                // Prevent ghost clicks from double events
+                if (e.type === 'touchstart') {
+                    startBtn.removeEventListener('click', startSequence);
+                }
+            }
+            if (sequenceStarted) return;
+            sequenceStarted = true;
+
             triggerHaptic();
             try { 
                 const magic = document.getElementById('magicSound');
@@ -523,15 +510,29 @@
             gsap.to(startBtn, { scale: 0.5, opacity: 0, duration: 0.4, ease: "back.in(1.5)", onComplete: () => startBtn.style.display = 'none' });
             skipBtn.classList.add('show');
             
-            // Play first video, fallback to main content if video fails
+            // MOBILE SOUND & AUTOPLAY FIX:
+            // 1. Unmute videos explicitly inside this exact user click interaction
+            envVideo.muted = false;
+            doorVideo.muted = false;
+            
+            // 2. Force unlock the second video on iOS by quickly playing & pausing it immediately during this click
+            const doorPromise = doorVideo.play();
+            if (doorPromise !== undefined) {
+                doorPromise.then(() => {
+                    doorVideo.pause();
+                    doorVideo.currentTime = 0;
+                }).catch(e => console.warn("Door video unlock blocked, will fallback later"));
+            }
+
+            // 3. Play the first video normally, fallback to main content if power saving mode blocks it
             envVideo.play().catch(e => {
-                console.warn("Envelope video playback failed", e);
+                console.warn("Envelope video playback blocked due to iOS Power Saving / Autoplay policy", e);
                 showMainContent(); 
             });
         }
 
         startBtn.addEventListener('click', startSequence);
-        startBtn.addEventListener('touchstart', startSequence, { passive: false }); // for mobile fast click
+        startBtn.addEventListener('touchstart', startSequence, { passive: false }); 
 
         // When envelope video ends, smoothly transition to door video
         envVideo.addEventListener('ended', () => {
