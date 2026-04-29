@@ -8,14 +8,14 @@
     <!-- Social Media Preview Tags (Open Graph) - Optimized for Full Size Image -->
     <meta property="og:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
     <meta property="og:description" content="Join us to celebrate the Valima Reception at United Palace." />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="article" /> <!-- 'article' forces large preview in many apps -->
     <meta property="og:site_name" content="Abdullah & Aqsa Valima" />
     
     <!-- Exact live URL -->
     <meta property="og:url" content="https://SenoRrA.github.io/valima-invite/" />
     
     <!-- Exact image URL & Advanced Image Meta Tags -->
-    <meta property="og:image" itemprop="image" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg" />
+    <meta property="og:image" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg" />
     <meta property="og:image:secure_url" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
@@ -294,6 +294,11 @@
     </style>
 </head>
 <body>
+
+    <!-- WHATSAPP HIDDEN IMAGE TRICK - FORCES LARGE PREVIEW -->
+    <div style="height: 0; width: 0; position: absolute; visibility: hidden; overflow: hidden;">
+        <img itemprop="image" src="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg" alt="Abdullah & Aqsa Valima Invitation">
+    </div>
 
     <!-- Custom Cursor -->
     <div class="cursor"></div>
