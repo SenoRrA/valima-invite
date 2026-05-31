@@ -39,18 +39,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
 
     <style>
         :root {
-            --bg-dark: #020704; 
-            --emerald-deep: #051208; 
-            --emerald-glow: rgba(22, 54, 30, 0.6); 
-            --gold-gradient: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            --bg-dark: #010402; 
+            --emerald-deep: #030a05; 
+            --emerald-glow: rgba(22, 54, 30, 0.8); 
+            --gold-gradient: linear-gradient(135deg, #CFB53B, #FFF5C3, #B38728, #FBF5B7, #AA771C);
             --gold-light: #FDF7D4;
             --gold-main: #D4AF37;
             --gold-dark: #8A6D1C;
-            --glass-bg: rgba(5, 12, 8, 0.55); 
-            --glass-border: rgba(212, 175, 55, 0.25);
+            --glass-bg: rgba(3, 10, 5, 0.75); 
+            --glass-border: rgba(212, 175, 55, 0.45);
+            --bloom: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.2);
+            --intense-bloom: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 60px rgba(212, 175, 55, 0.4), 0 0 90px rgba(212, 175, 55, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
@@ -59,13 +62,19 @@
             width: 100%; height: 100%;
             background-color: var(--bg-dark);
             font-family: 'Cormorant Garamond', serif;
-            overflow: hidden;
+            overflow: hidden; 
             -webkit-tap-highlight-color: transparent;
             color: var(--gold-light);
             overscroll-behavior-y: none;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+        
+        /* Lenis smooth scroll */
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
 
         /* --- Custom Cursor --- */
         .cursor {
@@ -73,23 +82,23 @@
             background: var(--gold-main); border-radius: 50%;
             pointer-events: none; z-index: 10000;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px var(--gold-main);
+            box-shadow: 0 0 20px var(--gold-main), 0 0 10px #fff;
             transition: width 0.3s, height 0.3s, background 0.3s;
             mix-blend-mode: screen;
         }
         .cursor-follower {
-            position: fixed; top: 0; left: 0; width: 40px; height: 40px;
-            border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 50%;
+            position: fixed; top: 0; left: 0; width: 45px; height: 45px;
+            border: 1.5px solid rgba(212, 175, 55, 0.6); border-radius: 50%;
             pointer-events: none; z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
         }
         @media (pointer: coarse) { .cursor, .cursor-follower { display: none; } * { cursor: auto; } }
 
-        /* --- Backgrounds --- */
+        /* --- Backgrounds & Ambient Effects --- */
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9998; pointer-events: none;
-            background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
+            background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.06"/%3E%3C/svg%3E');
             mix-blend-mode: overlay;
         }
 
@@ -97,16 +106,30 @@
         
         .ambient-glow {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 50% 30%, var(--emerald-glow) 0%, var(--bg-dark) 70%);
-            z-index: 0; animation: breatheGlow 8s infinite alternate ease-in-out;
+            background: radial-gradient(circle at 50% 40%, var(--emerald-glow) 0%, var(--bg-dark) 80%);
+            z-index: 0; animation: breatheGlow 10s infinite alternate ease-in-out;
         }
-        @keyframes breatheGlow { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
+        @keyframes breatheGlow { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
 
         .pattern-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.03;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.05;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l14 14-14 14L16 14 30 0zm0 60L16 46l14-14 14 14L30 60zM0 30l14-14 14 14-14 14L0 30zm60 0L46 16l-14 14 14 14 14-14z' fill='%23d4af37' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E");
             pointer-events: none;
+            transition: opacity 2s ease;
         }
+        
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 150; pointer-events: none;
+            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.85) 100%);
+        }
+
+        .light-rays {
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; z-index: 2; pointer-events: none;
+            background: repeating-conic-gradient(from 0deg at 50% 0%, transparent 0deg, rgba(212,175,55,0.04) 5deg, transparent 10deg);
+            animation: rotateRays 60s linear infinite; opacity: 0;
+            mix-blend-mode: screen;
+        }
+        @keyframes rotateRays { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- Premium Typography Utilities --- */
         .shimmer-text {
@@ -116,12 +139,38 @@
             -webkit-background-clip: text;
             background-clip: text;
             animation: shine 6s linear infinite;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
         }
         @keyframes shine { to { background-position: 200% center; } }
 
+        /* --- NOOR (DIVINE LIGHT) ANIMATIONS FOR NAMES --- */
+        .names-wrapper { 
+            display: flex; flex-direction: column; align-items: center; width: 100%; margin: 40px 0 50px 0; position: relative; 
+            animation: noorRadiance 4s infinite ease-in-out alternate;
+        }
+        @keyframes noorRadiance {
+            0% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5)); transform: scale(1); }
+            100% { filter: drop-shadow(0 0 35px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 70px rgba(212, 175, 55, 0.8)) drop-shadow(0 0 100px rgba(253, 247, 212, 0.4)); transform: scale(1.04); }
+        }
+        
+        .noor-text {
+            background: linear-gradient(to right, #FFFFFF 0%, #FDF7D4 25%, #FFD700 50%, #FDF7D4 75%, #FFFFFF 100%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 5s linear infinite;
+        }
+
+        .names-main { 
+            font-family: 'Cinzel Decorative', cursive; font-size: 5.5rem; line-height: 1.1; margin: 0; padding: 0; font-weight: 900; letter-spacing: 4px; 
+            /* Text shadow removed here to let the wrapper's drop-shadow handle the pure glow perfectly */
+        }
+        .ampersand { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: #FFF; margin: 15px 0; font-style: italic; font-weight: 400; }
+
         .mask-reveal {
             clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-            transform: translateY(20px);
+            transform: translateY(30px);
             opacity: 0;
         }
 
@@ -130,202 +179,301 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             z-index: 200; background: #000; 
             display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
         }
         
         .cinematic-video {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            /* object-fit cover with center positioning ensures perfect alignment on all phones */
             object-fit: cover; object-position: center; 
-            transition: opacity 0.5s ease;
         }
+
+        #envVideo { z-index: 2; opacity: 1; }
+        #doorVideo { z-index: 1; opacity: 0; }
 
         /* --- ELEGANT SPECIAL EFFECT OPEN BUTTON --- */
         #start-cinematic-btn {
             position: absolute; 
-            top: 38%; /* Positioned just above the wax seal */
+            top: 40%;
             left: 50%; 
             transform: translateX(-50%);
-            width: auto; height: auto;
-            padding: 16px 45px;
-            background: rgba(10, 15, 8, 0.7); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
-            border: 1px solid rgba(212, 175, 55, 0.6); 
-            border-radius: 50px; /* Elegant pill shape */
+            padding: 18px 50px;
+            background: rgba(5, 10, 5, 0.85); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid rgba(212, 175, 55, 0.8); 
+            border-radius: 50px; 
             display: flex; justify-content: center; align-items: center; 
             z-index: 250; cursor: pointer; 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 
-                        0 0 25px rgba(212, 175, 55, 0.2), 
-                        inset 0 0 15px rgba(212, 175, 55, 0.15);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 
+                        0 0 30px rgba(212, 175, 55, 0.3), 
+                        inset 0 0 20px rgba(212, 175, 55, 0.2);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
-            animation: floatBtn 3.5s ease-in-out infinite;
+            animation: floatBtn 4s ease-in-out infinite;
         }
 
-        /* Floating Animation */
         @keyframes floatBtn {
-            0% { transform: translateX(-50%) translateY(0px); }
-            50% { transform: translateX(-50%) translateY(-10px); }
-            100% { transform: translateX(-50%) translateY(0px); }
+            0% { transform: translateX(-50%) translateY(0px); box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.3); }
+            50% { transform: translateX(-50%) translateY(-12px); box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 45px rgba(212, 175, 55, 0.5); }
+            100% { transform: translateX(-50%) translateY(0px); box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.3); }
         }
 
-        /* Light Shimmer Effect */
         #start-cinematic-btn::before {
             content: ''; position: absolute; 
             top: 0; left: -150%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+            background: linear-gradient(to right, transparent, rgba(253, 247, 212, 0.6), transparent);
             transform: skewX(-25deg);
-            animation: lightSweep 4s infinite;
+            animation: lightSweep 3.5s infinite;
         }
-        @keyframes lightSweep {
-            0% { left: -150%; }
-            20% { left: 200%; }
-            100% { left: 200%; }
-        }
+        @keyframes lightSweep { 0% { left: -150%; } 20% { left: 200%; } 100% { left: 200%; } }
 
         #start-cinematic-btn:hover {
-            background: rgba(212, 175, 55, 0.15);
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), 
-                        0 0 35px rgba(212, 175, 55, 0.5), 
-                        inset 0 0 20px rgba(212, 175, 55, 0.3);
-            border-color: var(--gold-main);
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.95), var(--intense-bloom), inset 0 0 25px rgba(212, 175, 55, 0.4);
+            border-color: #FDF7D4;
+            transform: translateX(-50%) scale(1.05);
         }
         
         #start-cinematic-btn span { 
             font-family: 'Cinzel', serif; color: var(--gold-light); 
-            font-weight: 700; font-size: clamp(0.9rem, 2.5vw, 1.1rem); letter-spacing: 4px; 
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9); 
-            display: flex; align-items: center; gap: 12px;
+            font-weight: 700; font-size: clamp(1rem, 2.5vw, 1.2rem); letter-spacing: 5px; 
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9); 
+            display: flex; align-items: center; gap: 15px;
             white-space: nowrap;
         }
         #start-cinematic-btn i {
-            color: var(--gold-main); font-size: 1.1rem;
-            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+            color: var(--gold-main); font-size: 1.2rem;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8));
         }
 
         .skip-btn {
-            position: fixed; bottom: 35px; right: 30px; z-index: 250; 
-            background: rgba(5, 12, 8, 0.6); border: 1px solid rgba(212, 175, 55, 0.4); 
-            color: var(--gold-light); padding: 10px 25px; border-radius: 30px; 
-            font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 2px; 
-            text-transform: uppercase; cursor: none; backdrop-filter: blur(10px); 
-            transition: all 0.3s ease; opacity: 0; pointer-events: none; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: fixed; bottom: 40px; right: 40px; z-index: 250; 
+            background: rgba(3, 10, 5, 0.7); border: 1px solid rgba(212, 175, 55, 0.5); 
+            color: var(--gold-light); padding: 12px 30px; border-radius: 30px; 
+            font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 3px; 
+            text-transform: uppercase; cursor: none; backdrop-filter: blur(15px); 
+            transition: all 0.4s ease; opacity: 0; pointer-events: none; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
         }
         .skip-btn.show { opacity: 1; pointer-events: auto; }
-        .skip-btn:hover { background: var(--gold-gradient); color: #000; box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5); border-color: transparent; }
+        .skip-btn:hover { background: var(--gold-gradient); color: #000; box-shadow: var(--bloom); border-color: transparent; }
+
+        /* Cinematic Overlay for Seamless Crossfades */
+        #cinematic-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(253,247,212,1) 0%, rgba(212,175,55,1) 40%, rgba(0,0,0,1) 100%);
+            z-index: 210; opacity: 0; pointer-events: none; mix-blend-mode: screen;
+        }
 
         /* --- INVITATION CONTENT --- */
         #main-invite {
-            position: relative; width: 100%; height: 100%; z-index: 50; overflow-y: auto; overflow-x: hidden;
-            visibility: hidden; opacity: 0; -webkit-overflow-scrolling: touch;
-            perspective: 1200px;
+            position: relative; width: 100%; height: 100%; z-index: 50;
+            visibility: hidden; opacity: 0;
+            perspective: 1500px;
         }
-        #main-invite.active { visibility: visible; opacity: 1; transition: opacity 0.5s ease; }
+        #main-invite.active { visibility: visible; opacity: 1; }
 
         .card-container { 
-            max-width: 700px; margin: 80px auto 120px auto; padding: 20px; 
+            max-width: 800px; margin: 100px auto 150px auto; padding: 20px; 
             position: relative; z-index: 2; transform-style: preserve-3d;
         }
         
-        /* Premium Glassmorphism */
+        /* Ultra Premium Glassmorphism */
         .content-wrapper { 
             background: var(--glass-bg); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid var(--glass-border); border-radius: 30px; 
-            padding: 80px 40px 100px 40px; 
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); 
+            border: 1px solid var(--glass-border); border-radius: 40px; 
+            padding: 100px 50px 120px 50px; 
             display: flex; flex-direction: column; align-items: center; text-align: center; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
-                        inset 0 1px 0 rgba(255,255,255,0.1),
-                        inset 0 0 40px rgba(212, 175, 55, 0.05);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.95), 
+                        inset 0 1px 0 rgba(253, 247, 212, 0.3),
+                        inset 0 0 80px rgba(212, 175, 55, 0.1);
             position: relative; overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        .content-wrapper:hover {
+            box-shadow: 0 50px 120px rgba(0,0,0,1), 
+                        inset 0 1px 0 rgba(253, 247, 212, 0.4),
+                        inset 0 0 100px rgba(212, 175, 55, 0.15),
+                        0 0 50px rgba(212,175,55,0.2);
+        }
+        
+        /* Decorative Corners */
+        .corner-ornament { position: absolute; width: 120px; height: 120px; opacity: 0.85; pointer-events: none; }
+        .corner-tl { top: 30px; left: 30px; border-top: 3px solid var(--gold-main); border-left: 3px solid var(--gold-main); border-radius: 20px 0 0 0; }
+        .corner-tr { top: 30px; right: 30px; border-top: 3px solid var(--gold-main); border-right: 3px solid var(--gold-main); border-radius: 0 20px 0 0;}
+        .corner-bl { bottom: 30px; left: 30px; border-bottom: 3px solid var(--gold-main); border-left: 3px solid var(--gold-main); border-radius: 0 0 0 20px;}
+        .corner-br { bottom: 30px; right: 30px; border-bottom: 3px solid var(--gold-main); border-right: 3px solid var(--gold-main); border-radius: 0 0 20px 0;}
+        
+        /* Inner golden glow for card */
+        .content-wrapper::after {
+            content: ''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 25px; pointer-events: none;
+            box-shadow: inset 0 0 20px rgba(212,175,55,0.05);
         }
 
-        /* Decorative Corners */
-        .corner-ornament { position: absolute; width: 80px; height: 80px; opacity: 0.6; pointer-events: none; }
-        .corner-tl { top: 20px; left: 20px; border-top: 2px solid var(--gold-main); border-left: 2px solid var(--gold-main); border-radius: 10px 0 0 0; }
-        .corner-tr { top: 20px; right: 20px; border-top: 2px solid var(--gold-main); border-right: 2px solid var(--gold-main); border-radius: 0 10px 0 0;}
-        .corner-bl { bottom: 20px; left: 20px; border-bottom: 2px solid var(--gold-main); border-left: 2px solid var(--gold-main); border-radius: 0 0 0 10px;}
-        .corner-br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--gold-main); border-right: 2px solid var(--gold-main); border-radius: 0 0 10px 0;}
+        .ornate-divider { width: 100%; max-width: 320px; margin: 45px 0; fill: var(--gold-main); filter: drop-shadow(0 0 10px rgba(212,175,55,0.6)); }
 
-        /* Elegant SVG Dividers */
-        .ornate-divider { width: 100%; max-width: 250px; margin: 40px 0; fill: var(--gold-main); filter: drop-shadow(0 0 5px rgba(212,175,55,0.4)); }
-
-        .bismillah { font-family: 'Amiri', serif; font-size: 2.5rem; color: var(--gold-light); text-shadow: 0 0 15px rgba(212,175,55,0.4); margin-bottom: 20px; font-weight: 400;}
+        .bismillah { font-family: 'Amiri', serif; font-size: 3.5rem; color: var(--gold-light); text-shadow: var(--intense-bloom); margin-bottom: 25px; font-weight: 700;}
         
-        .romatic-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: rgba(253, 247, 212, 0.85); font-style: italic; margin-bottom: 30px; line-height: 1.8; font-weight: 300; }
+        .romatic-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: rgba(253, 247, 212, 0.95); font-style: italic; margin-bottom: 35px; line-height: 1.9; font-weight: 400; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }
         
-        .names-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 30px 0 40px 0; position: relative; }
-        .names-main { font-family: 'Cinzel Decorative', cursive; font-size: 4.5rem; line-height: 1.1; margin: 0; padding: 0; font-weight: 700; letter-spacing: 2px; }
-        .ampersand { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold-main); margin: 10px 0; font-style: italic; font-weight: 300; }
+        .invite-para { color: rgba(253, 247, 212, 0.95); font-size: 1.4rem; line-height: 1.9; max-width: 85%; font-weight: 400; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.8);}
         
-        .invite-para { color: rgba(253, 247, 212, 0.9); font-size: 1.25rem; line-height: 1.8; max-width: 85%; font-weight: 300; letter-spacing: 1px;}
-        
-        .event-title { font-family: 'Cinzel', serif; font-size: 2rem; letter-spacing: 6px; text-transform: uppercase; margin: 30px 0; font-weight: 600; }
+        .event-title { font-family: 'Cinzel', serif; font-size: 2.5rem; letter-spacing: 10px; text-transform: uppercase; margin: 35px 0; font-weight: 700; text-shadow: var(--intense-bloom); }
 
         /* --- SCRATCH TO REVEAL --- */
-        .scratch-title { font-family: 'Cinzel', serif; letter-spacing: 4px; margin-bottom: 20px; font-size: 1rem; text-transform: uppercase; font-weight: 600; color: rgba(253, 247, 212, 0.6); }
-        .scratch-wrapper { padding: 6px; background: linear-gradient(to bottom, rgba(212,175,55,0.5), rgba(212,175,55,0.1)); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
-        .scratch-container { position: relative; width: clamp(280px, 80vw, 360px); height: 140px; margin: 0 auto; border-radius: 14px; background: #050a06; overflow: hidden; touch-action: none; border: 1px solid rgba(212,175,55,0.2); }
+        .scratch-title { font-family: 'Cinzel', serif; letter-spacing: 6px; margin-bottom: 25px; font-size: 1.2rem; text-transform: uppercase; font-weight: 700; color: rgba(253, 247, 212, 0.8); text-shadow: 0 0 10px rgba(212,175,55,0.3);}
+        .scratch-wrapper { padding: 8px; background: linear-gradient(145deg, rgba(212,175,55,0.8), rgba(212,175,55,0.15) 60%, rgba(253,247,212,0.4)); border-radius: 25px; box-shadow: 0 30px 70px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,255,255,0.25); }
+        .scratch-container { position: relative; width: clamp(300px, 85vw, 420px); height: 170px; margin: 0 auto; border-radius: 18px; background: #020503; overflow: hidden; touch-action: none; border: 1px solid rgba(212,175,55,0.5); box-shadow: inset 0 0 40px rgba(0,0,0,1); }
         .hidden-date { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
-        .hidden-date h2 { font-family: 'Cinzel Decorative', serif; font-size: 2.4rem; margin: 0; font-weight: 700; color: #fff; text-shadow: 0 0 20px rgba(212, 175, 55, 0.8); }
-        .hidden-date p { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-style: italic; color: var(--gold-main); margin-top: 5px; }
+        .hidden-date h2 { font-family: 'Cinzel Decorative', serif; font-size: 3rem; margin: 0; font-weight: 900; color: #fff; text-shadow: var(--intense-bloom); }
+        .hidden-date p { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; color: var(--gold-main); margin-top: 5px; font-weight: 600;}
         #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; cursor: none; touch-action: none; }
-        .scratch-hint { color: var(--gold-main); font-size: 1rem; margin-top: 15px; font-style: italic; font-weight: 300; }
+        .scratch-hint { color: var(--gold-main); font-size: 1.2rem; margin-top: 25px; font-style: italic; font-weight: 400; filter: drop-shadow(0 0 8px rgba(212,175,55,0.6)); transition: all 0.5s ease; }
+
+        /* Interactive Scratch Animations */
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 30px 70px rgba(0,0,0,0.9), 0 0 10px rgba(212,175,55,0.2), inset 0 0 20px rgba(255,255,255,0.25); }
+            50% { box-shadow: 0 30px 70px rgba(0,0,0,0.9), 0 0 30px rgba(212,175,55,0.8), inset 0 0 20px rgba(255,255,255,0.25); }
+            100% { box-shadow: 0 30px 70px rgba(0,0,0,0.9), 0 0 10px rgba(212,175,55,0.2), inset 0 0 20px rgba(255,255,255,0.25); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite ease-in-out; border: 1px solid rgba(212,175,55,0.8); }
+        
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); color: #fff; text-shadow: 0 0 15px var(--gold-main); }
+        }
+        .pulse-text { animation: pulseText 2s infinite ease-in-out; }
+
+        .scratch-hand-indicator {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 10; color: #fff; font-size: 3.5rem; pointer-events: none;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9));
+            animation: scratchMotion 1.5s infinite ease-in-out;
+            opacity: 0.9; transition: opacity 0.3s ease;
+        }
+        @keyframes scratchMotion {
+            0% { transform: translate(-40px, -20px) rotate(-15deg); }
+            50% { transform: translate(40px, 20px) rotate(15deg); }
+            100% { transform: translate(-40px, -20px) rotate(-15deg); }
+        }
 
         /* --- VENUE BOX --- */
         .location-box { 
-            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.2); 
-            border-radius: 20px; padding: 40px 30px; margin: 20px auto 30px auto; 
-            width: 100%; max-width: 500px; position: relative; overflow: hidden; 
-            transition: transform 0.3s, border-color 0.3s;
+            background: linear-gradient(180deg, rgba(3, 10, 5, 0.8), rgba(1, 4, 2, 0.9)); 
+            border: 1px solid rgba(212, 175, 55, 0.4); 
+            border-radius: 35px; padding: 50px 45px; margin: 25px auto 40px auto; 
+            width: 100%; max-width: 600px; position: relative; overflow: hidden; 
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s, box-shadow 0.4s;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(212,175,55,0.05);
         }
-        .location-box:hover { border-color: rgba(212, 175, 55, 0.6); transform: translateY(-5px); }
-        .location-icon { font-size: 2.5rem; color: var(--gold-main); margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); }
-        .location-box h3 { font-family: 'Cinzel', serif; font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase; font-weight: 600;}
-        .location-box p { color: rgba(253, 247, 212, 0.8); font-size: 1.15rem; font-weight: 300; line-height: 1.6; }
+        .location-box:hover { 
+            border-color: rgba(212, 175, 55, 0.9); transform: translateY(-10px) scale(1.02); 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.95), var(--intense-bloom);
+        }
+        .location-icon { font-size: 3.5rem; color: var(--gold-main); margin-bottom: 25px; filter: drop-shadow(0 0 20px rgba(212,175,55,0.6)); }
+        .location-box h3 { font-family: 'Cinzel', serif; font-size: 2rem; letter-spacing: 6px; margin-bottom: 15px; text-transform: uppercase; font-weight: 700; color: #fff; text-shadow: var(--bloom);}
+        .location-box p { color: rgba(253, 247, 212, 0.9); font-size: 1.3rem; font-weight: 400; line-height: 1.8; text-shadow: 0 2px 4px rgba(0,0,0,0.8);}
         
-        .map-container { border-radius: 12px; overflow: hidden; margin-top: 25px; border: 1px solid rgba(212, 175, 55, 0.3); position: relative; }
-        .map-iframe { width: 100%; height: 200px; border: 0; filter: grayscale(100%) invert(92%) contrast(110%) sepia(40%) hue-rotate(10deg); display: block; }
+        .map-container { border-radius: 20px; overflow: hidden; margin-top: 35px; border: 1px solid rgba(212, 175, 55, 0.5); position: relative; box-shadow: 0 15px 30px rgba(0,0,0,0.7); }
+        .map-iframe { width: 100%; height: 240px; border: 0; filter: grayscale(100%) invert(95%) contrast(120%) sepia(50%) hue-rotate(15deg); display: block; transition: filter 0.5s; }
+        .map-container:hover .map-iframe { filter: grayscale(70%) invert(95%) contrast(130%) sepia(60%) hue-rotate(10deg); }
 
         .action-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-            margin-top: 30px; padding: 15px 40px;
-            background: transparent; border: 1px solid var(--gold-main);
-            color: var(--gold-light); font-family: 'Cinzel', serif; font-weight: 600;
-            letter-spacing: 3px; text-transform: uppercase; text-decoration: none; font-size: 0.9rem;
-            border-radius: 40px; transition: all 0.4s ease;
+            display: inline-flex; align-items: center; justify-content: center; gap: 15px;
+            margin-top: 35px; padding: 20px 50px;
+            background: rgba(3,10,5,0.6); border: 1px solid var(--gold-main);
+            color: var(--gold-light); font-family: 'Cinzel', serif; font-weight: 700;
+            letter-spacing: 5px; text-transform: uppercase; text-decoration: none; font-size: 1rem;
+            border-radius: 50px; transition: all 0.5s ease;
             position: relative; overflow: hidden; cursor: none;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            width: fit-content;
         }
         .action-btn::before {
             content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%;
-            background: var(--gold-gradient); transition: width 0.4s ease; z-index: -1;
+            background: var(--gold-gradient); transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1); z-index: -1;
         }
-        .action-btn:hover { color: #000; border-color: transparent; box-shadow: 0 10px 25px rgba(212,175,55,0.4); }
+        .action-btn:hover { color: #000; border-color: transparent; box-shadow: 0 20px 40px rgba(212,175,55,0.6), var(--intense-bloom); transform: translateY(-4px); }
         .action-btn:hover::before { width: 100%; }
 
-        /* Countdown */
-        .countdown-wrapper { display: flex; gap: 15px; margin-top: 20px; justify-content: center; }
+        /* Countdown Upgrade */
+        .countdown-wrapper { display: flex; gap: 20px; margin-top: 30px; justify-content: center; }
         .time-box { 
-            position: relative; width: 90px; height: 100px; 
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(212, 175, 55, 0.15); 
-            border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            position: relative; width: 110px; height: 120px; 
+            background: rgba(2, 6, 3, 0.8); border: 1px solid rgba(212, 175, 55, 0.4); 
+            border-radius: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            backdrop-filter: blur(15px); box-shadow: inset 0 0 25px rgba(212,175,55,0.08), 0 15px 30px rgba(0,0,0,0.7);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
         }
-        .time-box span { font-family: 'Cinzel', serif; font-size: 2.8rem; font-weight: 400; line-height: 1; color: var(--gold-light); }
-        .time-box p { font-size: 0.75rem; color: var(--gold-main); text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; font-family: 'Poppins', sans-serif;}
+        .time-box::after {
+            content: ''; position: absolute; inset: -1px; border-radius: 25px;
+            background: linear-gradient(180deg, rgba(212,175,55,0.9), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; padding: 1px;
+            opacity: 0.6;
+        }
+        .time-box:hover { transform: translateY(-8px) scale(1.05); box-shadow: var(--intense-bloom); }
+        .time-box span { font-family: 'Cinzel', serif; font-size: 3.5rem; font-weight: 600; line-height: 1; color: var(--gold-light); text-shadow: 0 0 20px rgba(212,175,55,0.5); }
+        .time-box p { font-size: 0.85rem; color: var(--gold-main); text-transform: uppercase; letter-spacing: 4px; margin-top: 15px; font-family: 'Cinzel', serif; font-weight: 700;}
 
-        ::-webkit-scrollbar { width: 8px; }
+        /* --- ADD TO CALENDAR MODAL (PREMIUM) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            z-index: 9000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: all 0.4s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .calendar-modal {
+            background: linear-gradient(145deg, rgba(5,15,8,0.95), rgba(1,5,2,0.98));
+            border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 30px;
+            padding: 50px 40px; text-align: center; max-width: 90%; width: 450px;
+            transform: scale(0.9) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), var(--bloom);
+        }
+        .modal-overlay.active .calendar-modal { transform: scale(1) translateY(0); }
+        .calendar-modal h3 { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #fff; margin-bottom: 30px; letter-spacing: 3px; text-shadow: var(--bloom); }
+        .modal-btn {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            width: 100%; padding: 18px 20px; margin-bottom: 15px;
+            background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3);
+            color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 600; letter-spacing: 2px;
+            border-radius: 15px; transition: all 0.3s ease; cursor: none;
+        }
+        .modal-btn i { font-size: 1.4rem; color: var(--gold-main); }
+        .modal-btn:hover { background: var(--gold-gradient); color: #000; border-color: transparent; box-shadow: 0 10px 25px rgba(212,175,55,0.4); transform: translateY(-2px); }
+        .modal-btn:hover i { color: #000; }
+        .close-modal-btn {
+            margin-top: 25px; background: transparent; border: none; color: rgba(253,247,212,0.6);
+            font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic;
+            cursor: none; transition: color 0.3s;
+        }
+        .close-modal-btn:hover { color: var(--gold-main); text-shadow: 0 0 10px rgba(212,175,55,0.5); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.5); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold-main); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold-dark), var(--gold-main)); border-radius: 10px; border: 2px solid var(--bg-dark); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-light); }
 
         @media (max-width: 768px) {
-            .content-wrapper { padding: 60px 20px 80px 20px; border-radius: 20px;}
-            .names-main { font-size: 3.5rem; }
-            .countdown-wrapper { gap: 8px; }
-            .time-box { width: 75px; height: 85px; }
-            .time-box span { font-size: 2rem; }
-            #start-cinematic-btn { top: 38%; padding: 12px 30px; }
-            .action-btn { padding: 12px 25px; font-size: 0.8rem; }
+            .content-wrapper { padding: 70px 25px 90px 25px; border-radius: 30px;}
+            .names-main { font-size: 3.8rem; }
+            .countdown-wrapper { gap: 12px; }
+            .time-box { width: 80px; height: 95px; border-radius: 15px; }
+            .time-box span { font-size: 2.3rem; }
+            .time-box p { font-size: 0.7rem; letter-spacing: 2px; }
+            #start-cinematic-btn { top: 40%; padding: 15px 35px; }
+            .action-btn { padding: 15px 30px; font-size: 0.85rem; width: 100%;}
+            .corner-ornament { width: 70px; height: 70px; }
+            .corner-tl { top: 15px; left: 15px; }
+            .corner-tr { top: 15px; right: 15px; }
+            .corner-bl { bottom: 15px; left: 15px; }
+            .corner-br { bottom: 15px; right: 15px; }
+            .location-box { padding: 40px 25px; }
         }
     </style>
 </head>
@@ -340,7 +488,10 @@
     <!-- Background Elements -->
     <div class="ambient-glow"></div>
     <div class="pattern-overlay"></div>
+    <div class="vignette"></div>
+    <div class="light-rays"></div>
     <div id="particles-bg"></div>
+    <div id="cinematic-overlay"></div>
 
     <!-- Audio Elements -->
     <audio id="magicSound" preload="auto">
@@ -350,14 +501,14 @@
         <source src="darood.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- PERFECTED VIDEO SEQUENCE (Playsinline and Webkit-Playsinline crucial for iOS) -->
+    <!-- PERFECTED VIDEO SEQUENCE WITH SEAMLESS CROSSFADE -->
     <div id="video-sequence">
+        <video id="doorVideo" class="cinematic-video" playsinline webkit-playsinline muted preload="auto">
+            <source src="door.mp4" type="video/mp4">
+        </video>
+        
         <video id="envVideo" class="cinematic-video" playsinline webkit-playsinline muted preload="auto">
             <source src="envelope.mp4" type="video/mp4">
-        </video>
-
-        <video id="doorVideo" class="cinematic-video" playsinline webkit-playsinline muted preload="auto" style="display: none; opacity: 0;">
-            <source src="door.mp4" type="video/mp4">
         </video>
 
         <div id="start-cinematic-btn" class="hover-target">
@@ -385,14 +536,14 @@
                   <circle cx="100" cy="10" r="4" fill="#FDF7D4"/>
               </svg>
               
-              <div class="romatic-quote mask-reveal">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:2px; margin-top:10px; display:block;">— Al-Quran 30:21</span></div>
+              <div class="romatic-quote mask-reveal">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1.1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:3px; margin-top:12px; display:block;">— Al-Quran 30:21</span></div>
               
-              <div class="scratch-title mask-reveal" style="margin-top: 20px;">Together with their families</div>
+              <div class="scratch-title mask-reveal" style="margin-top: 25px;">Together with their families</div>
               
               <div class="names-wrapper mask-reveal">
-                  <div class="names-main shimmer-text">Abdullah</div>
+                  <div class="names-main noor-text">Abdullah</div>
                   <div class="ampersand">&</div>
-                  <div class="names-main shimmer-text">Aqsa</div>
+                  <div class="names-main noor-text">Aqsa</div>
               </div>
               
               <p class="invite-para mask-reveal">Joyfully request the honor of your presence to celebrate their grand Sunnah</p>
@@ -406,17 +557,22 @@
                   <circle cx="100" cy="10" r="4" fill="#FDF7D4"/>
               </svg>
 
-              <div class="scratch-title mask-reveal">Reveal The Big Day</div>
-              <div class="scratch-wrapper mask-reveal">
+              <div class="scratch-title mask-reveal"><i class="fas fa-sparkles" style="color:var(--gold-main); margin-right:8px;"></i> Reveal The Big Day <i class="fas fa-sparkles" style="color:var(--gold-main); margin-left:8px;"></i></div>
+              <div class="scratch-wrapper mask-reveal pulse-glow" id="scratchWrapper">
                   <div class="scratch-container">
                       <div class="hidden-date">
                           <h2>July 18, 2026</h2>
                           <p>Saturday Evening</p>
                       </div>
                       <canvas id="scratchCanvas"></canvas>
+                      
+                      <!-- Animated Hand Indicator -->
+                      <div class="scratch-hand-indicator" id="scratchHand">
+                          <i class="far fa-hand-pointer"></i>
+                      </div>
                   </div>
               </div>
-              <p class="scratch-hint mask-reveal" id="scratch-hint">✨ Gently scratch the foil to reveal ✨</p>
+              <p class="scratch-hint mask-reveal pulse-text" id="scratch-hint">✨ Gently scratch the foil to reveal ✨</p>
               
               <svg class="ornate-divider mask-reveal" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg" style="margin-top: 60px;">
                   <path d="M0 10 L80 10 L100 0 L120 10 L200 10 L200 11 L120 11 L100 20 L80 11 L0 11 Z" opacity="0.8"/>
@@ -436,12 +592,12 @@
                       </iframe>
                   </div>
                   
-                  <a href="https://goo.gl/maps/search/United+Palace+Function+hall,+Pillar+No.+245,+Hyderabad" target="_blank" class="action-btn hover-target">
+                  <a href="https://maps.app.goo.gl/uBL2Qe11iVEbmXNy6" target="_blank" class="action-btn hover-target" style="margin-top: 30px;">
                       <i class="fas fa-location-arrow"></i> Get Directions
                   </a>
               </div>
 
-              <div class="scratch-title mask-reveal" style="margin-top: 40px;">Time Until Forever</div>
+              <div class="scratch-title mask-reveal" style="margin-top: 50px;">Time Until Forever</div>
               <div class="countdown-wrapper mask-reveal" id="countdown-container">
                   <div class="time-box"><span id="days">00</span><p>Days</p></div>
                   <div class="time-box"><span id="hours">00</span><p>Hours</p></div>
@@ -449,19 +605,33 @@
                   <div class="time-box"><span id="secs">00</span><p>Secs</p></div>
               </div>
 
-              <a href="#" id="addToCalendarBtn" class="action-btn hover-target mask-reveal" style="margin-top: 40px;">
-                  <i class="far fa-calendar-alt"></i> Save to Calendar
-              </a>
+              <button id="openCalendarModal" class="action-btn hover-target mask-reveal" style="margin-top: 50px;">
+                  <i class="far fa-calendar-check"></i> Save to Calendar
+              </button>
               
-              <div style="margin-top: 60px; text-align: center;" class="mask-reveal">
-                  <p style="font-style: italic; color: rgba(253, 247, 212, 0.5); font-size: 1.1rem;">Together in dunya, together in Jannah, Insha'Allah.</p>
+              <div style="margin-top: 70px; text-align: center;" class="mask-reveal">
+                  <p style="font-style: italic; color: rgba(253, 247, 212, 0.6); font-size: 1.2rem; letter-spacing: 1px;">Together in dunya, together in Jannah, Insha'Allah.</p>
               </div>
             </div>
         </div>
     </div>
 
+    <!-- CALENDAR MODAL -->
+    <div class="modal-overlay" id="calendarModal">
+        <div class="calendar-modal hover-target-container">
+            <h3>Add to Calendar</h3>
+            <button class="modal-btn hover-target" id="btn-apple-ics">
+                <i class="fab fa-apple"></i> Apple / Outlook (.ics)
+            </button>
+            <button class="modal-btn hover-target" id="btn-google-cal">
+                <i class="fab fa-google"></i> Google Calendar
+            </button>
+            <button class="close-modal-btn hover-target" id="closeCalendarModal">Cancel</button>
+        </div>
+    </div>
+
     <style>
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
     </style>
 
     <script>
@@ -474,8 +644,7 @@
             gsap.to(cursorFollower, { x: e.clientX, y: e.clientY, duration: 0.4, ease: "power2.out" });
         });
 
-        // Add hover effect to buttons and canvas
-        document.querySelectorAll('.hover-target, #scratchCanvas, a').forEach(el => {
+        document.querySelectorAll('.hover-target, #scratchCanvas, a, button').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.style.transform = 'translate(-50%, -50%) scale(2)';
                 cursor.style.backgroundColor = 'transparent';
@@ -495,177 +664,218 @@
         // SETUP GSAP
         gsap.registerPlugin(ScrollTrigger);
 
+        // --- LENIS SMOOTH SCROLLING ---
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+        lenis.stop(); // Stop scrolling initially during video sequence
+
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(20); }
 
         // --- PREMIUM PARTICLES ---
         tsParticles.load("particles-bg", {
             fpsLimit: 60,
             particles: {
-                number: { value: 50, density: { enable: true, value_area: 1000 } },
-                color: { value: ["#D4AF37", "#FDF7D4", "#ffffff"] },
+                number: { value: 85, density: { enable: true, value_area: 1000 } },
+                color: { value: ["#D4AF37", "#FDF7D4", "#CFB53B", "#FFFFFF"] },
                 shape: { type: "circle" },
-                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
-                size: { value: 2.5, random: true, anim: { enable: true, speed: 2, size_min: 0.5, sync: false } },
-                move: { enable: true, speed: 0.8, direction: "top", random: true, straight: false, out_mode: "out" }
+                opacity: { value: 0.9, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.3, sync: false } },
+                size: { value: 3.5, random: true, anim: { enable: true, speed: 2, size_min: 1, sync: false } },
+                move: { enable: true, speed: 1.5, direction: "top", random: true, straight: false, out_mode: "out" }
             },
             interactivity: {
                 detectsOn: "window",
                 events: { onHover: { enable: true, mode: "bubble" } },
-                modes: { bubble: { distance: 150, size: 4, duration: 2, opacity: 1 } }
+                modes: { bubble: { distance: 200, size: 6, duration: 2, opacity: 1 } }
             }
         });
 
-        // --- ROCK-SOLID IOS VIDEO & AUDIO UNLOCKER ---
+        // --- SEAMLESS VIDEO & AUDIO UNLOCKER ---
         const envVideo = document.getElementById('envVideo');
         const doorVideo = document.getElementById('doorVideo');
         const startBtn = document.getElementById('start-cinematic-btn');
         const videoSequence = document.getElementById('video-sequence');
         const mainInvite = document.getElementById('main-invite');
         const skipBtn = document.getElementById('skipBtn');
+        const cinematicOverlay = document.getElementById('cinematic-overlay');
 
         let sequenceStarted = false;
+        let transitionToDoorTriggered = false;
+        let transitionToInviteTriggered = false;
 
-        // Note: Using ONLY 'click' because 'touchstart' blocks audio on iOS Safari
         startBtn.addEventListener('click', function(e) {
             if (sequenceStarted) return;
             sequenceStarted = true;
-
             triggerHaptic();
 
-            // 1. Hide the open button and show skip button
+            // Cinematic Open Transition
             gsap.to(startBtn, { scale: 0.5, opacity: 0, duration: 0.4, ease: "back.in(1.5)", onComplete: () => startBtn.style.display = 'none' });
             skipBtn.classList.add('show');
             
-            // 2. Play Magic Sound
+            // Play Magic Sound
             const magic = document.getElementById('magicSound');
-            if(magic) {
-                magic.volume = 0.5;
-                magic.play().catch(()=>{});
-            }
+            if(magic) { magic.volume = 0.6; magic.play().catch(()=>{}); }
 
-            // 3. Unlock Darood Audio immediately during this valid user interaction
+            // Screen Shake & Light Burst (Flash)
+            gsap.to(cinematicOverlay, { opacity: 0.6, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out" });
+            gsap.to(videoSequence, { x: 8, y: -8, duration: 0.05, yoyo: true, repeat: 6, ease: "rough({strength: 2, points: 20, template: linear, randomize: true})" });
+            
+            // Camera Zoom
+            gsap.to(envVideo, { scale: 1.08, duration: 2.5, ease: "power2.out" });
+
+            // Premium Confetti Explosion
+            confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 }, colors: ['#D4AF37', '#FCE8B2', '#FFFFFF'], zIndex: 9999 });
+
+            // Unlock Darood Audio immediately
             const darood = document.getElementById('daroodSound');
             if (darood) {
-                darood.volume = 0; // Temp mute to unlock silently
+                darood.volume = 0; // Temp mute
                 darood.play().then(() => {
-                    darood.pause();
-                    darood.currentTime = 0;
-                    darood.volume = 0.5; // Restore volume for when we actually play it later
+                    darood.pause(); darood.currentTime = 0; darood.volume = 0.5; 
                 }).catch(err => console.log("Darood unlock failed", err));
             }
 
-            // 4. Safely Unmute Videos
-            envVideo.muted = false;
-            doorVideo.muted = false;
-            
-            // 5. Warm up second video (Door) so it doesn't freeze later
-            doorVideo.play().then(() => {
-                doorVideo.pause();
-                doorVideo.currentTime = 0;
-            }).catch(()=>{});
-
-            // 6. Play the Envelope Video
+            envVideo.muted = false; doorVideo.muted = false;
             envVideo.play().catch(err => {
                 console.warn("Envelope video autoplay blocked completely. Skipping to content.", err);
                 showMainContent(); 
             });
         });
 
-        // When envelope video ends, smoothly transition to door video
-        envVideo.addEventListener('ended', () => {
-            gsap.to(envVideo, { opacity: 0, duration: 0.5 });
-            doorVideo.style.display = 'block';
-            gsap.to(doorVideo, { opacity: 1, duration: 0.5 });
+        // 1st to 2nd Video Crossfade Logic (Very Smooth)
+        function crossfadeToDoor() {
+            if(transitionToDoorTriggered) return;
+            transitionToDoorTriggered = true;
             
-            doorVideo.play().catch(e => {
-                console.warn("Door video playback failed", e);
+            // Start playing the second video
+            doorVideo.play().then(() => {
+                // Subtle light bloom during transition
+                gsap.to(cinematicOverlay, { opacity: 0.4, duration: 0.8, yoyo: true, repeat: 1, ease: "power1.inOut" });
+                
+                // Crossfade opacities
+                gsap.to(envVideo, { opacity: 0, duration: 1.2, ease: "power2.inOut" });
+                gsap.to(doorVideo, { opacity: 1, duration: 1.2, ease: "power2.inOut" });
+                
+                // Slight scale for cinematic depth
+                gsap.fromTo(doorVideo, { scale: 1.1 }, { scale: 1, duration: 4, ease: "power2.out" });
+                gsap.to('.light-rays', { opacity: 0.8, duration: 2 }); // Increase magic fog
+            }).catch(e => {
+                console.warn("Door video failed to play for transition.", e);
                 showMainContent();
             });
+        }
+
+        // Trigger crossfade slightly before envVideo ends
+        envVideo.addEventListener('timeupdate', () => {
+            if (envVideo.duration > 0 && (envVideo.duration - envVideo.currentTime) < 0.8) {
+                crossfadeToDoor();
+            }
         });
+        envVideo.addEventListener('ended', crossfadeToDoor); // Fallback
 
-        // When door video ends, show main content
-        doorVideo.addEventListener('ended', showMainContent);
+        // 2nd Video to Invite Crossfade Logic
+        function crossfadeToInvite() {
+            if(transitionToInviteTriggered) return;
+            transitionToInviteTriggered = true;
+            showMainContent();
+        }
 
-        // Skip button logic
+        doorVideo.addEventListener('timeupdate', () => {
+             if (doorVideo.duration > 0 && (doorVideo.duration - doorVideo.currentTime) < 0.8) {
+                 crossfadeToInvite();
+             }
+        });
+        doorVideo.addEventListener('ended', crossfadeToInvite); // Fallback
         skipBtn.addEventListener('click', showMainContent);
 
-        // This function handles the perfect transition to the main text
+        // --- SHOW MAIN INVITATION (GRAND REVEAL) ---
         function showMainContent() {
-            // Stop videos
             envVideo.pause(); doorVideo.pause();
             
-            // Fade out the entire video wrapper
+            // Fade out entire video container
             gsap.to(videoSequence, { 
                 opacity: 0, 
-                duration: 1.2, 
+                duration: 1.5, 
                 ease: "power2.inOut",
-                onComplete: () => {
-                    videoSequence.style.display = 'none'; // Completely remove from flow
-                }
+                onComplete: () => videoSequence.style.display = 'none'
             });
             
             skipBtn.style.display = 'none';
+            gsap.to('.light-rays', { opacity: 0, duration: 1.5 });
             
-            // Explicitly force opacity to 1 via GSAP to ensure it's visible
             mainInvite.classList.add('active');
-            gsap.to(mainInvite, { opacity: 1, duration: 0.5 });
-            document.body.style.overflow = ''; // Unlock body scroll
             
-            // Wait a tiny bit for the DOM to render the block, then initialize scroll triggers
+            lenis.start(); // Unlock smooth scroll
+            
             setTimeout(() => {
                 initScrollAnimations();
                 
-                // Animate the main card coming up from bottom
-                gsap.fromTo(".card-container", 
-                    { scale: 0.9, y: 80, opacity: 0, rotationX: 10 }, 
-                    { scale: 1, y: 0, opacity: 1, rotationX: 0, duration: 2, ease: "expo.out" }
-                );
+                // Ultra-Premium Grand Reveal Sequence
+                const tl = gsap.timeline();
+                
+                // The card emerges with a scale and blur effect, dropping down beautifully
+                tl.fromTo(".card-container", 
+                    { y: 150, opacity: 0, rotationX: 10, scale: 0.9 }, 
+                    { y: 0, opacity: 1, rotationX: 0, scale: 1, duration: 1.8, ease: "expo.out" }
+                )
+                .fromTo(".content-wrapper", 
+                    { boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
+                    { boxShadow: "0 40px 100px rgba(0,0,0,0.95), inset 0 1px 0 rgba(253, 247, 212, 0.3), inset 0 0 80px rgba(212, 175, 55, 0.1)", duration: 1.5, ease: "power2.out" }, "-=1"
+                )
+                .fromTo(".bismillah", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=1.2")
+                .fromTo(".romatic-quote", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.9")
+                .fromTo(".names-wrapper", { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.4, ease: "back.out(1.2)" }, "-=0.8")
+                .fromTo(".event-title", { y: 20, opacity: 0, letterSpacing: "18px" }, { y: 0, opacity: 1, letterSpacing: "10px", duration: 1.5, ease: "power3.out" }, "-=1");
 
-                // --- DAROOD AUDIO PLAY LOGIC ---
-                // Because we unlocked it safely inside the Click event, this will now work 100% on iOS!
                 const darood = document.getElementById('daroodSound');
-                if (darood) {
-                    darood.play().catch(e => console.log("Darood final play blocked.", e)); 
-                }
+                if (darood) { darood.play().catch(e => console.log("Darood final play blocked.", e)); }
 
-            }, 50);
+            }, 100);
         }
 
         // --- PREMIUM SCROLL REVEALS ---
         function initScrollAnimations() {
-            // Refresh ScrollTrigger to fix any offset bugs
             ScrollTrigger.refresh();
 
-            // Setup Clip-Path Reveals
+            // Setup Clip-Path Reveals - Trigger ONCE
             gsap.utils.toArray('.mask-reveal').forEach((el, i) => {
+                if (el.classList.contains('bismillah') || el.classList.contains('romatic-quote') || el.classList.contains('names-wrapper') || el.classList.contains('event-title')) {
+                   el.style.clipPath = 'none'; el.style.opacity = 1; el.style.transform = 'none'; return;
+                }
                 el.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
-                
                 gsap.fromTo(el, 
                     { clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', y: 40, opacity: 0 },
                     { 
                         clipPath: 'polygon(0 0%, 100% 0%, 100% 100%, 0 100%)', 
-                        y: 0, opacity: 1, duration: 1.2, ease: "power4.out",
-                        scrollTrigger: {
-                            trigger: el,
-                            scroller: "#main-invite",
-                            start: "top 90%",
-                            toggleActions: "play none none reverse"
+                        y: 0, opacity: 1, duration: 0.85, ease: "power3.out",
+                        scrollTrigger: { 
+                            trigger: el, 
+                            scroller: window, 
+                            start: "top 98%", 
+                            once: true // Changed from toggleActions to ensure it stays visible!
                         }
                     }
                 );
             });
             
-            // Subtle Parallax on Card Container
+            // Enhanced Parallax on Card Container
             gsap.to('.content-wrapper', {
-                y: -30,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: "#main-invite",
-                    scroller: "#main-invite",
-                    start: "top top",
-                    end: "bottom bottom",
-                    scrub: true
-                }
+                y: -60, ease: "none",
+                scrollTrigger: { trigger: "#main-invite", scroller: window, start: "top top", end: "bottom bottom", scrub: true }
             });
 
             initScratchCard();
@@ -678,31 +888,29 @@
             canvas.width = container.offsetWidth || 340; canvas.height = container.offsetHeight || 140;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
             
-            // Create rich brushed gold texture
             const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            grad.addColorStop(0, '#AA771C'); grad.addColorStop(0.3, '#FDF3C8'); 
+            grad.addColorStop(0, '#AA771C'); grad.addColorStop(0.3, '#FFF5C3'); 
             grad.addColorStop(0.7, '#D4AF37'); grad.addColorStop(1, '#8A6D1C');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Add subtle noise to gold foil
-            for (let i = 0; i < canvas.width * canvas.height * 0.05; i++) {
-                ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+            for (let i = 0; i < canvas.width * canvas.height * 0.1; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)';
                 ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 1);
             }
             
-            ctx.globalAlpha = 0.8;
-            ctx.font = 'bold 18px Cinzel';
+            ctx.globalAlpha = 0.9;
+            ctx.font = 'bold 22px Cinzel';
             ctx.fillStyle = '#111';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.letterSpacing = '2px';
+            ctx.letterSpacing = '4px';
             ctx.fillText('SCRATCH TO REVEAL', canvas.width/2, canvas.height/2);
             ctx.globalAlpha = 1;
 
             let isDrawing = false; let revealed = false;
             ctx.globalCompositeOperation = 'destination-out';
-            ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = 45;
+            ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = 55;
 
             function getPos(e) {
                 const rect = canvas.getBoundingClientRect();
@@ -711,13 +919,28 @@
                 return { x: clientX - rect.left, y: clientY - rect.top };
             }
 
-            function scratchStart(e) { if(revealed) return; isDrawing = true; scratchMove(e); }
+            function scratchStart(e) { 
+                if(revealed) return; 
+                isDrawing = true; 
+                
+                // Stop hint animations on first touch
+                const hand = document.getElementById('scratchHand');
+                if(hand) hand.style.opacity = '0';
+                document.getElementById('scratchWrapper').classList.remove('pulse-glow');
+                document.getElementById('scratch-hint').classList.remove('pulse-text');
+
+                scratchMove(e); 
+            }
             function scratchEnd() { isDrawing = false; checkReveal(); }
             function scratchMove(e) {
                 if (!isDrawing || revealed) return;
                 if(e.cancelable) e.preventDefault();
                 const p = getPos(e);
-                ctx.beginPath(); ctx.arc(p.x, p.y, 25, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x, p.y, 27.5, 0, Math.PI*2); ctx.fill();
+
+                if(Math.random() > 0.5) {
+                    confetti({ particleCount: 2, spread: 30, origin: { x: p.x/canvas.width, y: p.y/canvas.height }, colors: ['#D4AF37', '#FFF'], ticks: 25, gravity: 0.6, shapes: ['circle'], scalar: 0.6, zIndex: 9999 });
+                }
             }
 
             canvas.addEventListener('mousedown', scratchStart); canvas.addEventListener('mousemove', scratchMove); window.addEventListener('mouseup', scratchEnd);
@@ -730,34 +953,76 @@
                 if (transparent / (pixels.length/16) > 0.45 && !revealed) {
                     revealed = true; triggerHaptic();
                     
-                    // Premium Confetti Burst
-                    const duration = 3000; const end = Date.now() + duration;
+                    const duration = 4000; const end = Date.now() + duration;
                     (function frame() {
-                        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#D4AF37', '#FCE8B2'] });
-                        confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#D4AF37', '#FCE8B2'] });
+                        confetti({ particleCount: 10, angle: 60, spread: 70, origin: { x: 0 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
+                        confetti({ particleCount: 10, angle: 120, spread: 70, origin: { x: 1 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
                         if (Date.now() < end) requestAnimationFrame(frame);
                     }());
 
                     document.getElementById('scratch-hint').innerHTML = "✨ Alhamdulillah ✨";
                     document.getElementById('scratch-hint').style.color = "#fff";
-                    gsap.to(canvas, { opacity: 0, duration: 1, ease: "power2.out", onComplete: () => canvas.style.display = 'none' });
+                    document.getElementById('scratch-hint').style.textShadow = "0 0 20px rgba(212,175,55,1)";
+                    
+                    gsap.to(canvas, { opacity: 0, duration: 1.5, ease: "power2.out", onComplete: () => canvas.style.display = 'none' });
                 }
             }
         }
 
-        // --- CALENDAR EXPORT ---
-        document.getElementById('addToCalendarBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            const title = encodeURIComponent("Abdullah & Aqsa | Royal Valima");
-            const details = encodeURIComponent("Grand Reception at United Palace.");
-            const location = encodeURIComponent("United Palace Function hall, Pillar No. 245, Hyderabad");
-            const startDate = "20260718T190000"; 
-            const endDate = "20260718T230000";   
-            window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`, '_blank');
+        // --- PREMIUM UNIVERSAL CALENDAR INTEGRATION ---
+        const calendarModal = document.getElementById('calendarModal');
+        const openModalBtn = document.getElementById('openCalendarModal');
+        const closeModalBtn = document.getElementById('closeCalendarModal');
+        const btnAppleIcs = document.getElementById('btn-apple-ics');
+        const btnGoogleCal = document.getElementById('btn-google-cal');
+
+        // Event Details
+        const eventTitle = "Abdullah & Aqsa | Royal Valima";
+        const eventLocation = "United Palace Function hall, Pillar No. 245, Suleman Nagar, Hyderabad";
+        const eventDetails = "Grand Reception at United Palace. Join us to celebrate the Valima Reception of Abdullah & Aqsa.";
+        // July 18, 2026, 19:00 IST is July 18, 2026, 13:30 UTC.
+        const dateStartUTC = "20260718T133000Z";
+        const dateEndUTC = "20260718T173000Z"; 
+
+        openModalBtn.addEventListener('click', (e) => { e.preventDefault(); calendarModal.classList.add('active'); });
+        closeModalBtn.addEventListener('click', () => { calendarModal.classList.remove('active'); });
+        calendarModal.addEventListener('click', (e) => { if (e.target === calendarModal) calendarModal.classList.remove('active'); });
+
+        // 1. Google Calendar URL
+        btnGoogleCal.addEventListener('click', () => {
+            const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${dateStartUTC}/${dateEndUTC}&details=${encodeURIComponent(eventDetails)}&location=${encodeURIComponent(eventLocation)}`;
+            window.open(googleUrl, '_blank');
+            calendarModal.classList.remove('active');
         });
 
-        // --- TIMER (July 18, 2026) ---
-        const countDownDate = new Date("2026-07-18T19:00:00").getTime();
+        // 2. Generate Universal .ics File (Works Native on iOS Apple Calendar & Outlook)
+        btnAppleIcs.addEventListener('click', () => {
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+SUMMARY:${eventTitle}
+DTSTART:${dateStartUTC}
+DTEND:${dateEndUTC}
+LOCATION:${eventLocation}
+DESCRIPTION:${eventDetails}
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Abdullah_Aqsa_Valima.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            calendarModal.classList.remove('active');
+        });
+
+        // --- TIMER (July 18, 2026 19:00 IST) ---
+        const countDownDate = new Date("2026-07-18T19:00:00+05:30").getTime();
         setInterval(() => {
             const distance = countDownDate - new Date().getTime();
             if (distance > 0) {
