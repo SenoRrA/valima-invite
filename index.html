@@ -46,10 +46,10 @@
             --bg-dark: #010402; 
             --emerald-deep: #030a05; 
             --emerald-glow: rgba(22, 54, 30, 0.8); 
-            --gold-gradient: linear-gradient(135deg, #CFB53B, #FFF5C3, #B38728, #FBF5B7, #AA771C);
+            --gold-gradient: linear-gradient(135deg, #C9B07A, #F5E9CC, #A48650, #EAD7B2, #8F7649);
             --gold-light: #FDF7D4;
-            --gold-main: #D4AF37;
-            --gold-dark: #8A6D1C;
+            --gold-main: #BEA67C;
+            --gold-dark: #8F7649;
             --glass-bg: rgba(3, 10, 5, 0.75); 
             --glass-border: rgba(212, 175, 55, 0.45);
             --bloom: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.2);
@@ -155,20 +155,21 @@
         /* --- NOOR (DIVINE LIGHT) ANIMATIONS FOR NAMES --- */
         .names-wrapper { 
             display: flex; flex-direction: column; align-items: center; width: 100%; margin: 40px 0 50px 0; position: relative; 
-            animation: noorRadiance 4s infinite ease-in-out alternate;
         }
-        @keyframes noorRadiance {
-            0% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5)); transform: scale(1); }
-            100% { filter: drop-shadow(0 0 35px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 70px rgba(212, 175, 55, 0.8)) drop-shadow(0 0 100px rgba(253, 247, 212, 0.4)); transform: scale(1.04); }
+        @keyframes noorTextGlow {
+            0% { filter: drop-shadow(0 0 10px rgba(190, 166, 124, 0.3)); }
+            100% { filter: drop-shadow(0 0 25px rgba(253, 247, 212, 0.8)) drop-shadow(0 0 50px rgba(190, 166, 124, 0.6)); }
         }
         
         .noor-text {
-            background: linear-gradient(to right, #FFFFFF 0%, #FDF7D4 25%, #FFD700 50%, #FDF7D4 75%, #FFFFFF 100%);
+            background: linear-gradient(90deg, #BEA67C 0%, #FFFFFF 40%, #EAD7B2 50%, #FFFFFF 60%, #BEA67C 100%);
             background-size: 200% auto;
             color: transparent;
             -webkit-background-clip: text;
             background-clip: text;
-            animation: shine 5s linear infinite;
+            animation: shine 4s linear infinite, noorTextGlow 3s infinite alternate ease-in-out;
+            mix-blend-mode: color-dodge;
+            position: relative; z-index: 2;
         }
 
         .names-main { 
@@ -512,27 +513,29 @@
             .content-wrapper { 
                 padding: 60px 20px 80px 20px; 
                 border-radius: 30px;
-                /* Disabled heavy glassmorphism for buttery smooth 60fps on mobile */
-                background: rgba(3, 10, 5, 0.98);
-                backdrop-filter: none; 
-                -webkit-backdrop-filter: none;
-                box-shadow: 0 20px 50px rgba(0,0,0,0.9); 
+                /* True Mobile Optimization: Hardware Accelerated Glassmorphism */
+                background: rgba(3, 10, 5, 0.85);
+                backdrop-filter: blur(15px); 
+                -webkit-backdrop-filter: blur(15px);
+                transform: translateZ(0); /* Hardware Acceleration */
+                will-change: transform, opacity;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(212, 175, 55, 0.1); 
             }
             
             .location-box, .time-box, .action-btn {
-                background: rgba(3, 10, 5, 0.95);
-                backdrop-filter: none; 
-                -webkit-backdrop-filter: none;
+                background: rgba(3, 10, 5, 0.85);
+                backdrop-filter: blur(10px); 
+                -webkit-backdrop-filter: blur(10px);
+                transform: translateZ(0);
             }
             
-            /* Disable heavy overlays to save mobile GPU */
-            .noise-overlay { display: none; }
-            .ambient-glow { animation: none; opacity: 0.6; }
-            .light-rays { animation: none; opacity: 0.2; }
+            /* Enable overlays but optimized */
+            .noise-overlay { display: block; opacity: 0.03; }
+            .ambient-glow { animation: breatheGlow 15s infinite alternate ease-in-out; opacity: 0.8; }
+            .light-rays { animation: rotateRays 90s linear infinite; opacity: 0.4; }
             
             .names-wrapper {
-                animation: none; 
-                filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); 
+                /* Removed wrapper glow that made entire column look lit */
             }
             .names-main { font-size: 3.5rem; }
             .countdown-wrapper { gap: 10px; flex-wrap: wrap;}
@@ -548,7 +551,16 @@
             .corner-bl { bottom: 15px; left: 15px; }
             .corner-br { bottom: 15px; right: 15px; }
             .location-box { padding: 35px 20px; }
-            .calendar-modal { padding: 40px 20px; }
+            
+            /* iOS Style Bottom Sheet Calendar Modal */
+            .calendar-modal { 
+                padding: 40px 20px 50px 20px; 
+                width: 100%; max-width: 100%;
+                border-radius: 30px 30px 0 0;
+                position: absolute; bottom: 0;
+                transform: translateY(100%);
+            }
+            .modal-overlay.active .calendar-modal { transform: translateY(0); }
         }
     </style>
 </head>
@@ -745,49 +757,58 @@
             });
         }
 
-        // SETUP GSAP
+        // SETUP GSAP & BUG FIXES
         gsap.registerPlugin(ScrollTrigger);
-
-        // --- LENIS SMOOTH SCROLLING (DESKTOP ONLY) ---
-        let lenis;
-        if (!isMobile) {
-            lenis = new Lenis({
-                duration: 1.2,
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                direction: 'vertical',
-                gestureDirection: 'vertical',
-                smooth: true,
-                mouseMultiplier: 1,
-                smoothTouch: false,
-                touchMultiplier: 2,
-                infinite: false,
+        
+        if (isMobile) {
+            // Fixes mobile address bar jumps and provides a rock-solid, smooth app-like scroll
+            ScrollTrigger.normalizeScroll({
+                allowNestedScroll: true,
+                lockAxis: true,
+                momentum: self => Math.min(3, self.velocityY / 1000)
             });
-
-            function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-            }
-            requestAnimationFrame(raf);
-            lenis.stop(); // Stop initially
         }
+
+        // --- LENIS SMOOTH SCROLLING ---
+        let lenis;
+        // Enabled on both desktop and mobile for consistent, ultra-smooth scrolling
+        lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+        lenis.stop(); // Stop initially
 
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(15); }
 
-        // --- PREMIUM PARTICLES (Heavily Optimized for Mobile) ---
+        // --- PREMIUM PARTICLES (World's Best) ---
         tsParticles.load("particles-bg", {
-            fpsLimit: isMobile ? 30 : 60, // Halve frame rate on mobile to save CPU
+            fpsLimit: 60, 
             particles: {
-                number: { value: isMobile ? 10 : 60, density: { enable: true, value_area: 1000 } }, // 10 particles on mobile for ultra performance
+                number: { value: isMobile ? 30 : 80, density: { enable: true, value_area: 1000 } }, 
                 color: { value: ["#D4AF37", "#FDF7D4", "#CFB53B", "#FFFFFF"] },
                 shape: { type: "circle" },
-                opacity: { value: 0.9, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.3, sync: false } },
-                size: { value: 3.5, random: true, anim: { enable: true, speed: 2, size_min: 1, sync: false } },
-                move: { enable: true, speed: 1.5, direction: "top", random: true, straight: false, out_mode: "out" }
+                opacity: { value: 1, random: true, anim: { enable: true, speed: 2, opacity_min: 0.1, sync: false } },
+                size: { value: 3.5, random: true, anim: { enable: true, speed: 3, size_min: 0.5, sync: false } },
+                move: { enable: true, speed: 0.8, direction: "top", random: true, straight: false, out_mode: "out" },
+                shadow: { enable: true, color: "#D4AF37", blur: 10 }
             },
             interactivity: {
                 detectsOn: "window",
                 events: { onHover: { enable: !isMobile, mode: "bubble" } },
-                modes: { bubble: { distance: 200, size: 6, duration: 2, opacity: 1 } }
+                modes: { bubble: { distance: 200, size: 8, duration: 2, opacity: 1 } }
             }
         });
 
@@ -959,7 +980,7 @@
                 );
             });
             
-            // Enhanced Parallax on Card Container (Disable on mobile for performance)
+            // Enhanced Parallax on Card Container
             if (!isMobile) {
                 gsap.to('.content-wrapper', {
                     y: -60, ease: "none",
@@ -967,9 +988,42 @@
                 });
             }
 
+            // Interactive Full-Page Animations (Smooth on Mobile)
+            gsap.to('.ambient-glow', {
+                y: "40vh",
+                scale: 1.3,
+                opacity: 0.3,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#main-invite",
+                    scroller: window,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1 // smooth scrubbing
+                }
+            });
+            gsap.to('.light-rays', {
+                rotation: 45,
+                opacity: 0,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#main-invite",
+                    scroller: window,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1
+                }
+            });
+
             // Tell ScrollTrigger to recalculate everything safely
             ScrollTrigger.refresh();
             initScratchCard();
+            initCardParallax();
+        }
+
+        // --- 3D CARD PARALLAX (Desktop & Mobile) ---
+        function initCardParallax() {
+            // Parallax disabled completely as requested to keep the card stationary and elegant.
         }
 
         // --- HIGH-END SCRATCH CARD (Gold Foil Texture) ---
