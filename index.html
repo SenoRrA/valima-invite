@@ -69,7 +69,7 @@
         }
         
         /* Lock scrolling while video is playing */
-        body.locked { overflow: hidden !important; }
+        body.locked, html.locked { overflow: hidden !important; }
         
         /* Lenis smooth scroll for Desktop */
         html.lenis { height: auto; }
@@ -117,7 +117,6 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle at 50% 40%, var(--emerald-glow) 0%, var(--bg-dark) 80%);
             z-index: 0; animation: breatheGlow 10s infinite alternate ease-in-out;
-            will-change: transform, opacity;
         }
         @keyframes breatheGlow { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
 
@@ -138,7 +137,6 @@
             background: repeating-conic-gradient(from 0deg at 50% 0%, transparent 0deg, rgba(212,175,55,0.04) 5deg, transparent 10deg);
             animation: rotateRays 60s linear infinite; opacity: 0;
             mix-blend-mode: screen;
-            will-change: transform;
         }
         @keyframes rotateRays { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -158,7 +156,6 @@
         .names-wrapper { 
             display: flex; flex-direction: column; align-items: center; width: 100%; margin: 40px 0 50px 0; position: relative; 
             animation: noorRadiance 4s infinite ease-in-out alternate;
-            will-change: filter, transform;
         }
         @keyframes noorRadiance {
             0% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5)); transform: scale(1); }
@@ -183,7 +180,7 @@
             clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
             transform: translateY(30px);
             opacity: 0;
-            will-change: clip-path, transform, opacity;
+            /* Removed will-change to fix rendering bugs on mobile */
         }
 
         /* --- VIDEO SEQUENCE STYLES --- */
@@ -221,7 +218,6 @@
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
             animation: floatBtn 4s ease-in-out infinite;
-            will-change: transform, box-shadow;
         }
 
         @media (pointer: fine) {
@@ -511,18 +507,32 @@
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold-dark), var(--gold-main)); border-radius: 10px; border: 2px solid var(--bg-dark); }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold-light); }
 
-        /* --- MOBILE PERFORMANCE OPTIMIZATIONS --- */
+        /* --- MASSIVE MOBILE PERFORMANCE OPTIMIZATIONS --- */
         @media (max-width: 768px) {
             .content-wrapper { 
                 padding: 60px 20px 80px 20px; 
                 border-radius: 30px;
-                backdrop-filter: blur(15px); /* Reduced for performance */
-                -webkit-backdrop-filter: blur(15px);
-                box-shadow: 0 20px 50px rgba(0,0,0,0.9); /* Reduced shadow rendering */
+                /* Disabled heavy glassmorphism for buttery smooth 60fps on mobile */
+                background: rgba(3, 10, 5, 0.98);
+                backdrop-filter: none; 
+                -webkit-backdrop-filter: none;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.9); 
             }
+            
+            .location-box, .time-box, .action-btn {
+                background: rgba(3, 10, 5, 0.95);
+                backdrop-filter: none; 
+                -webkit-backdrop-filter: none;
+            }
+            
+            /* Disable heavy overlays to save mobile GPU */
+            .noise-overlay { display: none; }
+            .ambient-glow { animation: none; opacity: 0.6; }
+            .light-rays { animation: none; opacity: 0.2; }
+            
             .names-wrapper {
-                animation: none; /* Disable heavy animation on low-end mobile */
-                filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); /* Static glow */
+                animation: none; 
+                filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); 
             }
             .names-main { font-size: 3.5rem; }
             .countdown-wrapper { gap: 10px; flex-wrap: wrap;}
@@ -594,18 +604,21 @@
               <div class="corner-ornament corner-bl"></div>
               <div class="corner-ornament corner-br"></div>
               
-              <div class="bismillah mask-reveal">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
+              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
+              <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
               
               <svg class="ornate-divider mask-reveal" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 10 L80 10 L100 0 L120 10 L200 10 L200 11 L120 11 L100 20 L80 11 L0 11 Z" opacity="0.8"/>
                   <circle cx="100" cy="10" r="4" fill="#FDF7D4"/>
               </svg>
               
-              <div class="romatic-quote mask-reveal">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1.1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:3px; margin-top:12px; display:block;">— Al-Quran 30:21</span></div>
+              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
+              <div class="romatic-quote">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1.1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:3px; margin-top:12px; display:block;">— Al-Quran 30:21</span></div>
               
               <div class="scratch-title mask-reveal" style="margin-top: 25px;">Together with their families</div>
               
-              <div class="names-wrapper mask-reveal">
+              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
+              <div class="names-wrapper">
                   <div class="names-main noor-text">Abdullah</div>
                   <div class="ampersand">&</div>
                   <div class="names-main noor-text">Aqsa</div>
@@ -613,7 +626,8 @@
               
               <p class="invite-para mask-reveal">Joyfully request the honor of your presence to celebrate their grand Sunnah</p>
               
-              <div class="event-title shimmer-text mask-reveal">Valima Reception</div>
+              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
+              <div class="event-title shimmer-text">Valima Reception</div>
               
               <p class="invite-para mask-reveal">With heartfelt prayers to make this beautiful beginning truly complete.</p>
               
@@ -700,8 +714,8 @@
     </style>
 
     <script>
-        // Check karo ke device mobile che ke nahi
-        const isMobile = window.innerWidth <= 768 || window.matchMedia("(pointer: coarse)").matches;
+        // Strong mobile device detection to fully disable heavy features
+        const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
         // --- CUSTOM CURSOR LOGIC (DESKTOP ONLY) ---
         if (!isMobile) {
@@ -734,7 +748,7 @@
         // SETUP GSAP
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- LENIS SMOOTH SCROLLING (DESKTOP ONLY for better performance) ---
+        // --- LENIS SMOOTH SCROLLING (DESKTOP ONLY) ---
         let lenis;
         if (!isMobile) {
             lenis = new Lenis({
@@ -759,11 +773,11 @@
 
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(15); }
 
-        // --- PREMIUM PARTICLES (Optimized for Mobile) ---
+        // --- PREMIUM PARTICLES (Heavily Optimized for Mobile) ---
         tsParticles.load("particles-bg", {
-            fpsLimit: isMobile ? 30 : 60, // Lower FPS on mobile to save CPU
+            fpsLimit: isMobile ? 30 : 60, // Halve frame rate on mobile to save CPU
             particles: {
-                number: { value: isMobile ? 15 : 60, density: { enable: true, value_area: 1000 } }, // Less particles on mobile
+                number: { value: isMobile ? 10 : 60, density: { enable: true, value_area: 1000 } }, // 10 particles on mobile for ultra performance
                 color: { value: ["#D4AF37", "#FDF7D4", "#CFB53B", "#FFFFFF"] },
                 shape: { type: "circle" },
                 opacity: { value: 0.9, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.3, sync: false } },
@@ -811,7 +825,7 @@
             gsap.to(envVideo, { scale: 1.08, duration: 2.5, ease: "power2.out" });
 
             // Premium Confetti Explosion
-            confetti({ particleCount: 150, spread: 120, origin: { y: 0.5 }, colors: ['#D4AF37', '#FCE8B2', '#FFFFFF'], zIndex: 9999 });
+            confetti({ particleCount: isMobile ? 50 : 150, spread: 120, origin: { y: 0.5 }, colors: ['#D4AF37', '#FCE8B2', '#FFFFFF'], zIndex: 9999 });
 
             // Unlock Darood Audio immediately
             const darood = document.getElementById('daroodSound');
@@ -879,8 +893,9 @@
         function showMainContent() {
             envVideo.pause(); doorVideo.pause();
             
-            // VERY IMPORTANT FOR MOBILE SCROLL: Remove locked class
+            // VERY IMPORTANT: Ensure scroll is unlocked! 
             document.body.classList.remove('locked');
+            document.documentElement.classList.remove('locked');
             
             // Fade out entire video container
             gsap.to(videoSequence, { 
@@ -897,6 +912,7 @@
             
             if(lenis) lenis.start(); // Unlock smooth scroll for desktop
             
+            // Wait slightly so browser handles the "locked" class removal before calculating scroll triggers
             setTimeout(() => {
                 initScrollAnimations();
                 
@@ -910,7 +926,7 @@
                 )
                 .fromTo(".content-wrapper", 
                     { boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
-                    { boxShadow: "0 40px 100px rgba(0,0,0,0.95), inset 0 1px 0 rgba(253, 247, 212, 0.3), inset 0 0 80px rgba(212, 175, 55, 0.1)", duration: 1.5, ease: "power2.out" }, "-=1"
+                    { boxShadow: isMobile ? "0 15px 40px rgba(0,0,0,0.9)" : "0 40px 100px rgba(0,0,0,0.95), inset 0 1px 0 rgba(253, 247, 212, 0.3), inset 0 0 80px rgba(212, 175, 55, 0.1)", duration: 1.5, ease: "power2.out" }, "-=1"
                 )
                 .fromTo(".bismillah", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=1.2")
                 .fromTo(".romatic-quote", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.9")
@@ -920,18 +936,13 @@
                 const darood = document.getElementById('daroodSound');
                 if (darood) { darood.play().catch(e => console.log("Darood final play blocked.", e)); }
 
-            }, 100);
+            }, 300); // 300ms guarantees DOM reflow completes
         }
 
         // --- PREMIUM SCROLL REVEALS ---
         function initScrollAnimations() {
-            ScrollTrigger.refresh();
-
-            // Setup Clip-Path Reveals - Trigger ONCE
+            // Setup Clip-Path Reveals - Trigger ONCE exactly as they hit viewport
             gsap.utils.toArray('.mask-reveal').forEach((el, i) => {
-                if (el.classList.contains('bismillah') || el.classList.contains('romatic-quote') || el.classList.contains('names-wrapper') || el.classList.contains('event-title')) {
-                   el.style.clipPath = 'none'; el.style.opacity = 1; el.style.transform = 'none'; return;
-                }
                 el.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
                 gsap.fromTo(el, 
                     { clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', y: 40, opacity: 0 },
@@ -941,7 +952,7 @@
                         scrollTrigger: { 
                             trigger: el, 
                             scroller: window, 
-                            start: "top 98%", 
+                            start: "top 100%", // Start immediately when it enters the screen bottom
                             once: true
                         }
                     }
@@ -956,6 +967,8 @@
                 });
             }
 
+            // Tell ScrollTrigger to recalculate everything safely
+            ScrollTrigger.refresh();
             initScratchCard();
         }
 
@@ -1019,8 +1032,9 @@
                 const p = getPos(e);
                 ctx.beginPath(); ctx.arc(p.x, p.y, 27.5, 0, Math.PI*2); ctx.fill();
 
-                if(Math.random() > 0.5) {
-                    confetti({ particleCount: 2, spread: 30, origin: { x: p.x/canvas.width, y: p.y/canvas.height }, colors: ['#D4AF37', '#FFF'], ticks: 25, gravity: 0.6, shapes: ['circle'], scalar: 0.6, zIndex: 9999 });
+                // Optimized confetti rendering on scratch for mobile
+                if(Math.random() > (isMobile ? 0.8 : 0.5)) {
+                    confetti({ particleCount: 1, spread: 20, origin: { x: p.x/canvas.width, y: p.y/canvas.height }, colors: ['#D4AF37', '#FFF'], ticks: 20, gravity: 0.6, shapes: ['circle'], scalar: 0.5, zIndex: 9999 });
                 }
             }
 
@@ -1036,8 +1050,8 @@
                     
                     const duration = 4000; const end = Date.now() + duration;
                     (function frame() {
-                        confetti({ particleCount: 10, angle: 60, spread: 70, origin: { x: 0 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
-                        confetti({ particleCount: 10, angle: 120, spread: 70, origin: { x: 1 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
+                        confetti({ particleCount: isMobile ? 5 : 10, angle: 60, spread: 70, origin: { x: 0 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
+                        confetti({ particleCount: isMobile ? 5 : 10, angle: 120, spread: 70, origin: { x: 1 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
                         if (Date.now() < end) requestAnimationFrame(frame);
                     }());
 
@@ -1057,7 +1071,7 @@
         const btnAppleIcs = document.getElementById('btn-apple-ics');
         const btnGoogleCal = document.getElementById('btn-google-cal');
 
-        // Event ni vigato - title update kari didhu che 
+        // Event ni vigato - title verified
         const eventTitle = "Abdullah & Aqsa | Valima";
         const eventLocation = "United Palace Function hall, Pillar No. 245, Suleman Nagar, Hyderabad";
         const eventDetails = "Grand Reception at United Palace. Join us to celebrate the Valima Reception of Abdullah & Aqsa.";
