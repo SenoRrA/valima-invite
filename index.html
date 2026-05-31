@@ -177,11 +177,11 @@
         }
         .ampersand { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: #FFF; margin: 15px 0; font-style: italic; font-weight: 400; }
 
+        /* FIXED MASK-REVEAL FOR MOBILE */
         .mask-reveal {
-            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-            transform: translateY(30px);
+            /* Removed clip-path to fix catastrophic mobile invisible rendering bugs on canvas and iframes */
+            transform: translateY(40px);
             opacity: 0;
-            /* Removed will-change to fix rendering bugs on mobile */
         }
 
         /* --- PERSONALIZED GUEST GREETING --- */
@@ -551,7 +551,7 @@
                 backdrop-filter: blur(15px); 
                 -webkit-backdrop-filter: blur(15px);
                 transform: translateZ(0); /* Hardware Acceleration */
-                will-change: transform, opacity;
+                /* Removed 'will-change' to stop the catastrophic iOS invisibility bug */
                 box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(212, 175, 55, 0.1); 
             }
             
@@ -657,7 +657,7 @@
               </div>
 
               <!-- Animated Bismillah SVG -->
-              <svg class="bismillah-svg" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
+              <svg class="bismillah-svg mask-reveal" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
                   <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="bismillah-text">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</text>
               </svg>
               
@@ -666,13 +666,13 @@
                   <circle cx="100" cy="10" r="4" fill="#FDF7D4"/>
               </svg>
               
-              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
-              <div class="romatic-quote">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1.1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:3px; margin-top:12px; display:block;">— Al-Quran 30:21</span></div>
+              <!-- RESTORED mask-reveal class now that bug is fixed! -->
+              <div class="romatic-quote mask-reveal">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1.1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:3px; margin-top:12px; display:block;">— Al-Quran 30:21</span></div>
               
               <div class="scratch-title mask-reveal" style="margin-top: 25px;">Together with their families</div>
               
-              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
-              <div class="names-wrapper">
+              <!-- RESTORED mask-reveal class now that bug is fixed! -->
+              <div class="names-wrapper mask-reveal">
                   <div class="names-main noor-text">Abdullah</div>
                   <div class="ampersand">&</div>
                   <div class="names-main noor-text">Aqsa</div>
@@ -680,8 +680,8 @@
               
               <p class="invite-para mask-reveal">Joyfully request the honor of your presence to celebrate their grand Sunnah</p>
               
-              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
-              <div class="event-title shimmer-text">Valima Reception</div>
+              <!-- RESTORED mask-reveal class now that bug is fixed! -->
+              <div class="event-title shimmer-text mask-reveal">Valima Reception</div>
               
               <p class="invite-para mask-reveal">With heartfelt prayers to make this beautiful beginning truly complete.</p>
               
@@ -1067,28 +1067,24 @@
 
         // --- PREMIUM SCROLL REVEALS ---
         function initScrollAnimations() {
-            // Setup Clip-Path Reveals - Trigger ONCE exactly as they hit viewport
+            // Updated Scroll Reveals: Completely removed clipPath logic to fix mobile invisibility bug.
+            // Using solely Y-transform and opacity for buttery smooth, fail-proof performance on iOS and Android.
             gsap.utils.toArray('.mask-reveal').forEach((el, i) => {
-                // Ensure the element is visible before calculating bounds
                 if(window.getComputedStyle(el).display !== 'none') {
-                    el.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
                     gsap.fromTo(el, 
-                        { clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', y: 40, opacity: 0 },
+                        { y: 40, opacity: 0 },
                         { 
-                            clipPath: 'polygon(0 0%, 100% 0%, 100% 100%, 0 100%)', 
                             y: 0, opacity: 1, duration: 0.85, ease: "power3.out",
                             scrollTrigger: { 
                                 trigger: el, 
                                 scroller: window, 
-                                start: "top 100%", // Start immediately when it enters the screen bottom
+                                start: "top 95%", // Safe margin to guarantee trigger
                                 once: true
                             }
                         }
                     );
                 }
             });
-            ScrollTrigger.refresh(); // Force a fresh calculation after layout changes
-
             
             // Enhanced Parallax on Card Container
             if (!isMobile) {
@@ -1128,19 +1124,24 @@
             // Tell ScrollTrigger to recalculate everything safely
             ScrollTrigger.refresh();
             initScratchCard();
-            initCardParallax();
         }
 
-        // --- 3D CARD PARALLAX (Desktop & Mobile) ---
-        function initCardParallax() {
-            // Parallax disabled completely as requested to keep the card stationary and elegant.
-        }
+        // Handle window resize cleanly for canvas & scroll triggers
+        window.addEventListener('resize', () => {
+            if(window.innerWidth > 768) {
+                ScrollTrigger.refresh();
+            }
+        });
 
         // --- HIGH-END SCRATCH CARD (Gold Foil Texture) ---
         function initScratchCard() {
             const canvas = document.getElementById('scratchCanvas');
             const container = canvas.parentElement;
-            canvas.width = container.offsetWidth || 340; canvas.height = container.offsetHeight || 140;
+            
+            // Safely grab dimensions (clientWidth is much safer on mobile than offsetWidth during layout shifts)
+            canvas.width = container.clientWidth || 340; 
+            canvas.height = container.clientHeight || 140;
+            
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
             
             const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -1238,6 +1239,9 @@
                     gsap.to(canvas, { opacity: 0, duration: 1.5, ease: "power2.out", onComplete: () => canvas.style.display = 'none' });
                 }
             }
+            
+            // Sync triggers post-scratch canvas setup
+            setTimeout(() => { ScrollTrigger.refresh(); }, 100);
         }
 
         // --- PREMIUM UNIVERSAL CALENDAR INTEGRATION ---
@@ -1247,7 +1251,7 @@
         const btnAppleIcs = document.getElementById('btn-apple-ics');
         const btnGoogleCal = document.getElementById('btn-google-cal');
 
-        // Event ni vigato - title verified
+        // Event details
         const eventTitle = "Abdullah & Aqsa | Valima";
         const eventLocation = "United Palace Function hall, Pillar No. 245, Suleman Nagar, Hyderabad";
         const eventDetails = "Grand Reception at United Palace. Join us to celebrate the Valima Reception of Abdullah & Aqsa.";
