@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Invitation Sender Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #010402; 
+            --gold-main: #BEA67C;
+            --gold-dark: #8F7649;
+            --glass-bg: rgba(3, 10, 5, 0.85); 
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: #FDF7D4;
+            font-family: 'Cormorant Garamond', serif;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #0a140a 0%, #010402 100%);
+        }
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(190, 166, 124, 0.3);
+            border-radius: 30px;
+            padding: 50px 30px;
+            width: 90%; max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(190, 166, 124, 0.1);
+        }
+        h1 { font-family: 'Cinzel Decorative', cursive; color: var(--gold-main); font-size: 2.2rem; margin-bottom: 10px; }
+        p { font-size: 1.2rem; opacity: 0.8; margin-bottom: 30px; }
+        
+        .input-group { margin-bottom: 25px; text-align: left; }
+        label { display: block; margin-bottom: 8px; color: var(--gold-main); font-size: 1.1rem; }
+        input[type="text"] {
+            width: 100%; padding: 15px 20px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(190, 166, 124, 0.4);
+            border-radius: 12px;
+            color: #fff; font-size: 1.2rem;
+            font-family: 'Cormorant Garamond', serif;
+            outline: none; transition: border-color 0.3s;
+        }
+        input[type="text"]:focus { border-color: var(--gold-main); }
+        
+        .generated-url-box {
+            background: rgba(0,0,0,0.8);
+            padding: 15px; border-radius: 12px;
+            margin-bottom: 25px; border: 1px dashed var(--gold-dark);
+            word-break: break-all; font-family: monospace; font-size: 0.9rem;
+            color: #aaa; display: none;
+        }
+        
+        .action-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 15px; margin-bottom: 15px;
+            background: linear-gradient(135deg, rgba(190, 166, 124, 0.2), rgba(143, 118, 73, 0.2));
+            border: 1px solid var(--gold-main); border-radius: 12px;
+            color: #fff; font-family: 'Cinzel', serif; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; text-decoration: none;
+        }
+        .action-btn:hover { background: rgba(190, 166, 124, 0.4); transform: translateY(-2px); }
+        .action-btn i { font-size: 1.2rem; }
+        
+        .whatsapp-btn { border-color: #25D366; color: #25D366; }
+        .whatsapp-btn:hover { background: rgba(37, 211, 102, 0.2); }
+        
+        .copy-btn { border-color: var(--gold-main); color: var(--gold-main); }
+        
+        #actions { display: none; }
+        
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--gold-main); color: #000; padding: 10px 20px;
+            border-radius: 20px; font-weight: bold; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sender Portal</h1>
+        <p>Generate customized VIP invitations instantly.</p>
+        
+        <div class="input-group">
+            <label for="guestName">Guest Name (e.g. Uncle Ali & Family)</label>
+            <input type="text" id="guestName" placeholder="Enter name here..." autocomplete="off">
+        </div>
+        
+        <div class="generated-url-box" id="urlBox"></div>
+        
+        <div id="actions">
+            <button class="action-btn whatsapp-btn" id="btnWhatsapp">
+                <i class="fab fa-whatsapp"></i> Send via WhatsApp
+            </button>
+            <button class="action-btn copy-btn" id="btnCopy">
+                <i class="far fa-copy"></i> Copy Link (for Insta/Snapchat)
+            </button>
+            <button class="action-btn copy-btn" id="btnShare" style="display: none;">
+                <i class="fas fa-share-nodes"></i> Share Native
+            </button>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">Link Copied!</div>
+
+    <script>
+        const inputName = document.getElementById('guestName');
+        const urlBox = document.getElementById('urlBox');
+        const actions = document.getElementById('actions');
+        const btnWhatsapp = document.getElementById('btnWhatsapp');
+        const btnCopy = document.getElementById('btnCopy');
+        const btnShare = document.getElementById('btnShare');
+        const toast = document.getElementById('toast');
+        
+        // Use the current domain as the base URL
+        const baseUrl = window.location.origin + window.location.pathname.replace('sender.html', 'index.html');
+        let currentUrl = '';
+
+        if (navigator.share) { btnShare.style.display = 'inline-flex'; }
+
+        inputName.addEventListener('input', () => {
+            const name = inputName.value.trim();
+            if (name.length > 0) {
+                const encoded = encodeURIComponent(name);
+                currentUrl = `${baseUrl}?guest=${encoded}`;
+                urlBox.textContent = currentUrl;
+                urlBox.style.display = 'block';
+                actions.style.display = 'block';
+            } else {
+                urlBox.style.display = 'none';
+                actions.style.display = 'none';
+            }
+        });
+
+        btnWhatsapp.addEventListener('click', () => {
+            const message = `Assalamu Alaikum! You are joyfully invited to our Valima celebration. Please open your personalized invitation here:\n\n${currentUrl}`;
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+        btnCopy.addEventListener('click', () => {
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        });
+        
+        btnShare.addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Valima Invitation',
+                    text: 'You are joyfully invited to our Valima celebration.',
+                    url: currentUrl
+                }).catch(console.error);
+            }
+        });
+    </script>
+</body>
+</html>
