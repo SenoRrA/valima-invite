@@ -347,13 +347,14 @@
         .scratch-wrapper { padding: 8px; background: linear-gradient(145deg, rgba(212,175,55,0.8), rgba(212,175,55,0.15) 60%, rgba(253,247,212,0.4)); border-radius: 25px; box-shadow: 0 30px 70px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,255,255,0.25); }
         
         /* Fixed touch-action for smooth scratching without scrolling the page */
-        .scratch-container { position: relative; width: clamp(300px, 85vw, 420px); height: 170px; margin: 0 auto; border-radius: 18px; background: #020503; overflow: hidden; border: 1px solid rgba(212,175,55,0.5); box-shadow: inset 0 0 40px rgba(0,0,0,1); }
+        .scratch-container { position: relative; width: clamp(300px, 85vw, 420px); height: 170px; margin: 0 auto; border-radius: 18px; background: #020503; overflow: hidden; border: 1px solid rgba(212,175,55,0.5); box-shadow: inset 0 0 40px rgba(0,0,0,1); touch-action: none; }
         
         .hidden-date { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; pointer-events: none;}
         .hidden-date h2 { font-family: 'Cinzel Decorative', serif; font-size: 3rem; margin: 0; font-weight: 900; color: #fff; text-shadow: var(--intense-bloom); }
         .hidden-date p { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; color: var(--gold-main); margin-top: 5px; font-weight: 600;}
         
         /* Ensuring canvas specifically blocks touch scroll when interacting with it */
+        .scratch-wrapper { touch-action: none; }
         #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; touch-action: none; }
         @media (pointer: fine) { #scratchCanvas { cursor: none; } }
 
@@ -1080,9 +1081,12 @@
                 const p = getPos(e);
                 ctx.beginPath(); ctx.arc(p.x, p.y, 27.5, 0, Math.PI*2); ctx.fill();
 
-                // Optimized confetti rendering on scratch for mobile
-                if(Math.random() > (isMobile ? 0.8 : 0.5)) {
-                    confetti({ particleCount: 1, spread: 20, origin: { x: p.x/canvas.width, y: p.y/canvas.height }, colors: ['#D4AF37', '#FFF'], ticks: 20, gravity: 0.6, shapes: ['circle'], scalar: 0.5, zIndex: 9999 });
+                // Optimize scratch for 60fps buttery smoothness
+                if (!isMobile) {
+                    // Only run confetti during scratch on desktop to save mobile CPU/GPU
+                    if(Math.random() > 0.6) {
+                        confetti({ particleCount: 1, spread: 20, origin: { x: p.x/canvas.width, y: p.y/canvas.height }, colors: ['#BEA67C', '#FFF'], ticks: 15, gravity: 0.8, shapes: ['circle'], scalar: 0.5, zIndex: 9999 });
+                    }
                 }
             }
 
@@ -1096,10 +1100,10 @@
                 if (transparent / (pixels.length/16) > 0.45 && !revealed) {
                     revealed = true; triggerHaptic();
                     
-                    const duration = 4000; const end = Date.now() + duration;
+                    const duration = 3000; const end = Date.now() + duration;
                     (function frame() {
-                        confetti({ particleCount: isMobile ? 5 : 10, angle: 60, spread: 70, origin: { x: 0 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
-                        confetti({ particleCount: isMobile ? 5 : 10, angle: 120, spread: 70, origin: { x: 1 }, colors: ['#D4AF37', '#FFF5C3', '#FFF'], zIndex: 9999 });
+                        confetti({ particleCount: isMobile ? 4 : 8, angle: 60, spread: 70, origin: { x: 0 }, colors: ['#BEA67C', '#FFF5C3', '#FFF'], zIndex: 9999 });
+                        confetti({ particleCount: isMobile ? 4 : 8, angle: 120, spread: 70, origin: { x: 1 }, colors: ['#BEA67C', '#FFF5C3', '#FFF'], zIndex: 9999 });
                         if (Date.now() < end) requestAnimationFrame(frame);
                     }());
 
