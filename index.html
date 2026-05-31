@@ -177,11 +177,11 @@
         }
         .ampersand { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: #FFF; margin: 15px 0; font-style: italic; font-weight: 400; }
 
-        /* FIXED MASK-REVEAL FOR MOBILE */
+        /* PURE JS REVEAL MASK - No complex CSS transitions that conflict with GSAP */
         .mask-reveal {
-            /* Removed clip-path to fix catastrophic mobile invisible rendering bugs on canvas and iframes */
             transform: translateY(40px);
             opacity: 0;
+            /* No CSS 'transition' property here. GSAP handles it entirely. */
         }
 
         /* --- PERSONALIZED GUEST GREETING --- */
@@ -226,7 +226,8 @@
         .cinematic-video {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             object-fit: cover; object-position: center; 
-            transform: scale(1.08); /* Scaled up to hide corner watermark */
+            /* BUG FIX 2: Increased scale to 1.18 to fully hide corner watermark permanently */
+            transform: scale(1.18); 
         }
 
         #envVideo { z-index: 2; opacity: 1; }
@@ -546,12 +547,10 @@
             .content-wrapper { 
                 padding: 60px 20px 80px 20px; 
                 border-radius: 30px;
-                /* True Mobile Optimization: Hardware Accelerated Glassmorphism */
                 background: rgba(3, 10, 5, 0.85);
                 backdrop-filter: blur(15px); 
                 -webkit-backdrop-filter: blur(15px);
-                transform: translateZ(0); /* Hardware Acceleration */
-                /* Removed 'will-change' to stop the catastrophic iOS invisibility bug */
+                transform: translateZ(0); 
                 box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(212, 175, 55, 0.1); 
             }
             
@@ -567,9 +566,6 @@
             .ambient-glow { animation: breatheGlow 15s infinite alternate ease-in-out; opacity: 0.8; }
             .light-rays { animation: rotateRays 90s linear infinite; opacity: 0.4; }
             
-            .names-wrapper {
-                /* Removed wrapper glow that made entire column look lit */
-            }
             .names-main { font-size: 3.5rem; }
             .countdown-wrapper { gap: 10px; flex-wrap: wrap;}
             .time-box { width: 75px; height: 90px; border-radius: 15px; }
@@ -651,7 +647,7 @@
               <div class="corner-ornament corner-br"></div>
               
               <!-- Personalized Guest Greeting -->
-              <div id="guest-greeting-wrapper" class="guest-greeting-wrapper" style="display:none;">
+              <div id="guest-greeting-wrapper" class="guest-greeting-wrapper mask-reveal" style="display:none;">
                   <span class="greeting-prefix">Dearest</span>
                   <h1 id="guest-name" class="guest-name shimmer-text"></h1>
               </div>
@@ -666,12 +662,10 @@
                   <circle cx="100" cy="10" r="4" fill="#FDF7D4"/>
               </svg>
               
-              <!-- RESTORED mask-reveal class now that bug is fixed! -->
               <div class="romatic-quote mask-reveal">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1.1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:3px; margin-top:12px; display:block;">— Al-Quran 30:21</span></div>
               
               <div class="scratch-title mask-reveal" style="margin-top: 25px;">Together with their families</div>
               
-              <!-- RESTORED mask-reveal class now that bug is fixed! -->
               <div class="names-wrapper mask-reveal">
                   <div class="names-main noor-text">Abdullah</div>
                   <div class="ampersand">&</div>
@@ -680,7 +674,6 @@
               
               <p class="invite-para mask-reveal">Joyfully request the honor of your presence to celebrate their grand Sunnah</p>
               
-              <!-- RESTORED mask-reveal class now that bug is fixed! -->
               <div class="event-title shimmer-text mask-reveal">Valima Reception</div>
               
               <p class="invite-para mask-reveal">With heartfelt prayers to make this beautiful beginning truly complete.</p>
@@ -691,56 +684,73 @@
               </svg>
 
               <div class="scratch-title mask-reveal"><i class="fas fa-sparkles" style="color:var(--gold-main); margin-right:8px;"></i> Reveal The Big Day <i class="fas fa-sparkles" style="color:var(--gold-main); margin-left:8px;"></i></div>
-              <div class="scratch-wrapper mask-reveal pulse-glow" id="scratchWrapper">
-                  <div class="scratch-container">
-                      <div class="hidden-date">
-                          <h2>July 18, 2026</h2>
-                          <p>Saturday Evening</p>
-                      </div>
-                      <canvas id="scratchCanvas"></canvas>
-                      
-                      <!-- Animated Hand Indicator -->
-                      <div class="scratch-hand-indicator" id="scratchHand">
-                          <i class="far fa-hand-pointer"></i>
+              
+              <!-- BUG FIX 1: Safely wrapped scratch component in a plain div to stop CSS/GSAP animation clash on mobile -->
+              <div class="mask-reveal">
+                  <div class="scratch-wrapper pulse-glow" id="scratchWrapper">
+                      <div class="scratch-container">
+                          <div class="hidden-date">
+                              <h2>July 18, 2026</h2>
+                              <p>Saturday Evening</p>
+                          </div>
+                          <canvas id="scratchCanvas"></canvas>
+                          
+                          <div class="scratch-hand-indicator" id="scratchHand">
+                              <i class="far fa-hand-pointer"></i>
+                          </div>
                       </div>
                   </div>
               </div>
-              <p class="scratch-hint mask-reveal pulse-text" id="scratch-hint">✨ Gently scratch the foil to reveal ✨</p>
+              
+              <div class="mask-reveal">
+                  <p class="scratch-hint pulse-text" id="scratch-hint">✨ Gently scratch the foil to reveal ✨</p>
+              </div>
               
               <svg class="ornate-divider mask-reveal" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg" style="margin-top: 60px;">
                   <path d="M0 10 L80 10 L100 0 L120 10 L200 10 L200 11 L120 11 L100 20 L80 11 L0 11 Z" opacity="0.8"/>
               </svg>
 
               <div class="scratch-title mask-reveal">The Grand Venue</div>
-              <div class="location-box mask-reveal">
-                  <i class="fas fa-chess-rook location-icon float-anim" style="animation: float 4s ease-in-out infinite;"></i>
-                  <h3 class="shimmer-text">United Palace</h3>
-                  <p>Inner Ring Road, Pillar No. 245,<br>Suleman Nagar, Chintalmet,<br>Hyderabad, Telangana 500052</p>
-                  
-                  <div class="map-container">
-                      <iframe 
-                          class="map-iframe"
-                          src="https://maps.google.com/maps?q=United+Palace+Function+Hall,+Pillar+No.+245,+Suleman+Nagar,+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                      </iframe>
+              
+              <!-- BUG FIX 1: Safely wrapped Location Box (contains iframe and transitions) -->
+              <div class="mask-reveal">
+                  <div class="location-box">
+                      <i class="fas fa-chess-rook location-icon float-anim" style="animation: float 4s ease-in-out infinite;"></i>
+                      <h3 class="shimmer-text">United Palace</h3>
+                      <p>Inner Ring Road, Pillar No. 245,<br>Suleman Nagar, Chintalmet,<br>Hyderabad, Telangana 500052</p>
+                      
+                      <div class="map-container">
+                          <iframe 
+                              class="map-iframe"
+                              src="https://maps.google.com/maps?q=United+Palace+Function+Hall,+Pillar+No.+245,+Suleman+Nagar,+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                          </iframe>
+                      </div>
+                      
+                      <a href="https://maps.app.goo.gl/uBL2Qe11iVEbmXNy6" target="_blank" class="action-btn hover-target" style="margin-top: 30px;">
+                          <i class="fas fa-location-arrow"></i> Get Directions
+                      </a>
                   </div>
-                  
-                  <a href="https://maps.app.goo.gl/uBL2Qe11iVEbmXNy6" target="_blank" class="action-btn hover-target" style="margin-top: 30px;">
-                      <i class="fas fa-location-arrow"></i> Get Directions
-                  </a>
               </div>
 
               <div class="scratch-title mask-reveal" style="margin-top: 50px;">Time Until Forever</div>
-              <div class="countdown-wrapper mask-reveal" id="countdown-container">
-                  <div class="time-box"><span id="days">00</span><p>Days</p></div>
-                  <div class="time-box"><span id="hours">00</span><p>Hours</p></div>
-                  <div class="time-box"><span id="mins">00</span><p>Mins</p></div>
-                  <div class="time-box"><span id="secs">00</span><p>Secs</p></div>
+              
+              <!-- BUG FIX 1: Safely wrapped countdown -->
+              <div class="mask-reveal">
+                  <div class="countdown-wrapper" id="countdown-container">
+                      <div class="time-box"><span id="days">00</span><p>Days</p></div>
+                      <div class="time-box"><span id="hours">00</span><p>Hours</p></div>
+                      <div class="time-box"><span id="mins">00</span><p>Mins</p></div>
+                      <div class="time-box"><span id="secs">00</span><p>Secs</p></div>
+                  </div>
               </div>
 
-              <button id="openCalendarModal" class="action-btn hover-target mask-reveal" style="margin-top: 50px;">
-                  <i class="far fa-calendar-check"></i> Save to Calendar
-              </button>
+              <!-- BUG FIX 1: Safely wrapped action button -->
+              <div class="mask-reveal" style="margin-top: 50px;">
+                  <button id="openCalendarModal" class="action-btn hover-target" style="margin-top: 0;">
+                      <i class="far fa-calendar-check"></i> Save to Calendar
+                  </button>
+              </div>
               
               <div style="margin-top: 70px; text-align: center;" class="mask-reveal">
                   <p style="font-style: italic; color: rgba(253, 247, 212, 0.6); font-size: 1.2rem; letter-spacing: 1px;">Together in dunya, together in Jannah, Insha'Allah.</p>
@@ -803,7 +813,6 @@
         gsap.registerPlugin(ScrollTrigger);
 
         // --- LENIS SMOOTH SCROLLING (DESKTOP ONLY) ---
-        // Completely disabled on mobile to ensure perfect native touch-screen responsiveness
         let lenis;
         if (!isMobile) {
             lenis = new Lenis({
@@ -942,8 +951,8 @@
             gsap.to(cinematicOverlay, { opacity: 0.6, duration: 0.3, yoyo: true, repeat: 1, ease: "power2.out" });
             gsap.to(videoSequence, { x: 8, y: -8, duration: 0.05, yoyo: true, repeat: 6, ease: "rough({strength: 2, points: 20, template: linear, randomize: true})" });
             
-            // Camera Zoom
-            gsap.to(envVideo, { scale: 1.08, duration: 2.5, ease: "power2.out" });
+            // BUG FIX 2: Deeper Camera Zoom to guarantee watermark is pushed entirely out of view during animation
+            gsap.to(envVideo, { scale: 1.25, duration: 2.5, ease: "power2.out" });
 
             // Premium Confetti Explosion
             confetti({ particleCount: isMobile ? 50 : 150, spread: 120, origin: { y: 0.5 }, colors: ['#D4AF37', '#FCE8B2', '#FFFFFF'], zIndex: 9999 });
@@ -978,8 +987,8 @@
                 gsap.to(envVideo, { opacity: 0, duration: 1.2, ease: "power2.inOut" });
                 gsap.to(doorVideo, { opacity: 1, duration: 1.2, ease: "power2.inOut" });
                 
-                // Slight scale for cinematic depth
-                gsap.fromTo(doorVideo, { scale: 1.1 }, { scale: 1, duration: 4, ease: "power2.out" });
+                // BUG FIX 2: Scale from 1.25 down to 1.18, keeping the watermark safely pushed off the viewport edges forever
+                gsap.fromTo(doorVideo, { scale: 1.25 }, { scale: 1.18, duration: 4, ease: "power2.out" });
                 gsap.to('.light-rays', { opacity: 0.8, duration: 2 }); // Increase magic fog
             }).catch(e => {
                 console.warn("Door video failed to play for transition.", e);
@@ -1049,11 +1058,8 @@
                     { boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
                     { boxShadow: isMobile ? "0 15px 40px rgba(0,0,0,0.9)" : "0 40px 100px rgba(0,0,0,0.95), inset 0 1px 0 rgba(253, 247, 212, 0.3), inset 0 0 80px rgba(212, 175, 55, 0.1)", duration: 1.5, ease: "power2.out" }, "-=1"
                 )
-                .fromTo(".guest-greeting-wrapper", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=1.2")
                 .fromTo(".bismillah-svg", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=1.2")
-                .fromTo(".romatic-quote", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.9")
-                .fromTo(".names-wrapper", { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.4, ease: "back.out(1.2)" }, "-=0.8")
-                .fromTo(".event-title", { y: 20, opacity: 0, letterSpacing: "18px" }, { y: 0, opacity: 1, letterSpacing: "10px", duration: 1.5, ease: "power3.out" }, "-=1");
+                .fromTo(".names-wrapper", { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.4, ease: "back.out(1.2)" }, "-=0.8");
 
                 const darood = document.getElementById('daroodSound');
                 if (darood) { 
@@ -1065,25 +1071,23 @@
             }, 300); // 300ms guarantees DOM reflow completes
         }
 
-        // --- PREMIUM SCROLL REVEALS ---
+        // --- PERFECTED SCROLL REVEALS ---
         function initScrollAnimations() {
-            // Updated Scroll Reveals: Completely removed clipPath logic to fix mobile invisibility bug.
-            // Using solely Y-transform and opacity for buttery smooth, fail-proof performance on iOS and Android.
+            // Because the complex elements are now safely wrapped in plain `.mask-reveal` divs, 
+            // GSAP can animate them effortlessly without crashing the browser render engine.
             gsap.utils.toArray('.mask-reveal').forEach((el, i) => {
-                if(window.getComputedStyle(el).display !== 'none') {
-                    gsap.fromTo(el, 
-                        { y: 40, opacity: 0 },
-                        { 
-                            y: 0, opacity: 1, duration: 0.85, ease: "power3.out",
-                            scrollTrigger: { 
-                                trigger: el, 
-                                scroller: window, 
-                                start: "top 95%", // Safe margin to guarantee trigger
-                                once: true
-                            }
+                gsap.fromTo(el, 
+                    { y: 40, opacity: 0 },
+                    { 
+                        y: 0, opacity: 1, duration: 0.85, ease: "power3.out",
+                        scrollTrigger: { 
+                            trigger: el, 
+                            scroller: window, 
+                            start: "top 98%", // Start slightly earlier so users don't see blank spaces
+                            once: true
                         }
-                    );
-                }
+                    }
+                );
             });
             
             // Enhanced Parallax on Card Container
@@ -1105,7 +1109,7 @@
                     scroller: window,
                     start: "top top",
                     end: "bottom bottom",
-                    scrub: 1 // smooth scrubbing
+                    scrub: 1
                 }
             });
             gsap.to('.light-rays', {
@@ -1121,7 +1125,7 @@
                 }
             });
 
-            // Tell ScrollTrigger to recalculate everything safely
+            // Tell ScrollTrigger to recalculate everything perfectly
             ScrollTrigger.refresh();
             initScratchCard();
         }
