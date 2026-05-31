@@ -6,7 +6,7 @@
     <title>United Palace Valima | Abdullah & Aqsa</title>
 
     <!-- Social Media Preview Tags (Open Graph) - Optimized for Full Size Image -->
-    <meta property="og:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
+    <meta property="og:title" content="Abdullah & Aqsa | Valima" />
     <meta property="og:description" content="Join us to celebrate the Valima Reception at United Palace." />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Abdullah & Aqsa Valima" />
@@ -24,7 +24,7 @@
     
     <!-- Twitter / WhatsApp Large Image Card Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Abdullah & Aqsa | Royal Valima Invitation" />
+    <meta name="twitter:title" content="Abdullah & Aqsa | Valima" />
     <meta name="twitter:description" content="Join us to celebrate the Valima Reception at United Palace." />
     <meta name="twitter:image" content="https://SenoRrA.github.io/valima-invite/envelope_preview.jpg?v=1" />
     
@@ -62,14 +62,16 @@
             width: 100%; height: 100%;
             background-color: var(--bg-dark);
             font-family: 'Cormorant Garamond', serif;
-            overflow: hidden; /* Initial state, changed by lenis */
-            -webkit-tap-highlight-color: transparent;
             color: var(--gold-light);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
         
-        /* Lenis smooth scroll */
+        /* Lock scrolling while video is playing */
+        body.locked { overflow: hidden !important; }
+        
+        /* Lenis smooth scroll for Desktop */
         html.lenis { height: auto; }
         .lenis.lenis-smooth { scroll-behavior: auto; }
         .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
@@ -509,8 +511,19 @@
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold-dark), var(--gold-main)); border-radius: 10px; border: 2px solid var(--bg-dark); }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold-light); }
 
+        /* --- MOBILE PERFORMANCE OPTIMIZATIONS --- */
         @media (max-width: 768px) {
-            .content-wrapper { padding: 60px 20px 80px 20px; border-radius: 30px;}
+            .content-wrapper { 
+                padding: 60px 20px 80px 20px; 
+                border-radius: 30px;
+                backdrop-filter: blur(15px); /* Reduced for performance */
+                -webkit-backdrop-filter: blur(15px);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.9); /* Reduced shadow rendering */
+            }
+            .names-wrapper {
+                animation: none; /* Disable heavy animation on low-end mobile */
+                filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); /* Static glow */
+            }
             .names-main { font-size: 3.5rem; }
             .countdown-wrapper { gap: 10px; flex-wrap: wrap;}
             .time-box { width: 75px; height: 90px; border-radius: 15px; }
@@ -529,7 +542,7 @@
         }
     </style>
 </head>
-<body>
+<body class="locked"> <!-- Lock initially -->
 
     <!-- Custom Cursor -->
     <div class="cursor"></div>
@@ -687,8 +700,11 @@
     </style>
 
     <script>
+        // Check karo ke device mobile che ke nahi
+        const isMobile = window.innerWidth <= 768 || window.matchMedia("(pointer: coarse)").matches;
+
         // --- CUSTOM CURSOR LOGIC (DESKTOP ONLY) ---
-        if (window.matchMedia("(pointer: fine)").matches) {
+        if (!isMobile) {
             const cursor = document.querySelector('.cursor');
             const cursorFollower = document.querySelector('.cursor-follower');
             
@@ -718,34 +734,36 @@
         // SETUP GSAP
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- LENIS SMOOTH SCROLLING ---
-        // Highly optimized for Mobile & Desktop
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            direction: 'vertical',
-            gestureDirection: 'vertical',
-            smooth: true,
-            mouseMultiplier: 1,
-            smoothTouch: false, // Let native scroll handle touch for buttery smooth mobile experience
-            touchMultiplier: 2,
-            infinite: false,
-        });
+        // --- LENIS SMOOTH SCROLLING (DESKTOP ONLY for better performance) ---
+        let lenis;
+        if (!isMobile) {
+            lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                direction: 'vertical',
+                gestureDirection: 'vertical',
+                smooth: true,
+                mouseMultiplier: 1,
+                smoothTouch: false,
+                touchMultiplier: 2,
+                infinite: false,
+            });
 
-        function raf(time) {
-            lenis.raf(time);
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
             requestAnimationFrame(raf);
+            lenis.stop(); // Stop initially
         }
-        requestAnimationFrame(raf);
-        lenis.stop(); // Stop scrolling initially during video sequence
 
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(15); }
 
-        // --- PREMIUM PARTICLES ---
+        // --- PREMIUM PARTICLES (Optimized for Mobile) ---
         tsParticles.load("particles-bg", {
-            fpsLimit: 60,
+            fpsLimit: isMobile ? 30 : 60, // Lower FPS on mobile to save CPU
             particles: {
-                number: { value: 60, density: { enable: true, value_area: 1000 } }, // Slightly reduced for performance
+                number: { value: isMobile ? 15 : 60, density: { enable: true, value_area: 1000 } }, // Less particles on mobile
                 color: { value: ["#D4AF37", "#FDF7D4", "#CFB53B", "#FFFFFF"] },
                 shape: { type: "circle" },
                 opacity: { value: 0.9, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.3, sync: false } },
@@ -754,7 +772,7 @@
             },
             interactivity: {
                 detectsOn: "window",
-                events: { onHover: { enable: true, mode: "bubble" } },
+                events: { onHover: { enable: !isMobile, mode: "bubble" } },
                 modes: { bubble: { distance: 200, size: 6, duration: 2, opacity: 1 } }
             }
         });
@@ -861,9 +879,8 @@
         function showMainContent() {
             envVideo.pause(); doorVideo.pause();
             
-            // VERY IMPORTANT FOR MOBILE SCROLL: Remove global overflow hidden
-            document.body.style.overflow = "auto";
-            document.documentElement.style.overflow = "auto";
+            // VERY IMPORTANT FOR MOBILE SCROLL: Remove locked class
+            document.body.classList.remove('locked');
             
             // Fade out entire video container
             gsap.to(videoSequence, { 
@@ -878,7 +895,7 @@
             
             mainInvite.classList.add('active');
             
-            lenis.start(); // Unlock smooth scroll
+            if(lenis) lenis.start(); // Unlock smooth scroll for desktop
             
             setTimeout(() => {
                 initScrollAnimations();
@@ -931,11 +948,13 @@
                 );
             });
             
-            // Enhanced Parallax on Card Container
-            gsap.to('.content-wrapper', {
-                y: -60, ease: "none",
-                scrollTrigger: { trigger: "#main-invite", scroller: window, start: "top top", end: "bottom bottom", scrub: true }
-            });
+            // Enhanced Parallax on Card Container (Disable on mobile for performance)
+            if (!isMobile) {
+                gsap.to('.content-wrapper', {
+                    y: -60, ease: "none",
+                    scrollTrigger: { trigger: "#main-invite", scroller: window, start: "top top", end: "bottom bottom", scrub: true }
+                });
+            }
 
             initScratchCard();
         }
@@ -1038,8 +1057,8 @@
         const btnAppleIcs = document.getElementById('btn-apple-ics');
         const btnGoogleCal = document.getElementById('btn-google-cal');
 
-        // Event Details
-        const eventTitle = "Abdullah & Aqsa | Royal Valima";
+        // Event ni vigato - title update kari didhu che 
+        const eventTitle = "Abdullah & Aqsa | Valima";
         const eventLocation = "United Palace Function hall, Pillar No. 245, Suleman Nagar, Hyderabad";
         const eventDetails = "Grand Reception at United Palace. Join us to celebrate the Valima Reception of Abdullah & Aqsa.";
         // July 18, 2026, 19:00 IST is July 18, 2026, 13:30 UTC.
