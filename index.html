@@ -184,6 +184,37 @@
             /* Removed will-change to fix rendering bugs on mobile */
         }
 
+        /* --- PERSONALIZED GUEST GREETING --- */
+        .guest-greeting-wrapper { text-align: center; margin-bottom: 25px; }
+        .greeting-prefix { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.5rem; color: var(--gold-light); opacity: 0.8; }
+        .guest-name { font-family: 'Cinzel Decorative', serif; font-size: 2.5rem; margin: 5px 0 0 0; color: var(--gold-main); text-shadow: 0 0 15px rgba(212,175,55,0.4); }
+
+        /* --- ANIMATED BISMILLAH SVG --- */
+        .bismillah-svg { width: 100%; height: 60px; margin-bottom: 10px; overflow: visible; }
+        .bismillah-text {
+            font-family: 'Amiri', 'Traditional Arabic', serif; 
+            font-size: 38px;
+            fill: transparent;
+            stroke: var(--gold-main);
+            stroke-width: 1px;
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            animation: drawBismillah 4s ease-in-out forwards;
+            animation-delay: 1.5s;
+        }
+        @keyframes drawBismillah {
+            0% { stroke-dashoffset: 600; fill: transparent; stroke: var(--gold-main); }
+            60% { stroke-dashoffset: 0; fill: transparent; stroke: var(--gold-main); }
+            100% { stroke-dashoffset: 0; fill: var(--gold-main); stroke: transparent; filter: drop-shadow(0 0 10px rgba(190, 166, 124, 0.4)); }
+        }
+
+        /* --- AUDIO VISUALIZER --- */
+        #audioVisualizer { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; 
+            z-index: 15; pointer-events: none; opacity: 0.8; mix-blend-mode: screen; 
+            transition: opacity 1s; display: none;
+        }
+
         /* --- VIDEO SEQUENCE STYLES --- */
         #video-sequence {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -581,6 +612,7 @@
     <div class="light-rays"></div>
     <div id="particles-bg"></div>
     <div id="cinematic-overlay"></div>
+    <canvas id="audioVisualizer"></canvas>
 
     <!-- Audio Elements -->
     <audio id="magicSound" preload="auto">
@@ -618,8 +650,16 @@
               <div class="corner-ornament corner-bl"></div>
               <div class="corner-ornament corner-br"></div>
               
-              <!-- REMOVED mask-reveal class here to prevent invisible bug -->
-              <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
+              <!-- Personalized Guest Greeting -->
+              <div id="guest-greeting-wrapper" class="guest-greeting-wrapper mask-reveal" style="display:none;">
+                  <span class="greeting-prefix">Dearest</span>
+                  <h1 id="guest-name" class="guest-name shimmer-text"></h1>
+              </div>
+
+              <!-- Animated Bismillah SVG -->
+              <svg class="bismillah-svg mask-reveal" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
+                  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="bismillah-text">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</text>
+              </svg>
               
               <svg class="ornate-divider mask-reveal" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 10 L80 10 L100 0 L120 10 L200 10 L200 11 L120 11 L100 20 L80 11 L0 11 Z" opacity="0.8"/>
@@ -788,6 +828,71 @@
 
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(15); }
 
+        // --- PERSONALIZED GREETINGS (URL PARAM) ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('guest');
+        if (guestName) {
+            const wrapper = document.getElementById('guest-greeting-wrapper');
+            const nameEl = document.getElementById('guest-name');
+            nameEl.textContent = guestName;
+            wrapper.style.display = 'block';
+        }
+
+        // --- GOLDEN AUDIO VISUALIZER ---
+        const visualizerCanvas = document.getElementById('audioVisualizer');
+        const vCtx = visualizerCanvas.getContext('2d', { willReadFrequently: true });
+        let audioCtx, analyser, dataArray;
+        
+        function initVisualizer() {
+            if(audioCtx) return; // already init
+            const darood = document.getElementById('daroodSound');
+            if(!darood) return;
+            
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                const source = audioCtx.createMediaElementSource(darood);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                
+                analyser.fftSize = 128;
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                visualizerCanvas.style.display = 'block';
+                
+                function drawVisualizer() {
+                    requestAnimationFrame(drawVisualizer);
+                    visualizerCanvas.width = window.innerWidth;
+                    visualizerCanvas.height = 60;
+                    
+                    analyser.getByteFrequencyData(dataArray);
+                    
+                    vCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                    const barWidth = (visualizerCanvas.width / bufferLength) * 2;
+                    let barHeight;
+                    let x = 0;
+                    
+                    for(let i = 0; i < bufferLength; i++) {
+                        barHeight = dataArray[i] / 4;
+                        const gradient = vCtx.createLinearGradient(0, visualizerCanvas.height, 0, visualizerCanvas.height - barHeight);
+                        gradient.addColorStop(0, 'rgba(190, 166, 124, 0)');
+                        gradient.addColorStop(1, 'rgba(190, 166, 124, 0.6)');
+                        
+                        vCtx.fillStyle = gradient;
+                        // Draw from center outwards for symmetry
+                        const centerX = visualizerCanvas.width / 2;
+                        vCtx.fillRect(centerX + x, visualizerCanvas.height - barHeight, barWidth - 1, barHeight);
+                        vCtx.fillRect(centerX - x, visualizerCanvas.height - barHeight, barWidth - 1, barHeight);
+                        
+                        x += barWidth;
+                    }
+                }
+                drawVisualizer();
+            } catch (e) {
+                console.warn("Audio Visualizer could not start (likely CORS or browser policy)", e);
+            }
+        }
+
         // --- PREMIUM PARTICLES (World's Best) ---
         tsParticles.load("particles-bg", {
             fpsLimit: 60, 
@@ -950,7 +1055,11 @@
                 .fromTo(".event-title", { y: 20, opacity: 0, letterSpacing: "18px" }, { y: 0, opacity: 1, letterSpacing: "10px", duration: 1.5, ease: "power3.out" }, "-=1");
 
                 const darood = document.getElementById('daroodSound');
-                if (darood) { darood.play().catch(e => console.log("Darood final play blocked.", e)); }
+                if (darood) { 
+                    darood.play().then(() => {
+                        initVisualizer(); // Start the elegant audio wave visualizer
+                    }).catch(e => console.log("Darood final play blocked.", e)); 
+                }
 
             }, 300); // 300ms guarantees DOM reflow completes
         }
@@ -1048,9 +1157,9 @@
             ctx.fillText('SCRATCH TO REVEAL', canvas.width/2, canvas.height/2);
             ctx.globalAlpha = 1;
 
-            let isDrawing = false; let revealed = false;
+            let isDrawing = false; let revealed = false; let lastPos = null;
             ctx.globalCompositeOperation = 'destination-out';
-            ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = 55;
+            ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = 90; // Increased dramatically for effortless scratching
 
             function getPos(e) {
                 const rect = canvas.getBoundingClientRect();
@@ -1062,6 +1171,7 @@
             function scratchStart(e) { 
                 if(revealed) return; 
                 isDrawing = true; 
+                lastPos = getPos(e);
                 
                 // Stop hint animations on first touch
                 const hand = document.getElementById('scratchHand');
@@ -1078,14 +1188,21 @@
                 // Safe preventDefault for buttery smooth scratch (prevents page pull-to-refresh / scrolling)
                 if(e.cancelable) { e.preventDefault(); }
                 
-                const p = getPos(e);
-                ctx.beginPath(); ctx.arc(p.x, p.y, 27.5, 0, Math.PI*2); ctx.fill();
+                const currentPos = getPos(e);
+                
+                // Draw a continuous line for perfectly smooth, gapless scratching at any speed
+                ctx.beginPath(); 
+                ctx.moveTo(lastPos.x, lastPos.y);
+                ctx.lineTo(currentPos.x, currentPos.y);
+                ctx.stroke();
+                
+                lastPos = currentPos;
 
                 // Optimize scratch for 60fps buttery smoothness
                 if (!isMobile) {
                     // Only run confetti during scratch on desktop to save mobile CPU/GPU
                     if(Math.random() > 0.6) {
-                        confetti({ particleCount: 1, spread: 20, origin: { x: p.x/canvas.width, y: p.y/canvas.height }, colors: ['#BEA67C', '#FFF'], ticks: 15, gravity: 0.8, shapes: ['circle'], scalar: 0.5, zIndex: 9999 });
+                        confetti({ particleCount: 1, spread: 20, origin: { x: currentPos.x/canvas.width, y: currentPos.y/canvas.height }, colors: ['#BEA67C', '#FFF'], ticks: 15, gravity: 0.8, shapes: ['circle'], scalar: 0.5, zIndex: 9999 });
                     }
                 }
             }
@@ -1097,7 +1214,8 @@
                 const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
                 let transparent = 0;
                 for(let i=3; i<pixels.length; i+=16) { if(pixels[i] < 128) transparent++; }
-                if (transparent / (pixels.length/16) > 0.45 && !revealed) {
+                // Lowered threshold to 35% so they don't have to perfectly scratch every corner
+                if (transparent / (pixels.length/16) > 0.35 && !revealed) {
                     revealed = true; triggerHaptic();
                     
                     const duration = 3000; const end = Date.now() + duration;
