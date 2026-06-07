@@ -184,6 +184,17 @@
             /* No CSS 'transition' property here. GSAP handles it entirely. */
         }
 
+        /* --- ADDED FAMILY DETAILS STYLES --- */
+        .blessings-wrapper { text-align: center; margin: 40px 0 20px 0; position: relative; z-index: 5; }
+        .blessings-text { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: rgba(253, 247, 212, 0.95); font-style: italic; line-height: 1.6; margin-bottom: 15px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        .parents-names { font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--gold-main); letter-spacing: 2px; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 8px; text-shadow: var(--bloom); font-weight: 600; }
+        .parents-ampersand { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: rgba(253, 247, 212, 0.6); font-style: italic; text-transform: none; }
+        
+        .surname-text { font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--gold-light); letter-spacing: 8px; text-transform: uppercase; margin: -5px 0 10px 0; text-shadow: var(--bloom); font-weight: 700; }
+        
+        .lineage-text { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: rgba(253, 247, 212, 0.85); font-style: italic; margin-top: 5px; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        .relation-badge { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold-main); font-style: normal; margin-right: 5px; font-weight: 700; letter-spacing: 1px; }
+
         /* --- PERSONALIZED GUEST GREETING --- */
         .guest-greeting-wrapper { text-align: center; margin-bottom: 25px; }
         .greeting-prefix { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.5rem; color: var(--gold-light); opacity: 0.8; }
@@ -581,6 +592,14 @@
             .corner-br { bottom: 15px; right: 15px; }
             .location-box { padding: 35px 20px; }
             
+            /* Added family details mobile queries */
+            .blessings-wrapper { margin: 30px 0 15px 0; }
+            .blessings-text { font-size: 1.3rem; line-height: 1.5; padding: 0 10px; }
+            .parents-names { font-size: 1.05rem; letter-spacing: 1px; }
+            .surname-text { font-size: 1.3rem; letter-spacing: 5px; margin: -2px 0 8px 0; }
+            .lineage-text { font-size: 1.15rem; padding: 0 10px; }
+            .relation-badge { font-size: 0.85rem; }
+
             /* iOS Style Bottom Sheet Calendar Modal */
             .calendar-modal { 
                 padding: 40px 20px 50px 20px; 
@@ -664,12 +683,27 @@
               
               <div class="romatic-quote mask-reveal">"And He has placed between you<br>affection and mercy."<br><span style="font-size:1.1rem; opacity:0.7; font-family:'Cinzel', serif; letter-spacing:3px; margin-top:12px; display:block;">— Al-Quran 30:21</span></div>
               
+              <!-- BEAUTIFUL BLESSINGS BLOCK ADDED -->
+              <div class="blessings-wrapper mask-reveal">
+                  <p class="blessings-text">With the divine blessings of Almighty Allah<br>and our beloved parents</p>
+                  <div class="parents-names">
+                      <span>Late Mohammed Iqbal Paryani</span>
+                      <span class="parents-ampersand">&amp;</span>
+                      <span>Shahnaz Banu</span>
+                  </div>
+              </div>
+              
               <div class="scratch-title mask-reveal" style="margin-top: 25px;">Together with their families</div>
               
               <div class="names-wrapper mask-reveal">
                   <div class="names-main noor-text">Abdullah</div>
+                  <div class="surname-text">Paryani</div>
+                  <div class="lineage-text"><span class="relation-badge">(S/O)</span> Mrs. and Mr. Late Mohammed Iqbal Paryani</div>
+                  
                   <div class="ampersand">&</div>
+                  
                   <div class="names-main noor-text">Aqsa</div>
+                  <div class="lineage-text" style="margin-top: 15px;"><span class="relation-badge">(D/O)</span> Mrs. and Mr. Anjum Bhai Memon</div>
               </div>
               
               <p class="invite-para mask-reveal">Joyfully request the honor of your presence to celebrate their grand Sunnah</p>
